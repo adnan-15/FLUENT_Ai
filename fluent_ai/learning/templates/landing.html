@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Fluent AI - Learn English Smarter{% endblock %}
+
+{% block public_content %}
+
+<div class="landing">
+
+    <div class="landing-container">
+
+        <div class="landing-nav">
+
+            <a href="{% url 'landing' %}" class="brand">
+                <div class="brand-icon">F</div>
+
+                <div>
+                    <h2>Fluent AI</h2>
+                    <span>AI English Learning</span>
+                </div>
+            </a>
+
+            <div style="display:flex; gap:10px;">
+                <a href="{% url 'login' %}" class="btn btn-secondary">
+                    Login
+                </a>
+
+                <a href="{% url 'signup' %}" class="btn btn-primary">
+                    Get Started
+                </a>
+            </div>
+
+        </div>
+
+
+        <section class="hero">
+
+            <div class="badge" style="margin-bottom:18px;">
+                AI-Powered English Learning
+            </div>
+
+            <h1>
+                Improve Your English
+                <span class="gradient-text">With Fluent AI</span>
+            </h1>
+
+            <p>
+                Learn through personalized lessons, practice activities,
+                games, AI tutoring and intelligent CEFR level assessment.
+            </p>
+
+            <div class="hero-actions">
+
+                <a href="{% url 'signup' %}" class="btn btn-primary">
+                    Start Learning
+                </a>
+
+                <a href="{% url 'login' %}" class="btn btn-secondary">
+                    I Already Have an Account
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <div class="grid grid-3" style="margin-top:80px;">
+
+            <div class="card">
+                <div style="font-size:25px; margin-bottom:12px;">◈</div>
+                <h3>Learning Path</h3>
+                <p class="muted">
+                    Follow a structured English learning journey
+                    from Beginner to Advanced.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size:25px; margin-bottom:12px;">◉</div>
+                <h3>AI Tutor</h3>
+                <p class="muted">
+                    Ask questions and receive learning assistance
+                    based on your lessons.
+                </p>
+            </div>
+
+            <div class="card">
+                <div style="font-size:25px; margin-bottom:12px;">✓</div>
+                <h3>Level Assessment</h3>
+                <p class="muted">
+                    Test your English and receive an estimated
+                    CEFR level with recommendations.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>My Profile</h1>
+
+        <p>
+            View your learning profile and achievements.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="grid grid-2">
+
+    <div class="card">
+
+        <div style="display:flex; align-items:center; gap:15px;">
+
+            <div
+                class="avatar"
+                style="width:60px; height:60px; font-size:22px;"
+            >
+                {{ user.username|first|upper }}
+            </div>
+
+            <div>
+
+                <h2>
+                    {{ user.first_name|default:user.username }}
+                </h2>
+
+                <p class="muted">
+                    @{{ user.username }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="margin-top:25px;">
+
+            <p class="muted" style="font-size:12px;">
+                Email
+            </p>
+
+            <strong>
+                {{ user.email|default:"Not provided" }}
+            </strong>
+
+        </div>
+
+
+        <div style="margin-top:18px;">
+
+            <p class="muted" style="font-size:12px;">
+                Bio
+            </p>
+
+            <p style="margin-top:5px;">
+                {{ profile.bio|default:"Add a short introduction about yourself." }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>Learning Stats</h3>
+
+
+        <div class="grid grid-2" style="margin-top:18px;">
+
+            <div class="card">
+                <p class="muted">CEFR</p>
+                <h2>{{ profile.cefr_level|default:"A1" }}</h2>
+            </div>
+
+            <div class="card">
+                <p class="muted">Points</p>
+                <h2>{{ profile.points|default:0 }}</h2>
+            </div>
+
+            <div class="card">
+                <p class="muted">Streak</p>
+                <h2>{{ profile.streak|default:0 }}</h2>
+            </div>
+
+            <div class="card">
+                <p class="muted">Progress</p>
+                <h2>{{ profile.progress_percent|floatformat:0 }}%</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card" style="margin-top:20px;">
+
+    <h3>Achievements</h3>
+
+    <div class="grid grid-3" style="margin-top:18px;">
+
+        {% for item in achievements %}
+
+            <div class="card">
+
+                <div style="font-size:28px;">
+                    {{ item.achievement.icon }}
+                </div>
+
+                <h3 style="margin-top:10px;">
+                    {{ item.achievement.title }}
+                </h3>
+
+                <p class="muted" style="margin-top:5px;">
+                    {{ item.achievement.description }}
+                </p>
+
+            </div>
+
+        {% empty %}
+
+            <p class="muted">
+                Keep learning to unlock achievements.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

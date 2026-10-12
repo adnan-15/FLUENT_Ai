@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}V-Notes - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>V-Notes</h1>
+
+        <p>
+            Explore video resources for your English learning journey.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="grid grid-3">
+
+    {% for video in videos %}
+
+    <div class="card">
+
+        <span class="badge">
+            {{ video.level }}
+        </span>
+
+        <h3 style="margin-top:12px;">
+            {{ video.title }}
+        </h3>
+
+        <p class="muted" style="margin-top:7px;">
+            {{ video.description|truncatewords:20 }}
+        </p>
+
+        <p
+            class="muted"
+            style="margin-top:12px; font-size:12px;"
+        >
+            Topic: {{ video.topic }}
+        </p>
+
+
+        <a
+            href="{{ video.youtube_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
+            style="margin-top:17px; width:100%;"
+        >
+            Watch Video
+        </a>
+
+    </div>
+
+    {% empty %}
+
+    <div class="card">
+
+        <h3>No videos available</h3>
+
+        <p class="muted" style="margin-top:7px;">
+            Video resources can be added from the admin panel.
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

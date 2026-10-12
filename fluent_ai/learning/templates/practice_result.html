@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Practice Result - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+        <h1>Practice Result</h1>
+        <p>Review your performance and feedback.</p>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+
+        <div>
+
+            <span class="badge">
+                {{ session.practice_type|title }}
+            </span>
+
+            <h2 style="margin-top:10px;">
+                Your Practice
+            </h2>
+
+        </div>
+
+        <div style="text-align:right;">
+
+            <div class="muted" style="font-size:12px;">
+                Score
+            </div>
+
+            <strong style="font-size:25px;">
+                {{ session.score|floatformat:1 }}%
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress" style="margin-top:18px;">
+
+        <div
+            class="progress-bar"
+            data-width="{{ session.score|default:0 }}"
+        ></div>
+
+    </div>
+
+
+    <div style="margin-top:25px;">
+
+        <h3>Your Response</h3>
+
+        <div
+            class="card"
+            style="
+                margin-top:10px;
+                background:#f7f9fd;
+                line-height:1.7;
+            "
+        >
+            {{ session.response }}
+        </div>
+
+    </div>
+
+
+    <div style="margin-top:25px;">
+
+        <h3>Feedback</h3>
+
+        <div
+            class="card"
+            style="
+                margin-top:10px;
+                background:#f7f9fd;
+                line-height:1.7;
+            "
+        >
+            {% if session.feedback %}
+                {{ session.feedback|linebreaksbr }}
+            {% else %}
+                Keep practicing to improve your English.
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <div style="margin-top:25px; display:flex; gap:10px; flex-wrap:wrap;">
+
+        <a href="{% url 'practice' %}" class="btn btn-primary">
+            Practice Again
+        </a>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Practice Hub - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+        <h1>Practice Hub</h1>
+        <p>Practice English in different ways.</p>
+    </div>
+
+</div>
+
+
+<div class="grid grid-2">
+
+    <div class="card">
+
+        <span class="badge">Conversation</span>
+
+        <h2 style="margin-top:12px;">
+            Conversation Practice
+        </h2>
+
+        <p class="muted" style="margin-top:8px;">
+            Improve your ability to express ideas naturally.
+        </p>
+
+
+        <form
+            method="post"
+            action="{% url 'practice_submit' 'conversation' %}"
+            style="margin-top:20px;"
+        >
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Your Response</label>
+
+                <textarea
+                    name="response"
+                    class="form-control"
+                    placeholder="Write your response here..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+                Submit Practice
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <span class="badge">Speaking</span>
+
+        <h2 style="margin-top:12px;">
+            Speaking Practice
+        </h2>
+
+        <p class="muted" style="margin-top:8px;">
+            Practice constructing natural spoken responses.
+        </p>
+
+
+        <form
+            method="post"
+            action="{% url 'practice_submit' 'speaking' %}"
+            style="margin-top:20px;"
+        >
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Your Response</label>
+
+                <textarea
+                    name="response"
+                    class="form-control"
+                    placeholder="Type what you would say..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+                Submit Practice
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <span class="badge">Grammar</span>
+
+        <h2 style="margin-top:12px;">
+            Grammar Practice
+        </h2>
+
+        <p class="muted" style="margin-top:8px;">
+            Improve grammar and sentence correctness.
+        </p>
+
+
+        <form
+            method="post"
+            action="{% url 'practice_submit' 'grammar' %}"
+            style="margin-top:20px;"
+        >
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Your Answer</label>
+
+                <textarea
+                    name="response"
+                    class="form-control"
+                    placeholder="Write your answer..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+                Check Grammar
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <span class="badge">Structure</span>
+
+        <h2 style="margin-top:12px;">
+            Sentence Structure
+        </h2>
+
+        <p class="muted" style="margin-top:8px;">
+            Practice building clearer English sentences.
+        </p>
+
+
+        <form
+            method="post"
+            action="{% url 'practice_submit' 'structure' %}"
+            style="margin-top:20px;"
+        >
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Your Sentence</label>
+
+                <textarea
+                    name="response"
+                    class="form-control"
+                    placeholder="Write a sentence..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+                Check Structure
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

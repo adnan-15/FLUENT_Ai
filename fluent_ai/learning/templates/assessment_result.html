@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment Result - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>Assessment Result</h1>
+
+        <p>
+            Your estimated English proficiency based on your assessment.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="card" style="text-align:center; padding:35px;">
+
+    <p class="muted">
+        Estimated CEFR Level
+    </p>
+
+    <div
+        style="
+            font-size:72px;
+            font-weight:800;
+            color:var(--primary);
+            margin-top:10px;
+        "
+    >
+        {{ attempt.predicted_level|default:"A1" }}
+    </div>
+
+    <p class="muted">
+        ML-based project estimate
+    </p>
+
+</div>
+
+
+<div class="grid grid-3" style="margin-top:20px;">
+
+    <div class="card">
+
+        <div style="display:flex; justify-content:space-between;">
+
+            <strong>MCQ Score</strong>
+
+            <span>
+                {{ attempt.mcq_score|floatformat:1 }}%
+            </span>
+
+        </div>
+
+
+        <div class="progress" style="margin-top:12px;">
+
+            <div
+                class="progress-bar"
+                data-width="{{ attempt.mcq_score|default:0 }}"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div style="display:flex; justify-content:space-between;">
+
+            <strong>Writing Score</strong>
+
+            <span>
+                {{ attempt.writing_score|floatformat:1 }}%
+            </span>
+
+        </div>
+
+
+        <div class="progress" style="margin-top:12px;">
+
+            <div
+                class="progress-bar"
+                data-width="{{ attempt.writing_score|default:0 }}"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div style="display:flex; justify-content:space-between;">
+
+            <strong>ML Confidence</strong>
+
+            <span>
+                {{ attempt.ml_confidence|floatformat:1 }}%
+            </span>
+
+        </div>
+
+
+        <div class="progress" style="margin-top:12px;">
+
+            <div
+                class="progress-bar"
+                data-width="{{ attempt.ml_confidence|default:0 }}"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="grid grid-2" style="margin-top:20px;">
+
+    <div class="card">
+
+        <h3>Your Writing</h3>
+
+        <div
+            style="
+                margin-top:15px;
+                line-height:1.8;
+                white-space:pre-line;
+            "
+        >
+            {{ attempt.writing_response }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>Recommendations</h3>
+
+        <div
+            style="
+                margin-top:15px;
+                line-height:1.8;
+            "
+        >
+
+            {% if attempt.recommendations %}
+
+                {{ attempt.recommendations|linebreaksbr }}
+
+            {% else %}
+
+                Continue practicing vocabulary, grammar,
+                sentence formation and conversation.
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div style="margin-top:22px; display:flex; gap:10px; flex-wrap:wrap;">
+
+    <a href="{% url 'learning_path' %}" class="btn btn-primary">
+        View Learning Path
+    </a>
+
+    <a href="{% url 'practice' %}" class="btn btn-secondary">
+        Practice More
+    </a>
+
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+        Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

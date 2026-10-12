@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}{{ game_title }} - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <span class="badge">
+            Test Game
+        </span>
+
+        <h1 style="margin-top:8px;">
+            {{ game_title|default:"English Challenge" }}
+        </h1>
+
+        <p>
+            Complete the challenge and save your score.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    {% if question %}
+
+        <div style="display:flex; justify-content:space-between;">
+
+            <span class="badge">
+                Challenge
+            </span>
+
+            {% if total %}
+                <span class="muted">
+                    {{ current|default:1 }} / {{ total }}
+                </span>
+            {% endif %}
+
+        </div>
+
+
+        <h2 style="margin-top:20px;">
+            {{ question }}
+        </h2>
+
+
+        <form method="post" action="{% url 'save_game_result' %}" style="margin-top:25px;">
+
+            {% csrf_token %}
+
+            <input type="hidden" name="game_type" value="{{ game_type }}">
+            <input type="hidden" name="total" value="{{ total|default:1 }}">
+
+            <div class="form-group">
+
+                <label>Your Answer</label>
+
+                <input
+                    type="text"
+                    name="score"
+                    class="form-control"
+                    placeholder="Enter your score"
+                    required
+                >
+
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">
+                Save Result
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <div style="text-align:center; padding:40px;">
+
+            <h2>
+                {{ game_title|default:"English Game" }}
+            </h2>
+
+            <p class="muted" style="margin-top:10px;">
+                Game content will appear here.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

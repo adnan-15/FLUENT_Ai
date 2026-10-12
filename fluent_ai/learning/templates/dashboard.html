@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>
+            Welcome back, {{ user.first_name|default:user.username }}
+        </h1>
+
+        <p>
+            Keep learning and improve your English every day.
+        </p>
+
+    </div>
+
+
+    <div class="user-pill">
+
+        <div class="avatar">
+            {{ user.username|first|upper }}
+        </div>
+
+        <div>
+            <strong>{{ user.username }}</strong>
+            <div class="muted" style="font-size:11px;">
+                {{ payload.cefr|default:"A1" }} Level
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<div class="grid grid-4">
+
+    <div class="card">
+        <p class="muted">Learning Progress</p>
+
+        <h2 id="progressValue">
+            {{ payload.progress|default:0 }}%
+        </h2>
+
+        <div class="progress" style="margin-top:12px;">
+            <div
+                id="progressBar"
+                class="progress-bar"
+                data-width="{{ payload.progress|default:0 }}"
+            ></div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <p class="muted">Current Streak</p>
+
+        <h2>
+            {{ payload.streak|default:0 }}
+            <span style="font-size:13px;">days</span>
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Keep your streak alive.
+        </p>
+    </div>
+
+
+    <div class="card">
+        <p class="muted">Total Points</p>
+
+        <h2 id="pointsValue">
+            {{ payload.points|default:0 }}
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Earn more by practicing.
+        </p>
+    </div>
+
+
+    <div class="card">
+        <p class="muted">CEFR Level</p>
+
+        <h2 id="cefrValue">
+            {{ payload.cefr|default:"A1" }}
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Estimated English level
+        </p>
+    </div>
+
+</div>
+
+
+<div class="grid grid-2" style="margin-top:20px;">
+
+    <div class="card">
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div>
+                <h3>Learning Overview</h3>
+
+                <p class="muted">
+                    Track your progress across Fluent AI.
+                </p>
+            </div>
+
+            <span class="badge">
+                Live
+            </span>
+
+        </div>
+
+
+        <div style="margin-top:25px;">
+
+            <div style="display:flex; justify-content:space-between; margin-bottom:7px;">
+                <strong>Lessons Completed</strong>
+                <span>{{ payload.completed_lessons|default:0 }}</span>
+            </div>
+
+            <div class="progress">
+                <div
+                    class="progress-bar"
+                    data-width="{{ payload.progress|default:0 }}"
+                ></div>
+            </div>
+
+        </div>
+
+
+        <div style="margin-top:25px;">
+
+            <div style="display:flex; justify-content:space-between; margin-bottom:7px;">
+                <strong>Practice Sessions</strong>
+                <span>{{ payload.practice|default:0 }}</span>
+            </div>
+
+        </div>
+
+
+        <div style="margin-top:25px;">
+
+            <a href="{% url 'learning_path' %}" class="btn btn-primary">
+                Continue Learning
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div style="display:flex; justify-content:space-between;">
+
+            <div>
+                <h3>Quick Actions</h3>
+                <p class="muted">Choose what you want to do next.</p>
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-2" style="margin-top:20px;">
+
+            <a href="{% url 'practice' %}" class="card" style="padding:16px;">
+                <strong>Practice</strong>
+                <p class="muted" style="margin-top:5px;">
+                    Improve your English skills.
+                </p>
+            </a>
+
+            <a href="{% url 'assessment' %}" class="card" style="padding:16px;">
+                <strong>Assessment</strong>
+                <p class="muted" style="margin-top:5px;">
+                    Check your CEFR level.
+                </p>
+            </a>
+
+            <a href="{% url 'ai_tutor' %}" class="card" style="padding:16px;">
+                <strong>AI Tutor</strong>
+                <p class="muted" style="margin-top:5px;">
+                    Ask your learning assistant.
+                </p>
+            </a>
+
+            <a href="{% url 'games' %}" class="card" style="padding:16px;">
+                <strong>Test Games</strong>
+                <p class="muted" style="margin-top:5px;">
+                    Learn through games.
+                </p>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card" style="margin-top:20px;">
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+
+        <div>
+            <h3>Learning Activity</h3>
+            <p class="muted">
+                Your recent learning activity.
+            </p>
+        </div>
+
+        <span id="liveStatus" class="badge badge-success">
+            Live
+        </span>
+
+    </div>
+
+
+    <div style="margin-top:25px;">
+
+        {% for event in recent_events %}
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                padding:13px 0;
+                border-bottom:1px solid #edf1f7;
+            ">
+
+                <div>
+                    <strong>{{ event.title }}</strong>
+
+                    <div class="muted" style="font-size:12px; margin-top:4px;">
+                        {{ event.event_type|title }}
+                    </div>
+                </div>
+
+                <span class="badge">
+                    +{{ event.score|floatformat:0 }}
+                </span>
+
+            </div>
+
+        {% empty %}
+
+            <p class="muted">
+                No activity yet. Start a lesson to see your progress here.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+function updateDashboard() {
+
+    fetch("{% url 'dashboard_stats_api' %}")
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.progress !== undefined) {
+
+                const progress = Number(data.progress) || 0;
+
+                document.getElementById("progressValue").textContent =
+                    progress + "%";
+
+                document.getElementById("progressBar").style.width =
+                    Math.max(0, Math.min(100, progress)) + "%";
+            }
+
+            if (data.points !== undefined) {
+                document.getElementById("pointsValue").textContent =
+                    data.points;
+            }
+
+            if (data.cefr !== undefined) {
+                document.getElementById("cefrValue").textContent =
+                    data.cefr;
+            }
+
+        })
+        .catch(() => {
+            const status = document.getElementById("liveStatus");
+
+            if (status) {
+                status.textContent = "Offline";
+                status.classList.remove("badge-success");
+            }
+        });
+}
+
+setInterval(updateDashboard, 5000);
+
+</script>
+
+{% endblock %}

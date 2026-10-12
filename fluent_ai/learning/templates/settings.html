@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>Settings</h1>
+
+        <p>
+            Manage your Fluent AI account and preferences.
+        </p>
+
+    </div>
+
+</div>
+
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<div class="grid grid-2">
+
+    <div class="card">
+
+        <h3>Profile Settings</h3>
+
+        <form method="post" style="margin-top:20px;">
+
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="profile">
+
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    value="{{ user.email }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Bio</label>
+
+                <textarea
+                    name="bio"
+                    class="form-control"
+                    placeholder="Tell us about yourself..."
+                >{{ profile.bio }}</textarea>
+
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">
+                Save Profile
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>Preferences</h3>
+
+        <form method="post" style="margin-top:20px;">
+
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="preferences">
+
+
+            <div
+                class="card"
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    margin-bottom:15px;
+                "
+            >
+
+                <div>
+
+                    <strong>Notifications</strong>
+
+                    <p class="muted" style="font-size:12px; margin-top:3px;">
+                        Receive learning notifications.
+                    </p>
+
+                </div>
+
+                <input
+                    type="checkbox"
+                    name="notifications_enabled"
+                    {% if profile.notifications_enabled %}checked{% endif %}
+                >
+
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">
+                Save Preferences
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="card" style="margin-top:20px;">
+
+    <h3>Change Password</h3>
+
+    <form method="post" style="margin-top:20px;">
+
+        {% csrf_token %}
+
+        <input type="hidden" name="action" value="password">
+
+
+        <div class="grid grid-2">
+
+            <div class="form-group">
+
+                <label>New Password</label>
+
+                <input
+                    type="password"
+                    name="password1"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Confirm Password</label>
+
+                <input
+                    type="password"
+                    name="password2"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">
+            Change Password
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Learning Path - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>Learning Path</h1>
+
+        <p>
+            Follow your personalized English learning journey.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="grid grid-2">
+
+    {% for module in modules %}
+
+    <div class="card">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:15px;
+        ">
+
+            <div>
+
+                <div style="
+                    font-size:42px;
+                    margin-bottom:10px;
+                ">
+                    {{ module.icon }}
+                </div>
+
+                <span class="badge">
+                    {{ module.name }}
+                </span>
+
+                <h2 style="margin-top:10px;">
+                    {{ module.name }}
+                </h2>
+
+            </div>
+
+            <span class="muted">
+                Stages {{ module.stage_start }}–{{ module.stage_end }}
+            </span>
+
+        </div>
+
+
+        <p class="muted" style="
+            margin-top:12px;
+            line-height:1.6;
+        ">
+            {{ module.description }}
+        </p>
+
+
+        <div style="margin-top:20px;">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                font-size:12px;
+                margin-bottom:6px;
+            ">
+
+                <span>Progress</span>
+
+                <span>
+                    {{ module.completed_levels }}/{{ module.total_levels }} levels
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    data-width="{{ module.progress_percent }}"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div style="
+            margin-top:18px;
+            font-size:13px;
+        ">
+
+            <span class="muted">
+                3 Stages • 15 Levels
+            </span>
+
+        </div>
+
+        <a 
+            href="{% url 'module_detail' module.name|lower %}"
+            class="btn btn-primary" 
+            style="width:100%; margin-top:17px;"
+        >
+            View Module
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

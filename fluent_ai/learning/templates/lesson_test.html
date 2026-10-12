@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quiz.title }} - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <span class="badge">
+            Lesson Test
+        </span>
+
+        <h1 style="margin-top:8px;">
+            {{ quiz.title }}
+        </h1>
+
+        <p>
+            {{ quiz.description }}
+        </p>
+
+    </div>
+
+</div>
+
+
+<form method="post">
+
+    {% csrf_token %}
+
+
+    {% for question in questions %}
+
+    <div class="card" style="margin-bottom:18px;">
+
+        <div style="display:flex; gap:10px;">
+
+            <span class="badge">
+                Q{{ forloop.counter }}
+            </span>
+
+            <h3>
+                {{ question.question_text }}
+            </h3>
+
+        </div>
+
+
+        <div style="margin-top:18px; display:grid; gap:10px;">
+
+            <label class="card" style="padding:13px; cursor:pointer;">
+                <input
+                    type="radio"
+                    name="question_{{ question.id }}"
+                    value="A"
+                    required
+                >
+                {{ question.option_a }}
+            </label>
+
+
+            <label class="card" style="padding:13px; cursor:pointer;">
+                <input
+                    type="radio"
+                    name="question_{{ question.id }}"
+                    value="B"
+                >
+                {{ question.option_b }}
+            </label>
+
+
+            <label class="card" style="padding:13px; cursor:pointer;">
+                <input
+                    type="radio"
+                    name="question_{{ question.id }}"
+                    value="C"
+                >
+                {{ question.option_c }}
+            </label>
+
+
+            <label class="card" style="padding:13px; cursor:pointer;">
+                <input
+                    type="radio"
+                    name="question_{{ question.id }}"
+                    value="D"
+                >
+                {{ question.option_d }}
+            </label>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="card">
+        <p class="muted">
+            No questions are available for this test.
+        </p>
+    </div>
+
+    {% endfor %}
+
+
+    {% if questions %}
+
+    <button type="submit" class="btn btn-primary">
+        Submit Test
+    </button>
+
+    {% endif %}
+
+</form>
+
+{% endblock %}

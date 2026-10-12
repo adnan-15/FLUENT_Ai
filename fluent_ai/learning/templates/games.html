@@ -1,0 +1,113 @@
+{% extends "learning/base.html" %}
+
+{% block title %}Test Games - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+        <h1>Test Games</h1>
+        <p>Learn English through interactive challenges.</p>
+    </div>
+
+</div>
+
+
+<div class="grid grid-2">
+
+    <a href="{% url 'game_page' 'jumble' %}" class="card">
+
+        <span class="badge">Game 01</span>
+
+        <h2 style="margin-top:12px;">
+            Word Jumble
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Rearrange letters and build the correct word.
+        </p>
+
+        <div style="margin-top:17px;">
+            <span class="btn btn-secondary">
+                Play Game →
+            </span>
+        </div>
+
+    </a>
+
+
+    <a href="{% url 'game_page' 'vocabulary' %}" class="card">
+
+        <span class="badge">Game 02</span>
+
+        <h2 style="margin-top:12px;">
+            Vocabulary Puzzle
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Test your vocabulary knowledge.
+        </p>
+
+        <div style="margin-top:17px;">
+            <span class="btn btn-secondary">
+                Play Game →
+            </span>
+        </div>
+
+    </a>
+
+
+    <a href="{% url 'game_page' 'grammar' %}" class="card">
+
+        <span class="badge">Game 03</span>
+
+        <h2 style="margin-top:12px;">
+            Grammar Challenge
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Find the correct grammatical answer.
+        </p>
+
+        <div style="margin-top:17px;">
+            <span class="btn btn-secondary">
+                Play Game →
+            </span>
+        </div>
+
+    </a>
+
+
+    <a href="{% url 'game_page' 'memory' %}" class="card">
+
+        <span class="badge">Game 04</span>
+
+        <h2 style="margin-top:12px;">
+            Memory Match
+        </h2>
+
+        <p class="muted" style="margin-top:7px;">
+            Match words and meanings using memory.
+        </p>
+
+        <div style="margin-top:17px;">
+            <span class="btn btn-secondary">
+                Play Game →
+            </span>
+        </div>
+
+    </a>
+
+</div>
+
+
+<div style="margin-top:22px;">
+
+    <a href="{% url 'leaderboard' %}" class="btn btn-primary">
+        View Leaderboard
+    </a>
+
+</div>
+
+{% endblock %}

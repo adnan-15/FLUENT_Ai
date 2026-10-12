@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{{ module.name }} - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+    <div class="page-title">
+        <h1>{{ module.name }}</h1>
+        <p>
+            Explore the stages and levels in your {{ module.name }} learning journey.
+        </p>
+    </div>
+</div>
+
+{% for stage in stages %}
+
+<div class="card" style="margin-bottom:24px;">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+        flex-wrap:wrap;
+    ">
+
+        <div>
+            <span class="badge">
+                Stage {{ stage.number }}
+            </span>
+
+            <h2 style="margin-top:10px;">
+                {{ stage.name }}
+            </h2>
+        </div>
+
+        <span class="muted">
+            {{ stage.lessons|length }} Levels
+        </span>
+
+    </div>
+
+
+    <div style="
+        margin-top:20px;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    ">
+
+        {% for lesson in stage.lessons %}
+
+        <div style="
+            padding:16px 18px;
+            border:1px solid #e5e7eb;
+            border-radius:12px;
+            background:#f8fafc;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+        ">
+
+            <div>
+
+                <div style="
+                    font-size:13px;
+                    color:#64748b;
+                    margin-bottom:4px;
+                ">
+                    Level {{ lesson.topic_number }}
+                </div>
+
+                <div style="
+                    font-size:17px;
+                    font-weight:700;
+                    color:#172554;
+                ">
+                    {{ lesson.title }}
+                </div>
+
+                <div style="
+                    margin-top:5px;
+                    color:#64748b;
+                    font-size:14px;
+                ">
+                    {{ lesson.description }}
+                </div>
+
+            </div>
+
+            <a
+                href="{% url 'lesson_detail' lesson.id %}"
+                class="btn btn-primary"
+            >
+                Open
+            </a>
+
+        </div>
+
+        {% empty %}
+
+        <p class="muted">
+            No levels have been added to this stage yet.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

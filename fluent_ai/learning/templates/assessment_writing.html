@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Writing Assessment - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <span class="badge">
+            Step 2
+        </span>
+
+        <h1 style="margin-top:8px;">
+            Writing Assessment
+        </h1>
+
+        <p>
+            Write naturally. Your response will be analyzed by the ML model.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <h2>
+        Writing Task
+    </h2>
+
+    <p class="muted" style="margin-top:8px;">
+        Describe your daily routine, your goals, or a topic you are
+        comfortable discussing in English.
+    </p>
+
+
+    <form method="post" style="margin-top:25px;">
+
+        {% csrf_token %}
+
+
+        <div class="form-group">
+
+            <label>Your Writing Response</label>
+
+            <textarea
+                name="writing_response"
+                class="form-control"
+                style="min-height:280px;"
+                placeholder="Write at least a few sentences in English..."
+                required
+            ></textarea>
+
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">
+            Analyze My Level
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

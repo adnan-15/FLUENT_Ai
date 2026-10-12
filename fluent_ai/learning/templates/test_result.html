@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Test Result - Fluent AI{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <div class="page-title">
+        <h1>Test Result</h1>
+        <p>Here is your performance summary.</p>
+    </div>
+
+</div>
+
+
+<div class="card" style="text-align:center; padding:40px;">
+
+    <span class="badge">
+        {{ quiz.title }}
+    </span>
+
+    <h1 style="font-size:55px; margin-top:20px;">
+        {{ score|floatformat:1 }}%
+    </h1>
+
+    <p class="muted">
+        Your score
+    </p>
+
+
+    <div class="progress" style="max-width:500px; margin:25px auto;">
+
+        <div
+            class="progress-bar"
+            data-width="{{ score|default:0 }}"
+        ></div>
+
+    </div>
+
+
+    <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+
+        <a href="{% url 'learning_path' %}" class="btn btn-primary">
+            Back to Learning Path
+        </a>
+
+        <a href="{% url 'practice' %}" class="btn btn-secondary">
+            Practice More
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
