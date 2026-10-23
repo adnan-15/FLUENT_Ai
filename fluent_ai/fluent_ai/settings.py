@@ -29,13 +29,15 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.5")
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-xqm8o*g^sc(vz57*5)u@(+en!av+p662690(wvk=w0vb4#7p^("
+SECRET_KEY = "n9hq)^1z(a)&zka@oft7+sd@r@-c)&v9&0e@a+0li04vut_lzy"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS", "localhost,127.0.0.1"
+).split(",")
 
 # Application definition
 
