@@ -140,3 +140,4 @@ MAILERS = {
 }
 
 LOGIN_URL = "/login/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
