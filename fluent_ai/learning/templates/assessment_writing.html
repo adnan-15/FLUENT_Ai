@@ -1,68 +1,442 @@
+
 {% extends "base.html" %}
 
-{% block title %}Writing Assessment - Fluent AI{% endblock %}
+{% block title %}Writing Assessment | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .writing-assessment-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 8px 0 40px;
+        color: var(--text);
+    }
+
+    .writing-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 30px;
+        margin-bottom: 22px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle at 100% 0%,
+                var(--primary-soft),
+                transparent 48%
+            ),
+            var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .writing-eyebrow {
+        display: inline-block;
+        padding: 6px 11px;
+        margin-bottom: 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+
+    .writing-hero h1 {
+        margin: 0 0 10px;
+        color: var(--text);
+        font-size: clamp(27px, 4vw, 36px);
+        font-weight: 800;
+        letter-spacing: -.035em;
+    }
+
+    .writing-hero p {
+        max-width: 650px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .writing-card {
+        padding: 26px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .writing-card-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .writing-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 20px;
+        font-weight: 750;
+    }
+
+    .writing-card-header h2 {
+        margin: 0 0 6px;
+        color: var(--text);
+        font-size: 19px;
+        font-weight: 750;
+    }
+
+    .writing-card-header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .writing-prompt {
+        margin-bottom: 22px;
+        padding: 17px 18px;
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--primary);
+        border-radius: 12px;
+        background: var(--surface-secondary);
+    }
+
+    .writing-prompt-title {
+        margin: 0 0 7px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .writing-prompt p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .writing-form-group {
+        margin-bottom: 20px;
+    }
+
+    .writing-label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .writing-label-row label {
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .writing-minimum {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .writing-textarea {
+        display: block;
+        width: 100%;
+        min-height: 290px;
+        padding: 17px;
+        resize: vertical;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 14px;
+        line-height: 1.9;
+        transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .writing-textarea::placeholder {
+        color: var(--subtle);
+        opacity: 1;
+    }
+
+    .writing-textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .writing-textarea:disabled {
+        opacity: .7;
+        cursor: not-allowed;
+    }
+
+    .writing-editor-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .writing-counter {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .writing-counter.ready {
+        color: var(--success);
+        font-weight: 650;
+    }
+
+    .writing-hint {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .writing-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+    }
+
+    .writing-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 11px 18px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .writing-btn.primary {
+        background: var(--primary);
+        color: #fff;
+    }
+
+    .writing-btn.primary:hover {
+        color: #fff;
+        opacity: .92;
+        transform: translateY(-1px);
+    }
+
+    .writing-btn.secondary {
+        border-color: var(--border);
+        background: var(--surface);
+        color: var(--text);
+    }
+
+    .writing-btn.secondary:hover {
+        background: var(--surface-secondary);
+        color: var(--text);
+    }
+
+    .writing-btn:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+    }
+
+    .writing-note {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 600px) {
+        .writing-hero {
+            padding: 24px 19px;
+            border-radius: 16px;
+        }
+
+        .writing-card {
+            padding: 19px;
+        }
+
+        .writing-textarea {
+            min-height: 250px;
+            padding: 14px;
+        }
+
+        .writing-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .writing-btn {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .writing-textarea,
+        .writing-btn {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="writing-assessment-page">
 
-<div class="topbar">
+    <section class="writing-hero">
+        <span class="writing-eyebrow">English proficiency</span>
 
-    <div class="page-title">
-
-        <span class="badge">
-            Step 2
-        </span>
-
-        <h1 style="margin-top:8px;">
-            Writing Assessment
-        </h1>
+        <h1>Writing Assessment</h1>
 
         <p>
-            Write naturally. Your response will be analyzed by the ML model.
+            Express your ideas in English to estimate your proficiency level.
+            Focus on clear sentences, vocabulary, and explaining your thoughts
+            in your own words.
         </p>
+    </section>
 
-    </div>
+    <section class="writing-card">
+        <div class="writing-card-header">
+            <div class="writing-icon" aria-hidden="true">Aa</div>
 
-</div>
-
-
-<div class="card">
-
-    <h2>
-        Writing Task
-    </h2>
-
-    <p class="muted" style="margin-top:8px;">
-        Describe your daily routine, your goals, or a topic you are
-        comfortable discussing in English.
-    </p>
-
-
-    <form method="post" style="margin-top:25px;">
-
-        {% csrf_token %}
-
-
-        <div class="form-group">
-
-            <label>Your Writing Response</label>
-
-            <textarea
-                name="writing_response"
-                class="form-control"
-                style="min-height:280px;"
-                placeholder="Write at least a few sentences in English..."
-                required
-            ></textarea>
-
+            <div>
+                <h2>Your Writing Task</h2>
+                <p>
+                    Choose a topic you know well and write a response in English.
+                </p>
+            </div>
         </div>
 
+        <div class="writing-prompt">
+            <p class="writing-prompt-title">Suggested topics</p>
+            <p>
+                Your daily routine, education, future goals, a memorable
+                experience, your interests, or a topic you know well.
+                Explain your ideas in your own words.
+            </p>
+        </div>
 
-        <button type="submit" class="btn btn-primary">
-            Analyze My Level
-        </button>
+        <form method="post" id="writing-assessment-form">
+            {% csrf_token %}
 
-    </form>
+            <div class="writing-form-group">
+                <div class="writing-label-row">
+                    <label for="writing_response">
+                        Your Writing Response
+                    </label>
+
+                    <span class="writing-minimum">
+                        Minimum 50 characters
+                    </span>
+                </div>
+
+                <textarea
+                    id="writing_response"
+                    name="writing_response"
+                    class="writing-textarea"
+                    placeholder="Start writing in English here...
+
+Try to organise your ideas into paragraphs and use complete sentences."
+                    minlength="50"
+                    required
+                    aria-describedby="writing-counter writing-hint"
+                ></textarea>
+
+                <div class="writing-editor-footer">
+                    <span
+                        id="writing-counter"
+                        class="writing-counter"
+                        aria-live="polite"
+                    >
+                        0 characters
+                    </span>
+
+                    <span class="writing-hint" id="writing-hint">
+                        Write naturally and use your own words.
+                    </span>
+                </div>
+            </div>
+
+            <div class="writing-actions">
+                <button
+                    type="submit"
+                    class="writing-btn primary"
+                >
+                    Predict My Writing Level
+                    <span aria-hidden="true">→</span>
+                </button>
+
+                <a
+                    href="{% url 'assessment' %}"
+                    class="writing-btn secondary"
+                >
+                    Back to Assessments
+                </a>
+            </div>
+        </form>
+
+        <p class="writing-note">
+            Your response will be used by the assessment system to estimate
+            your English proficiency. The prediction depends on your model
+            and the scoring logic configured by your application.
+        </p>
+    </section>
 
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+    (function () {
+        const textarea = document.getElementById("writing_response");
+        const counter = document.getElementById("writing-counter");
+        const form = document.getElementById("writing-assessment-form");
+
+        if (!textarea || !counter || !form) return;
+
+        function updateCounter() {
+            const count = textarea.value.length;
+            counter.textContent = count + (count === 1 ? " character" : " characters");
+            counter.classList.toggle("ready", count >= 50);
+        }
+
+        textarea.addEventListener("input", updateCounter);
+
+        form.addEventListener("submit", function (event) {
+            if (textarea.value.trim().length < 50) {
+                event.preventDefault();
+                textarea.setCustomValidity(
+                    "Please write at least 50 non-space characters before submitting."
+                );
+                textarea.reportValidity();
+                textarea.focus();
+            }
+        });
+
+        textarea.addEventListener("input", function () {
+            textarea.setCustomValidity("");
+        });
+
+        updateCounter();
+    })();
+</script>
 {% endblock %}

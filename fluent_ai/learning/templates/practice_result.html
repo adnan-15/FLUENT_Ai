@@ -3,110 +3,152 @@
 {% block title %}Practice Result - Fluent AI{% endblock %}
 
 {% block content %}
+<style>
+    .practice-result {
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 25px 16px 45px;
+        color: var(--text-color, #1f2937);
+    }
 
-<div class="topbar">
+    .result-card {
+        padding: 25px;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 16px;
+        background: var(--card-bg, var(--surface-color, #fff));
+    }
 
-    <div class="page-title">
-        <h1>Practice Result</h1>
-        <p>Review your performance and feedback.</p>
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .result-header h2 { margin: 12px 0 0; }
+
+    .result-score {
+        font-size: 28px;
+        font-weight: 750;
+    }
+
+    .result-label {
+        color: var(--muted-color, #6b7280);
+        font-size: 12px;
+    }
+
+    .result-section { margin-top: 25px; }
+
+    .result-section h3 { margin-bottom: 10px; }
+
+    .result-content {
+        padding: 16px;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 12px;
+        background: var(--hover-bg, #f7f9fd);
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .result-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .result-progress {
+        height: 9px;
+        margin-top: 18px;
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--border-color, #e5e7eb);
+    }
+
+    .result-progress-bar {
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: var(--primary-color, #6366f1);
+        transition: width .5s ease;
+    }
+
+    @media (max-width: 500px) {
+        .result-card { padding: 18px; }
+    }
+</style>
+
+<div class="practice-result">
+    <div class="topbar">
+        <div class="page-title">
+            <h1>Practice Result</h1>
+            <p>Review your response and feedback.</p>
+        </div>
     </div>
 
-</div>
-
-
-<div class="card">
-
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-
-        <div>
-
-            <span class="badge">
-                {{ session.practice_type|title }}
-            </span>
-
-            <h2 style="margin-top:10px;">
-                Your Practice
-            </h2>
-
-        </div>
-
-        <div style="text-align:right;">
-
-            <div class="muted" style="font-size:12px;">
-                Score
+    <div class="result-card">
+        <div class="result-header">
+            <div>
+                <span class="badge">
+                    {{ practice_type|default:"Practice" | title }}
+                </span>
+                <h2>Your Practice</h2>
             </div>
 
-            <strong style="font-size:25px;">
-                {{ session.score|floatformat:1 }}%
-            </strong>
-
+            <div>
+                <div class="result-label">Score</div>
+                <div class="result-score">
+                    {{ score|default:0|floatformat:1 }}%
+                </div>
+            </div>
         </div>
 
-    </div>
-
-
-    <div class="progress" style="margin-top:18px;">
-
-        <div
-            class="progress-bar"
-            data-width="{{ session.score|default:0 }}"
-        ></div>
-
-    </div>
-
-
-    <div style="margin-top:25px;">
-
-        <h3>Your Response</h3>
-
-        <div
-            class="card"
-            style="
-                margin-top:10px;
-                background:#f7f9fd;
-                line-height:1.7;
-            "
-        >
-            {{ session.response }}
+        <div class="result-progress">
+            <div
+                class="result-progress-bar"
+                data-width="{{ score|default:0 }}"
+            ></div>
         </div>
 
-    </div>
-
-
-    <div style="margin-top:25px;">
-
-        <h3>Feedback</h3>
-
-        <div
-            class="card"
-            style="
-                margin-top:10px;
-                background:#f7f9fd;
-                line-height:1.7;
-            "
-        >
-            {% if session.feedback %}
-                {{ session.feedback|linebreaksbr }}
-            {% else %}
-                Keep practicing to improve your English.
-            {% endif %}
+        <div class="result-section">
+            <h3>Practice Prompt</h3>
+            <div class="result-content">
+                {{ prompt|default:"Complete the practice exercise." }}
+            </div>
         </div>
 
+        <div class="result-section">
+            <h3>Your Response</h3>
+            <div class="result-content">
+                {% if response %}
+                    {{ response|linebreaksbr }}
+                {% else %}
+                    No response was provided.
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3>Feedback</h3>
+            <div class="result-content">
+                {% if feedback %}
+                    {{ feedback|linebreaksbr }}
+                {% else %}
+                    Keep practicing to improve your English.
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <a href="{% url 'practice' %}" class="btn btn-primary">
+                Practice Again
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                Dashboard
+            </a>
+        </div>
     </div>
-
-
-    <div style="margin-top:25px; display:flex; gap:10px; flex-wrap:wrap;">
-
-        <a href="{% url 'practice' %}" class="btn btn-primary">
-            Practice Again
-        </a>
-
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-            Dashboard
-        </a>
-
-    </div>
-
 </div>
-
 {% endblock %}

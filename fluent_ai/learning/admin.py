@@ -16,6 +16,8 @@ from .models import (
     Achievement,
     UserAchievement,
     LearningEvent,
+    InterviewQuestion,
+    PracticeQuestion,
 )
 
 
@@ -112,6 +114,24 @@ class PracticeSessionAdmin(admin.ModelAdmin):
     )
 
 
+from django.contrib import admin
+from .models import PracticeQuestion
+
+
+@admin.register(PracticeQuestion)
+class PracticeQuestionAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "category",
+        "question_type",
+        "question_text",
+        "is_active",
+    )
+    list_filter = ("category", "question_type", "is_active")
+    search_fields = ("question_text",)
+    list_editable = ("is_active",)
+
+
 @admin.register(GameResult)
 class GameResultAdmin(admin.ModelAdmin):
 
@@ -150,15 +170,13 @@ class AssessmentAttemptAdmin(admin.ModelAdmin):
     )
 
 
+
 @admin.register(VideoNote)
 class VideoNoteAdmin(admin.ModelAdmin):
+    list_display = ("title", "topic", "level", "is_active")
+    list_filter = ("topic", "level", "is_active")
+    search_fields = ("title", "description", "topic")
 
-    list_display = (
-        "title",
-        "topic",
-        "level",
-        "is_active",
-    )
 
 
 @admin.register(ChatMessage)
@@ -200,3 +218,25 @@ class LearningEventAdmin(admin.ModelAdmin):
         "score",
         "created_at",
     )
+
+
+
+@admin.register(InterviewQuestion)
+class InterviewQuestionAdmin(admin.ModelAdmin):
+    list_display = (
+        "question_text",
+        "category",
+        "is_active",
+        "created_at",
+    )
+
+    list_filter = ("category", "is_active")
+
+    search_fields = (
+        "question_text",
+        "sample_answer",
+    )
+
+    list_editable = ("is_active",)
+
+    ordering = ("category", "id")

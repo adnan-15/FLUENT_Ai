@@ -1,0 +1,460 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ practice_type_title }} | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .question-page {
+        width: 100%;
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 8px 0 45px;
+        color: var(--text);
+    }
+
+    .question-hero {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(22px, 4vw, 34px);
+        margin-bottom: 26px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background:
+            radial-gradient(circle at 95% 5%, rgba(111, 91, 245, .13), transparent 36%),
+            linear-gradient(135deg, var(--surface), var(--surface-secondary));
+    }
+
+    .question-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 23px;
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .question-back:hover {
+        text-decoration: underline;
+    }
+
+    .question-eyebrow {
+        margin-bottom: 10px;
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+    }
+
+    .question-header h1 {
+        margin: 0;
+        color: var(--text);
+        font-size: clamp(27px, 4vw, 36px);
+        line-height: 1.25;
+        letter-spacing: -.8px;
+        overflow-wrap: anywhere;
+    }
+
+    .question-header p {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .question-instructions {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 14px 16px;
+        margin-bottom: 22px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--muted);
+        background: var(--surface);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .question-instructions strong {
+        color: var(--text);
+    }
+
+    .question-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .question-card {
+        min-width: 0;
+        padding: clamp(18px, 3vw, 24px);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .question-card:focus-within {
+        border-color: var(--primary);
+    }
+
+    .question-number {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 15px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .question-number span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 27px;
+        border-radius: 8px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-size: 12px;
+        letter-spacing: 0;
+    }
+
+    .question-text {
+        margin: 0 0 20px;
+        color: var(--text);
+        font-size: clamp(16px, 2vw, 18px);
+        font-weight: 650;
+        line-height: 1.75;
+        overflow-wrap: anywhere;
+    }
+
+    .answer-options {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .answer-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        min-width: 0;
+        padding: 13px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        background: var(--surface);
+        cursor: pointer;
+        transition: border-color .15s ease, background .15s ease;
+    }
+
+    .answer-option:hover {
+        border-color: var(--primary);
+        background: var(--surface-secondary);
+    }
+
+    .answer-option:has(input:checked) {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+    }
+
+    .answer-option input {
+        flex: 0 0 auto;
+        width: 16px;
+        height: 16px;
+        margin: 3px 0 0;
+        accent-color: var(--primary);
+        cursor: pointer;
+    }
+
+    .answer-option span {
+        min-width: 0;
+        font-size: 14px;
+        line-height: 1.65;
+        overflow-wrap: anywhere;
+    }
+
+    .answer-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .answer-input {
+        display: block;
+        width: 100%;
+        min-height: 46px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        outline: none;
+        color: var(--text);
+        background: var(--surface);
+        font: inherit;
+        font-size: 14px;
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .answer-input::placeholder {
+        color: var(--subtle);
+    }
+
+    .answer-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(49, 91, 234, .12);
+    }
+
+    .question-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding-top: 5px;
+    }
+
+    .question-count {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .submit-practice {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 12px 20px;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        color: #ffffff;
+        background: #315bea;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .submit-practice:hover {
+        transform: translateY(-1px);
+        opacity: .93;
+    }
+
+    .submit-practice:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+    }
+
+    .empty-questions {
+        padding: 32px 24px;
+        border: 1px dashed var(--border);
+        border-radius: 14px;
+        color: var(--muted);
+        background: var(--surface);
+        text-align: center;
+    }
+
+    .empty-questions h2 {
+        margin-bottom: 9px;
+        color: var(--text);
+        font-size: 19px;
+    }
+
+    .empty-questions p {
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    html[data-theme="dark"] .submit-practice {
+        color: #111827;
+        background: #91aaff;
+    }
+
+    @media (max-width: 600px) {
+        .question-hero {
+            padding: 22px 18px;
+        }
+
+        .question-card {
+            padding: 18px;
+        }
+
+        .question-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .submit-practice {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .answer-option,
+        .answer-input,
+        .submit-practice {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="question-page">
+
+    <section class="question-hero">
+        <a
+            class="question-back"
+            href="{% url 'practice_category' category %}"
+        >
+            <span aria-hidden="true">&larr;</span>
+            Back to {{ category_title }}
+        </a>
+
+        <div class="question-header">
+            <div class="question-eyebrow">Practice session</div>
+            <h1>{{ practice_type_title }}</h1>
+            <p>
+                {{ category_title }} practice. Read each question carefully
+                and select or enter your answer before submitting.
+            </p>
+        </div>
+    </section>
+
+    {% if questions %}
+        <div class="question-instructions">
+            <div>
+                <strong>Before you begin</strong>
+                <div>
+                    Complete every question. Your answers will be submitted
+                    together when you select the submit button.
+                </div>
+            </div>
+        </div>
+
+        <form
+            class="question-form"
+            method="post"
+            action="{% url 'practice_question_submit' category practice_type %}"
+        >
+            {% csrf_token %}
+
+            {% for question in questions %}
+                <section class="question-card">
+
+                    <div class="question-number">
+                        <span>{{ forloop.counter }}</span>
+                        Question {{ forloop.counter }}
+                    </div>
+
+                    <h2 class="question-text">
+                        {{ question.question_text }}
+                    </h2>
+
+                    {% if practice_type == "mcq" %}
+                        <div class="answer-options">
+
+                            {% if question.option_a %}
+                                <label class="answer-option">
+                                    <input
+                                        type="radio"
+                                        name="answer_{{ question.id }}"
+                                        value="A"
+                                        required
+                                    >
+                                    <span>{{ question.option_a }}</span>
+                                </label>
+                            {% endif %}
+
+                            {% if question.option_b %}
+                                <label class="answer-option">
+                                    <input
+                                        type="radio"
+                                        name="answer_{{ question.id }}"
+                                        value="B"
+                                    >
+                                    <span>{{ question.option_b }}</span>
+                                </label>
+                            {% endif %}
+
+                            {% if question.option_c %}
+                                <label class="answer-option">
+                                    <input
+                                        type="radio"
+                                        name="answer_{{ question.id }}"
+                                        value="C"
+                                    >
+                                    <span>{{ question.option_c }}</span>
+                                </label>
+                            {% endif %}
+
+                            {% if question.option_d %}
+                                <label class="answer-option">
+                                    <input
+                                        type="radio"
+                                        name="answer_{{ question.id }}"
+                                        value="D"
+                                    >
+                                    <span>{{ question.option_d }}</span>
+                                </label>
+                            {% endif %}
+
+                        </div>
+                    {% else %}
+                        <label
+                            class="answer-label"
+                            for="answer_{{ question.id }}"
+                        >
+                            Your answer
+                        </label>
+
+                        <input
+                            class="answer-input"
+                            id="answer_{{ question.id }}"
+                            type="text"
+                            name="answer_{{ question.id }}"
+                            placeholder="Type your answer here"
+                            autocomplete="off"
+                            required
+                        >
+                    {% endif %}
+
+                </section>
+            {% endfor %}
+
+            <div class="question-actions">
+                <p class="question-count">
+                    {{ questions|length }} question{{ questions|length|pluralize }}
+                    in this session
+                </p>
+
+                <button class="submit-practice" type="submit">
+                    Submit Answers
+                    <span aria-hidden="true">&rarr;</span>
+                </button>
+            </div>
+        </form>
+
+    {% else %}
+        <div class="empty-questions">
+            <h2>No questions available yet</h2>
+            <p>
+                Questions for this category and exercise type have not been
+                added yet. Please check back later.
+            </p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

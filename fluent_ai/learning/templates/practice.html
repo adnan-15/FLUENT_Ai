@@ -1,192 +1,339 @@
+
 {% extends "base.html" %}
 
-{% block title %}Practice Hub - Fluent AI{% endblock %}
+{% block title %}Practice Hub | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .practice-page {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 8px 0 40px;
+        color: var(--text);
+    }
+
+    .practice-hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding: clamp(24px, 4vw, 38px);
+        margin-bottom: 28px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background:
+            radial-gradient(circle at 90% 10%, rgba(111, 91, 245, .13), transparent 38%),
+            linear-gradient(135deg, var(--surface), var(--surface-secondary));
+    }
+
+    .practice-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 13px;
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+    }
+
+    .practice-eyebrow::before {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--primary);
+        content: "";
+    }
+
+    .practice-hero h1 {
+        max-width: 700px;
+        margin: 0;
+        color: var(--text);
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 780;
+        line-height: 1.15;
+        letter-spacing: -1.3px;
+    }
+
+    .practice-hero h1 span {
+        color: var(--primary);
+    }
+
+    .practice-hero p {
+        max-width: 650px;
+        margin: 13px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .practice-section {
+        margin-top: 30px;
+    }
+
+    .practice-section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .practice-section-heading h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 19px;
+        font-weight: 750;
+        letter-spacing: -.35px;
+    }
+
+    .practice-section-heading p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .practice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .practice-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 245px;
+        padding: 23px;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        color: var(--text);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        text-decoration: none;
+        transition: transform .2s ease, border-color .2s ease,
+                    box-shadow .2s ease;
+    }
+
+    .practice-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary);
+        box-shadow: 0 12px 28px rgba(49, 91, 234, .09);
+    }
+
+    .practice-card:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+    }
+
+    .practice-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        color: var(--primary);
+        background: var(--primary-soft);
+    }
+
+    .practice-icon svg {
+        width: 23px;
+        height: 23px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .practice-card h3 {
+        margin: 0 0 9px;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 720;
+    }
+
+    .practice-card p {
+        flex: 1;
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.75;
+        overflow-wrap: anywhere;
+    }
+
+    .practice-card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .practice-card-link span {
+        transition: transform .2s ease;
+    }
+
+    .practice-card:hover .practice-card-link span {
+        transform: translateX(4px);
+    }
+
+    .practice-empty {
+        grid-column: 1 / -1;
+        padding: 28px;
+        border: 1px dashed var(--border);
+        border-radius: 14px;
+        color: var(--muted);
+        background: var(--surface);
+        text-align: center;
+    }
+
+    @media (max-width: 1000px) {
+        .practice-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .practice-page {
+            padding-top: 0;
+        }
+
+        .practice-hero {
+            padding: 23px 19px;
+            margin-bottom: 24px;
+            border-radius: 14px;
+        }
+
+        .practice-hero h1 {
+            letter-spacing: -.8px;
+        }
+
+        .practice-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 13px;
+        }
+
+        .practice-card {
+            min-height: 0;
+            padding: 20px;
+        }
+
+        .practice-section-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .practice-card,
+        .practice-card-link span {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="practice-page">
 
-<div class="topbar">
+    <section class="practice-hero">
+        <div class="practice-eyebrow">Your learning workspace</div>
 
-    <div class="page-title">
-        <h1>Practice Hub</h1>
-        <p>Practice English in different ways.</p>
-    </div>
+        <h1>Practice with purpose.<br><span>Progress with confidence.</span></h1>
+
+        <p>
+            Strengthen your English through focused exercises, build a richer
+            vocabulary, improve grammar, and prepare for professional conversations
+            at your own pace.
+        </p>
+    </section>
+
+    <section class="practice-section" aria-labelledby="practice-categories-title">
+        <div class="practice-section-heading">
+            <div>
+                <h2 id="practice-categories-title">English practice</h2>
+                <p>Choose a skill and start improving today.</p>
+            </div>
+        </div>
+
+        <div class="practice-grid">
+            {% for slug, title, description in categories %}
+                <a class="practice-card" href="{% url 'practice_category' slug %}">
+
+                    <div class="practice-icon" aria-hidden="true">
+                        {% if slug == "grammar" %}
+                            <svg viewBox="0 0 24 24">
+                                <path d="M5 4h14v16H5z"/>
+                                <path d="M8 8h8M8 12h8M8 16h5"/>
+                            </svg>
+                        {% elif slug == "vocabulary" %}
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/>
+                                <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h7M8 10h5"/>
+                            </svg>
+                        {% else %}
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3 3 8l9 5 9-5-9-5Z"/>
+                                <path d="m6 10 0 6 6 3 6-3v-6M21 8v7"/>
+                            </svg>
+                        {% endif %}
+                    </div>
+
+                    <h3>{{ title }}</h3>
+                    <p>{{ description }}</p>
+
+                    <span class="practice-card-link">
+                        Explore practice <span aria-hidden="true">&rarr;</span>
+                    </span>
+                </a>
+            {% empty %}
+                <div class="practice-empty">
+                    <p>No practice categories are available right now. Please check back soon.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="practice-section" aria-labelledby="interview-title">
+        <div class="practice-section-heading">
+            <div>
+                <h2 id="interview-title">Career preparation</h2>
+                <p>Build confidence for interviews and workplace conversations.</p>
+            </div>
+        </div>
+
+        <div class="practice-grid">
+            <a class="practice-card" href="{% url 'interview_hub' %}">
+                <div class="practice-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="7" width="18" height="13" rx="2"/>
+                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <path d="M3 12h18M10 12v2h4v-2"/>
+                    </svg>
+                </div>
+
+                <h3>Interview Questions</h3>
+
+                <p>
+                    Prepare for common job interview questions, review sample
+                    answers, practise your responses, and develop professional
+                    communication skills.
+                </p>
+
+                <span class="practice-card-link">
+                    Explore interview practice <span aria-hidden="true">&rarr;</span>
+                </span>
+            </a>
+        </div>
+    </section>
 
 </div>
-
-
-<div class="grid grid-2">
-
-    <div class="card">
-
-        <span class="badge">Conversation</span>
-
-        <h2 style="margin-top:12px;">
-            Conversation Practice
-        </h2>
-
-        <p class="muted" style="margin-top:8px;">
-            Improve your ability to express ideas naturally.
-        </p>
-
-
-        <form
-            method="post"
-            action="{% url 'practice_submit' 'conversation' %}"
-            style="margin-top:20px;"
-        >
-
-            {% csrf_token %}
-
-            <div class="form-group">
-
-                <label>Your Response</label>
-
-                <textarea
-                    name="response"
-                    class="form-control"
-                    placeholder="Write your response here..."
-                    required
-                ></textarea>
-
-            </div>
-
-            <button class="btn btn-primary" type="submit">
-                Submit Practice
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <div class="card">
-
-        <span class="badge">Speaking</span>
-
-        <h2 style="margin-top:12px;">
-            Speaking Practice
-        </h2>
-
-        <p class="muted" style="margin-top:8px;">
-            Practice constructing natural spoken responses.
-        </p>
-
-
-        <form
-            method="post"
-            action="{% url 'practice_submit' 'speaking' %}"
-            style="margin-top:20px;"
-        >
-
-            {% csrf_token %}
-
-            <div class="form-group">
-
-                <label>Your Response</label>
-
-                <textarea
-                    name="response"
-                    class="form-control"
-                    placeholder="Type what you would say..."
-                    required
-                ></textarea>
-
-            </div>
-
-            <button class="btn btn-primary" type="submit">
-                Submit Practice
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <div class="card">
-
-        <span class="badge">Grammar</span>
-
-        <h2 style="margin-top:12px;">
-            Grammar Practice
-        </h2>
-
-        <p class="muted" style="margin-top:8px;">
-            Improve grammar and sentence correctness.
-        </p>
-
-
-        <form
-            method="post"
-            action="{% url 'practice_submit' 'grammar' %}"
-            style="margin-top:20px;"
-        >
-
-            {% csrf_token %}
-
-            <div class="form-group">
-
-                <label>Your Answer</label>
-
-                <textarea
-                    name="response"
-                    class="form-control"
-                    placeholder="Write your answer..."
-                    required
-                ></textarea>
-
-            </div>
-
-            <button class="btn btn-primary" type="submit">
-                Check Grammar
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <div class="card">
-
-        <span class="badge">Structure</span>
-
-        <h2 style="margin-top:12px;">
-            Sentence Structure
-        </h2>
-
-        <p class="muted" style="margin-top:8px;">
-            Practice building clearer English sentences.
-        </p>
-
-
-        <form
-            method="post"
-            action="{% url 'practice_submit' 'structure' %}"
-            style="margin-top:20px;"
-        >
-
-            {% csrf_token %}
-
-            <div class="form-group">
-
-                <label>Your Sentence</label>
-
-                <textarea
-                    name="response"
-                    class="form-control"
-                    placeholder="Write a sentence..."
-                    required
-                ></textarea>
-
-            </div>
-
-            <button class="btn btn-primary" type="submit">
-                Check Structure
-            </button>
-
-        </form>
-
-    </div>
-
-</div>
-
 {% endblock %}

@@ -1,0 +1,573 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ activity_title }} | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .interview-activity-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 8px 0 42px;
+        color: var(--text);
+    }
+
+    .interview-activity-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        margin: 20px 0 24px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle at 100% 0%,
+                var(--primary-soft),
+                transparent 48%
+            ),
+            var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .interview-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .interview-back-link:hover {
+        color: var(--primary-hover);
+        text-decoration: none;
+    }
+
+    .interview-eyebrow {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+
+    .interview-activity-hero h1 {
+        margin: 12px 0 9px;
+        color: var(--text);
+        font-size: clamp(26px, 4vw, 35px);
+        line-height: 1.3;
+        font-weight: 800;
+        letter-spacing: -.035em;
+        overflow-wrap: anywhere;
+    }
+
+    .interview-activity-hero > p {
+        max-width: 680px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .interview-section-heading {
+        margin: 28px 0 15px;
+        color: var(--text);
+        font-size: 20px;
+        font-weight: 750;
+        letter-spacing: -.02em;
+    }
+
+    .interview-question-card,
+    .interview-result-card,
+    .interview-score-card {
+        min-width: 0;
+        margin-bottom: 16px;
+        padding: 23px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .interview-question-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .interview-category {
+        display: inline-block;
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface-secondary);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .interview-question-number {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .interview-question-card h3,
+    .interview-result-card h3 {
+        margin: 0 0 18px;
+        color: var(--text);
+        font-size: 17px;
+        line-height: 1.7;
+        font-weight: 750;
+        overflow-wrap: anywhere;
+    }
+
+    .interview-subheading {
+        display: block;
+        margin: 17px 0 9px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .interview-sample-answer {
+        padding: 15px 16px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface-secondary);
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.85;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .interview-tips {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.85;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
+    }
+
+    .interview-form-label {
+        display: block;
+        margin-bottom: 9px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .interview-answer-input {
+        display: block;
+        width: 100%;
+        min-height: 150px;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-size: 14px;
+        line-height: 1.8;
+        resize: vertical;
+        box-sizing: border-box;
+        transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .interview-answer-input::placeholder {
+        color: var(--subtle);
+        opacity: 1;
+    }
+
+    .interview-answer-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .interview-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 23px;
+        padding: 17px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: var(--surface);
+    }
+
+    .interview-form-note {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .interview-primary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 44px;
+        padding: 12px 19px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .interview-primary-btn:hover {
+        color: #fff;
+        opacity: .92;
+        transform: translateY(-1px);
+    }
+
+    .interview-primary-btn:focus-visible,
+    .interview-back-link:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+    }
+
+    .interview-score-card {
+        text-align: center;
+        padding: 30px 22px;
+        background:
+            radial-gradient(
+                circle at 50% 0%,
+                var(--primary-soft),
+                transparent 65%
+            ),
+            var(--surface);
+    }
+
+    .interview-score-label {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .interview-score-number {
+        margin: 12px 0;
+        color: var(--primary);
+        font-size: clamp(38px, 6vw, 52px);
+        line-height: 1.15;
+        font-weight: 850;
+        letter-spacing: -.04em;
+    }
+
+    .interview-score-summary {
+        margin: 0;
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .interview-score-note {
+        max-width: 600px;
+        margin: 14px auto 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .interview-result-score {
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 750;
+    }
+
+    .interview-feedback {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.85;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
+    }
+
+    .interview-empty {
+        padding: 28px 20px;
+        margin: 20px 0;
+        border: 1px dashed var(--border);
+        border-radius: 15px;
+        background: var(--surface);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+        text-align: center;
+    }
+
+    .interview-empty strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text);
+        font-size: 16px;
+    }
+
+    .interview-bottom-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    @media (max-width: 600px) {
+        .interview-activity-hero {
+            padding: 22px 18px;
+            border-radius: 16px;
+        }
+
+        .interview-question-card,
+        .interview-result-card,
+        .interview-score-card {
+            padding: 18px;
+        }
+
+        .interview-form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .interview-primary-btn {
+            width: 100%;
+        }
+
+        .interview-bottom-actions {
+            flex-direction: column;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .interview-answer-input,
+        .interview-primary-btn {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="interview-activity-page">
+
+    <a class="interview-back-link" href="{% url 'interview_hub' %}">
+        <span aria-hidden="true">←</span>
+        Back to Interview Practice
+    </a>
+
+    <section class="interview-activity-hero">
+        <span class="interview-eyebrow">Interview preparation</span>
+
+        <h1>{{ activity_title }}</h1>
+
+        {% if activity == "common" %}
+            <p>
+                Explore common interview questions, sample answers, and
+                practical tips to help you prepare.
+            </p>
+        {% elif activity == "answer" %}
+            <p>
+                Write your own answers and submit them to receive
+                rule-based practice feedback.
+            </p>
+        {% else %}
+            <p>
+                Answer the interview questions and review your practice
+                score and feedback when you finish.
+            </p>
+        {% endif %}
+    </section>
+
+    {% if submitted %}
+
+        <section class="interview-score-card">
+            <p class="interview-score-label">Your overall practice score</p>
+
+            <div class="interview-score-number">
+                {{ overall_score }}<span style="font-size:.5em;">/100</span>
+            </div>
+
+            <p class="interview-score-summary">
+                Questions answered:
+                <strong>{{ answered_count }}</strong> out of
+                <strong>{{ questions|length }}</strong>
+            </p>
+
+            <p class="interview-score-note">
+                This is a rule-based practice estimate, not a professional
+                assessment of interview performance.
+            </p>
+        </section>
+
+        <h2 class="interview-section-heading">Your Answer Review</h2>
+
+        {% for result in results %}
+            <article class="interview-result-card">
+
+                <div class="interview-question-meta">
+                    <span class="interview-category">
+                        {{ result.question.get_category_display }}
+                    </span>
+
+                    <span class="interview-question-number">
+                        Question {{ forloop.counter }}
+                    </span>
+                </div>
+
+                <h3>{{ result.question.question_text }}</h3>
+
+                <span class="interview-subheading">Your answer</span>
+
+                <div class="interview-sample-answer">{{ result.answer|default:"No answer provided." }}</div>
+
+                <p class="interview-feedback">
+                    <span class="interview-result-score">
+                        Score: {{ result.score }}/100
+                    </span>
+                </p>
+
+                {% if result.feedback %}
+                    <p class="interview-feedback">{{ result.feedback }}</p>
+                {% endif %}
+
+                {% if activity == "common" %}
+                    <span class="interview-subheading">Sample answer</span>
+
+                    <div class="interview-sample-answer">{{ result.question.sample_answer }}</div>
+                {% endif %}
+
+            </article>
+        {% empty %}
+            <div class="interview-empty">
+                <strong>No results to display</strong>
+                No answer review is available for this attempt.
+            </div>
+        {% endfor %}
+
+        <div class="interview-bottom-actions">
+            <a
+                class="interview-primary-btn"
+                href="{% url 'interview_activity' activity %}"
+            >
+                Try Again <span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+    {% elif activity == "common" %}
+
+        <h2 class="interview-section-heading">Common Questions</h2>
+
+        {% for question in questions %}
+            <article class="interview-question-card">
+
+                <div class="interview-question-meta">
+                    <span class="interview-category">
+                        {{ question.get_category_display }}
+                    </span>
+
+                    <span class="interview-question-number">
+                        Question {{ forloop.counter }}
+                    </span>
+                </div>
+
+                <h3>{{ question.question_text }}</h3>
+
+                <span class="interview-subheading">Sample Answer</span>
+
+                <div class="interview-sample-answer">{{ question.sample_answer }}</div>
+
+                {% if question.answer_tips %}
+                    <span class="interview-subheading">Answer Tips</span>
+                    <p class="interview-tips">{{ question.answer_tips }}</p>
+                {% endif %}
+
+            </article>
+        {% empty %}
+            <div class="interview-empty">
+                <strong>No interview questions available</strong>
+                Active interview questions will appear here once they
+                have been added.
+            </div>
+        {% endfor %}
+
+    {% else %}
+
+        {% if questions %}
+            <form method="post">
+                {% csrf_token %}
+
+                {% for question in questions %}
+                    <section class="interview-question-card">
+
+                        <div class="interview-question-meta">
+                            <span class="interview-category">
+                                {{ question.get_category_display }}
+                            </span>
+
+                            <span class="interview-question-number">
+                                Question {{ forloop.counter }} of {{ questions|length }}
+                            </span>
+                        </div>
+
+                        <h3>{{ question.question_text }}</h3>
+
+                        <label
+                            class="interview-form-label"
+                            for="answer_{{ question.id }}"
+                        >
+                            Your Answer
+                        </label>
+
+                        <textarea
+                            class="interview-answer-input"
+                            id="answer_{{ question.id }}"
+                            name="answer_{{ question.id }}"
+                            placeholder="Write your answer here. Explain your ideas clearly and use your own words."
+                            rows="5"
+                        ></textarea>
+
+                    </section>
+                {% endfor %}
+
+                <div class="interview-form-footer">
+                    <div class="interview-form-note">
+                        Review your answers before submitting them for feedback.
+                    </div>
+
+                    <button type="submit" class="interview-primary-btn">
+                        Submit and Check Score
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </form>
+        {% else %}
+            <div class="interview-empty">
+                <strong>No interview questions available</strong>
+                Add active interview questions through the Django admin
+                panel before starting this activity.
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,189 +1,381 @@
+
 {% extends "base.html" %}
 
-{% block title %}Assessment Result - Fluent AI{% endblock %}
+{% block title %}Assessment Result | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .assessment-result-page {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 8px 0 40px;
+        color: var(--text);
+    }
+
+    .result-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 34px 24px;
+        margin-bottom: 22px;
+        text-align: center;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        background:
+            radial-gradient(
+                circle at 50% 0%,
+                var(--primary-soft),
+                transparent 65%
+            ),
+            var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .result-eyebrow {
+        display: inline-block;
+        padding: 6px 11px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+
+    .result-hero h1 {
+        margin: 16px 0 8px;
+        color: var(--text);
+        font-size: clamp(27px, 4vw, 36px);
+        font-weight: 800;
+        letter-spacing: -.035em;
+    }
+
+    .result-subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .level-panel {
+        max-width: 470px;
+        margin: 26px auto 0;
+        padding: 24px 18px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+    }
+
+    .level-label {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+    .level-value {
+        margin: 0;
+        color: var(--primary);
+        font-size: clamp(30px, 5vw, 43px);
+        line-height: 1.2;
+        font-weight: 850;
+        letter-spacing: -.035em;
+        overflow-wrap: anywhere;
+    }
+
+    .assessment-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 16px;
+        padding: 7px 11px;
+        border-radius: 8px;
+        background: var(--surface-secondary);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 22px;
+    }
+
+    .result-card {
+        min-width: 0;
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .result-card-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .result-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .result-card h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 17px;
+        font-weight: 750;
+        letter-spacing: -.015em;
+    }
+
+    .result-score {
+        margin: 8px 0 12px;
+        color: var(--primary);
+        font-size: clamp(29px, 4vw, 36px);
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: -.03em;
+        overflow-wrap: anywhere;
+    }
+
+    .result-description {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .recommendations-card {
+        border-top: 3px solid var(--primary);
+    }
+
+    .recommendations-text {
+        margin: 0;
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
+    }
+
+    .writing-card {
+        margin-top: 20px;
+    }
+
+    .writing-response {
+        margin-top: 16px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface-secondary);
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.9;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .result-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .result-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 44px;
+        padding: 11px 18px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .result-action-btn:hover {
+        color: #fff;
+        opacity: .92;
+        transform: translateY(-1px);
+    }
+
+    .result-action-btn.secondary {
+        background: var(--surface);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .result-action-btn.secondary:hover {
+        background: var(--surface-secondary);
+        color: var(--text);
+    }
+
+    @media (max-width: 700px) {
+        .result-hero {
+            padding: 26px 17px;
+            border-radius: 17px;
+        }
+
+        .level-panel {
+            padding: 21px 14px;
+        }
+
+        .result-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .result-card {
+            padding: 20px;
+        }
+
+        .result-actions {
+            flex-direction: column;
+        }
+
+        .result-action-btn {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .result-action-btn {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="assessment-result-page">
 
-<div class="topbar">
-
-    <div class="page-title">
+    <section class="result-hero">
+        <span class="result-eyebrow">Assessment completed</span>
 
         <h1>Assessment Result</h1>
 
-        <p>
-            Your estimated English proficiency based on your assessment.
+        <p class="result-subtitle">
+            Here is your estimated English proficiency based on your assessment.
         </p>
 
-    </div>
+        <div class="level-panel">
+            <p class="level-label">Predicted Proficiency Level</p>
 
-</div>
+            <h2 class="level-value">
+                {{ attempt.predicted_level }}
+            </h2>
 
-
-<div class="card" style="text-align:center; padding:35px;">
-
-    <p class="muted">
-        Estimated CEFR Level
-    </p>
-
-    <div
-        style="
-            font-size:72px;
-            font-weight:800;
-            color:var(--primary);
-            margin-top:10px;
-        "
-    >
-        {{ attempt.predicted_level|default:"A1" }}
-    </div>
-
-    <p class="muted">
-        ML-based project estimate
-    </p>
-
-</div>
-
-
-<div class="grid grid-3" style="margin-top:20px;">
-
-    <div class="card">
-
-        <div style="display:flex; justify-content:space-between;">
-
-            <strong>MCQ Score</strong>
-
-            <span>
-                {{ attempt.mcq_score|floatformat:1 }}%
+            <span class="assessment-type">
+                {% if attempt.writing_response %}
+                    Writing Assessment
+                {% else %}
+                    MCQ Assessment
+                {% endif %}
             </span>
-
         </div>
+    </section>
 
+    <div class="result-grid">
 
-        <div class="progress" style="margin-top:12px;">
+        {% if attempt.writing_response %}
+            <section class="result-card">
+                <div class="result-card-heading">
+                    <div class="result-icon">WR</div>
+                    <h2>Writing Score</h2>
+                </div>
 
-            <div
-                class="progress-bar"
-                data-width="{{ attempt.mcq_score|default:0 }}"
-            ></div>
+                <p class="result-score">
+                    {{ attempt.writing_score|floatformat:1 }}%
+                </p>
 
-        </div>
+                <p class="result-description">
+                    A supplementary writing-length and vocabulary-diversity
+                    score. This is not the machine-learning prediction itself.
+                </p>
+            </section>
+        {% else %}
+            <section class="result-card">
+                <div class="result-card-heading">
+                    <div class="result-icon">MCQ</div>
+                    <h2>MCQ Score</h2>
+                </div>
+
+                <p class="result-score">
+                    {{ attempt.mcq_score|floatformat:1 }}%
+                </p>
+
+                <p class="result-description">
+                    The percentage of assessment questions you answered correctly.
+                </p>
+            </section>
+        {% endif %}
+
+        <section class="result-card recommendations-card">
+            <div class="result-card-heading">
+                <div class="result-icon">TIP</div>
+                <h2>Recommendations</h2>
+            </div>
+
+            <p class="recommendations-text">
+                {{ attempt.recommendations|default:"Keep practising English regularly to strengthen your skills." }}
+            </p>
+        </section>
 
     </div>
 
+    {% if attempt.writing_response %}
+        <section class="result-card writing-card">
+            <div class="result-card-heading">
+                <div class="result-icon">TXT</div>
+                <h2>Your Writing Response</h2>
+            </div>
 
-    <div class="card">
+            <p class="result-description">
+                The response you submitted for your writing assessment.
+            </p>
 
-        <div style="display:flex; justify-content:space-between;">
+            <div class="writing-response">{{ attempt.writing_response }}</div>
+        </section>
+    {% endif %}
 
-            <strong>Writing Score</strong>
-
-            <span>
-                {{ attempt.writing_score|floatformat:1 }}%
-            </span>
-
-        </div>
-
-
-        <div class="progress" style="margin-top:12px;">
-
-            <div
-                class="progress-bar"
-                data-width="{{ attempt.writing_score|default:0 }}"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div style="display:flex; justify-content:space-between;">
-
-            <strong>ML Confidence</strong>
-
-            <span>
-                {{ attempt.ml_confidence|floatformat:1 }}%
-            </span>
-
-        </div>
-
-
-        <div class="progress" style="margin-top:12px;">
-
-            <div
-                class="progress-bar"
-                data-width="{{ attempt.ml_confidence|default:0 }}"
-            ></div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-2" style="margin-top:20px;">
-
-    <div class="card">
-
-        <h3>Your Writing</h3>
-
-        <div
-            style="
-                margin-top:15px;
-                line-height:1.8;
-                white-space:pre-line;
-            "
+    <div class="result-actions">
+        <a
+            href="{% url 'assessment' %}"
+            class="result-action-btn"
         >
-            {{ attempt.writing_response }}
-        </div>
+            Take Another Assessment
+            <span aria-hidden="true">→</span>
+        </a>
 
-    </div>
-
-
-    <div class="card">
-
-        <h3>Recommendations</h3>
-
-        <div
-            style="
-                margin-top:15px;
-                line-height:1.8;
-            "
+        <a
+            href="{% url 'dashboard' %}"
+            class="result-action-btn secondary"
         >
-
-            {% if attempt.recommendations %}
-
-                {{ attempt.recommendations|linebreaksbr }}
-
-            {% else %}
-
-                Continue practicing vocabulary, grammar,
-                sentence formation and conversation.
-
-            {% endif %}
-
-        </div>
-
+            Back to Dashboard
+        </a>
     </div>
 
 </div>
-
-
-<div style="margin-top:22px; display:flex; gap:10px; flex-wrap:wrap;">
-
-    <a href="{% url 'learning_path' %}" class="btn btn-primary">
-        View Learning Path
-    </a>
-
-    <a href="{% url 'practice' %}" class="btn btn-secondary">
-        Practice More
-    </a>
-
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-        Dashboard
-    </a>
-
-</div>
-
 {% endblock %}

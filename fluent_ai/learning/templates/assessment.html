@@ -1,116 +1,263 @@
+
 {% extends "base.html" %}
 
-{% block title %}Level Assessment - Fluent AI{% endblock %}
+{% block title %}Level Assessment | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .assessment-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 8px 0 40px;
+        color: var(--text);
+    }
+
+    .assessment-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 30px;
+        margin-bottom: 26px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle at 100% 0%,
+                var(--primary-soft),
+                transparent 45%
+            ),
+            var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .assessment-eyebrow {
+        display: inline-block;
+        padding: 6px 11px;
+        margin-bottom: 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--primary);
+        background: var(--surface);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+
+    .assessment-hero h1 {
+        margin: 0 0 10px;
+        color: var(--text);
+        font-size: clamp(27px, 4vw, 36px);
+        line-height: 1.25;
+        font-weight: 750;
+        letter-spacing: -.035em;
+    }
+
+    .assessment-hero p {
+        max-width: 620px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .assessment-section-title {
+        margin: 0 0 15px;
+        color: var(--text);
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .assessment-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .assessment-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 26px;
+        color: var(--text);
+        text-decoration: none;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        transition:
+            transform .2s ease,
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .assessment-card:hover {
+        color: var(--text);
+        text-decoration: none;
+        transform: translateY(-3px);
+        border-color: var(--primary);
+        box-shadow: 0 10px 28px rgba(49, 91, 234, .09);
+    }
+
+    .assessment-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .assessment-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        flex-shrink: 0;
+        border-radius: 14px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -.02em;
+    }
+
+    .assessment-tag {
+        padding: 5px 9px;
+        border-radius: 7px;
+        background: var(--surface-secondary);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+    .assessment-card h2 {
+        margin: 0 0 10px;
+        color: var(--text);
+        font-size: 20px;
+        font-weight: 750;
+        letter-spacing: -.02em;
+    }
+
+    .assessment-description {
+        flex: 1;
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .assessment-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .assessment-arrow {
+        font-size: 19px;
+        transition: transform .2s ease;
+    }
+
+    .assessment-card:hover .assessment-arrow {
+        transform: translateX(4px);
+    }
+
+    @media (max-width: 700px) {
+        .assessment-hero {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+
+        .assessment-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .assessment-card {
+            padding: 22px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .assessment-card,
+        .assessment-arrow {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="assessment-page">
 
-<div class="topbar">
+    <section class="assessment-hero">
+        <span class="assessment-eyebrow">English proficiency</span>
 
-    <div class="page-title">
         <h1>Level Assessment</h1>
-        <p>Evaluate your English and discover your estimated CEFR level.</p>
-    </div>
 
-</div>
-
-
-<div class="card" style="margin-bottom:22px;">
-
-    <span class="badge">
-        Step 1
-    </span>
-
-    <h2 style="margin-top:10px;">
-        English MCQ Assessment
-    </h2>
-
-    <p class="muted" style="margin-top:7px;">
-        Answer all questions carefully.
-    </p>
-
-</div>
-
-
-<form method="post">
-
-    {% csrf_token %}
-
-
-    {% for question in questions %}
-
-    <div class="card" style="margin-bottom:18px;">
-
-        <span class="badge">
-            Question {{ forloop.counter }}
-        </span>
-
-        <h3 style="margin-top:12px;">
-            {{ question.question }}
-        </h3>
-
-
-        <div style="display:grid; gap:10px; margin-top:18px;">
-
-            <label class="card" style="padding:13px;">
-                <input
-                    type="radio"
-                    name="question_{{ question.id }}"
-                    value="A"
-                    required
-                >
-                {{ question.option_a }}
-            </label>
-
-            <label class="card" style="padding:13px;">
-                <input
-                    type="radio"
-                    name="question_{{ question.id }}"
-                    value="B"
-                >
-                {{ question.option_b }}
-            </label>
-
-            <label class="card" style="padding:13px;">
-                <input
-                    type="radio"
-                    name="question_{{ question.id }}"
-                    value="C"
-                >
-                {{ question.option_c }}
-            </label>
-
-            <label class="card" style="padding:13px;">
-                <input
-                    type="radio"
-                    name="question_{{ question.id }}"
-                    value="D"
-                >
-                {{ question.option_d }}
-            </label>
-
-        </div>
-
-    </div>
-
-    {% empty %}
-
-    <div class="card">
-        <p class="muted">
-            No assessment questions are available.
+        <p>
+            Choose an assessment to estimate your English proficiency.
+            Select the format that best suits how you want to demonstrate
+            your skills.
         </p>
+    </section>
+
+    <h2 class="assessment-section-title">Choose your assessment</h2>
+
+    <div class="assessment-grid">
+
+        <a
+            href="{% url 'assessment_mcq' %}"
+            class="assessment-card"
+        >
+            <div class="assessment-card-top">
+                <div class="assessment-icon">MCQ</div>
+                <span class="assessment-tag">20 questions</span>
+            </div>
+
+            <h2>MCQ Assessment</h2>
+
+            <p class="assessment-description">
+                Answer 20 multiple-choice questions covering Grammar,
+                Vocabulary, and Conversation to evaluate your understanding
+                of English.
+            </p>
+
+            <div class="assessment-card-footer">
+                <span>Start MCQ Assessment</span>
+                <span class="assessment-arrow" aria-hidden="true">→</span>
+            </div>
+        </a>
+
+        <a
+            href="{% url 'assessment_writing' %}"
+            class="assessment-card"
+        >
+            <div class="assessment-card-top">
+                <div class="assessment-icon">A–Z</div>
+                <span class="assessment-tag">Writing skills</span>
+            </div>
+
+            <h2>Writing Assessment</h2>
+
+            <p class="assessment-description">
+                Write in English and let the text classification model
+                estimate your proficiency based on your written response.
+            </p>
+
+            <div class="assessment-card-footer">
+                <span>Start Writing Assessment</span>
+                <span class="assessment-arrow" aria-hidden="true">→</span>
+            </div>
+        </a>
+
     </div>
-
-    {% endfor %}
-
-
-    {% if questions %}
-
-    <button type="submit" class="btn btn-primary">
-        Submit Assessment
-    </button>
-
-    {% endif %}
-
-</form>
-
+</div>
 {% endblock %}

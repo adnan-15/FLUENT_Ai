@@ -1,148 +1,507 @@
+
 {% extends "base.html" %}
 
-{% block title %}Profile - Fluent AI{% endblock %}
+{% block title %}My Profile | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 8px 0 44px;
+        color: var(--text);
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 18px;
+        margin: 20px 0 28px;
+    }
+
+    .profile-eyebrow {
+        display: inline-block;
+        margin-bottom: 9px;
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .profile-header h1 {
+        margin: 0 0 9px;
+        color: var(--text);
+        font-size: clamp(28px, 4vw, 37px);
+        font-weight: 850;
+        letter-spacing: -.04em;
+        line-height: 1.2;
+    }
+
+    .profile-header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .profile-layout {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    .profile-card {
+        min-width: 0;
+        padding: 25px;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .profile-card-heading {
+        margin: 0 0 20px;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -.02em;
+    }
+
+    .profile-identity {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+        padding-bottom: 23px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .profile-avatar {
+        display: grid;
+        width: 66px;
+        height: 66px;
+        flex-shrink: 0;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 19px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 25px;
+        font-weight: 850;
+        text-transform: uppercase;
+    }
+
+    .profile-identity-info {
+        min-width: 0;
+    }
+
+    .profile-identity-info h2 {
+        margin: 0 0 5px;
+        color: var(--text);
+        font-size: 21px;
+        font-weight: 800;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .profile-username {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    .profile-detail {
+        margin-top: 20px;
+    }
+
+    .profile-detail-label {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+
+    .profile-detail-value {
+        margin: 0;
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.85;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
+    }
+
+    .profile-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+    }
+
+    .profile-stat {
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: var(--surface-secondary);
+    }
+
+    .profile-stat-label {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .profile-stat-value {
+        margin: 0;
+        color: var(--text);
+        font-size: clamp(23px, 3vw, 30px);
+        font-weight: 850;
+        line-height: 1.2;
+        letter-spacing: -.035em;
+        overflow-wrap: anywhere;
+    }
+
+    .profile-stat-highlight {
+        color: var(--primary);
+    }
+
+    .profile-progress-track {
+        height: 7px;
+        margin-top: 13px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--border);
+    }
+
+    .profile-progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--primary);
+        transition: width .25s ease;
+    }
+
+    .profile-achievements-section {
+        margin-top: 28px;
+    }
+
+    .profile-achievements-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 17px;
+    }
+
+    .profile-achievements-header h2 {
+        margin: 0 0 6px;
+        color: var(--text);
+        font-size: 21px;
+        font-weight: 850;
+        letter-spacing: -.03em;
+    }
+
+    .profile-achievements-header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .profile-achievement-count {
+        padding: 7px 11px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .profile-achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .profile-achievement {
+        min-width: 0;
+        padding: 21px;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        transition: border-color .18s ease, transform .18s ease;
+    }
+
+    .profile-achievement:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .profile-achievement-icon {
+        display: grid;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: var(--primary-soft);
+        font-size: 25px;
+    }
+
+    .profile-achievement h3 {
+        margin: 0 0 8px;
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .profile-achievement p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .profile-empty {
+        grid-column: 1 / -1;
+        padding: 34px 22px;
+        border: 1px dashed var(--border);
+        border-radius: 15px;
+        background: var(--surface);
+        text-align: center;
+    }
+
+    .profile-empty-icon {
+        margin-bottom: 12px;
+        font-size: 30px;
+    }
+
+    .profile-empty h3 {
+        margin: 0 0 8px;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .profile-empty p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 850px) {
+        .profile-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-achievements-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 560px) {
+        .profile-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .profile-card {
+            padding: 19px;
+        }
+
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 15px;
+            font-size: 22px;
+        }
+
+        .profile-identity-info h2 {
+            font-size: 18px;
+        }
+
+        .profile-stats-grid {
+            gap: 10px;
+        }
+
+        .profile-stat {
+            padding: 14px;
+        }
+
+        .profile-achievements-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-achievement {
+            padding: 18px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .profile-achievement,
+        .profile-progress-fill {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="profile-page">
 
-<div class="topbar">
-
-    <div class="page-title">
-
-        <h1>My Profile</h1>
-
-        <p>
-            View your learning profile and achievements.
-        </p>
-
-    </div>
-
-</div>
-
-
-<div class="grid grid-2">
-
-    <div class="card">
-
-        <div style="display:flex; align-items:center; gap:15px;">
-
-            <div
-                class="avatar"
-                style="width:60px; height:60px; font-size:22px;"
-            >
-                {{ user.username|first|upper }}
-            </div>
-
-            <div>
-
-                <h2>
-                    {{ user.first_name|default:user.username }}
-                </h2>
-
-                <p class="muted">
-                    @{{ user.username }}
-                </p>
-
-            </div>
-
+    <header class="profile-header">
+        <div>
+            <span class="profile-eyebrow">Your learning journey</span>
+            <h1>My Profile</h1>
+            <p>View your personal details, learning progress, and achievements.</p>
         </div>
+    </header>
 
+    <div class="profile-layout">
 
-        <div style="margin-top:25px;">
+        <!-- Profile information -->
+        <section class="profile-card">
+            <div class="profile-identity">
 
-            <p class="muted" style="font-size:12px;">
-                Email
-            </p>
-
-            <strong>
-                {{ user.email|default:"Not provided" }}
-            </strong>
-
-        </div>
-
-
-        <div style="margin-top:18px;">
-
-            <p class="muted" style="font-size:12px;">
-                Bio
-            </p>
-
-            <p style="margin-top:5px;">
-                {{ profile.bio|default:"Add a short introduction about yourself." }}
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h3>Learning Stats</h3>
-
-
-        <div class="grid grid-2" style="margin-top:18px;">
-
-            <div class="card">
-                <p class="muted">CEFR</p>
-                <h2>{{ profile.cefr_level|default:"A1" }}</h2>
-            </div>
-
-            <div class="card">
-                <p class="muted">Points</p>
-                <h2>{{ profile.points|default:0 }}</h2>
-            </div>
-
-            <div class="card">
-                <p class="muted">Streak</p>
-                <h2>{{ profile.streak|default:0 }}</h2>
-            </div>
-
-            <div class="card">
-                <p class="muted">Progress</p>
-                <h2>{{ profile.progress_percent|floatformat:0 }}%</h2>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="card" style="margin-top:20px;">
-
-    <h3>Achievements</h3>
-
-    <div class="grid grid-3" style="margin-top:18px;">
-
-        {% for item in achievements %}
-
-            <div class="card">
-
-                <div style="font-size:28px;">
-                    {{ item.achievement.icon }}
+                <div class="profile-avatar" aria-hidden="true">
+                    {{ user.username|first|upper|default:"U" }}
                 </div>
 
-                <h3 style="margin-top:10px;">
-                    {{ item.achievement.title }}
-                </h3>
-
-                <p class="muted" style="margin-top:5px;">
-                    {{ item.achievement.description }}
-                </p>
+                <div class="profile-identity-info">
+                    <h2>{{ user.first_name|default:user.username }}</h2>
+                    <p class="profile-username">@{{ user.username }}</p>
+                </div>
 
             </div>
 
-        {% empty %}
+            <div class="profile-detail">
+                <span class="profile-detail-label">Email address</span>
+                <p class="profile-detail-value">
+                    {{ user.email|default:"Not provided" }}
+                </p>
+            </div>
 
-            <p class="muted">
-                Keep learning to unlock achievements.
-            </p>
+            <div class="profile-detail">
+                <span class="profile-detail-label">About me</span>
+                <p class="profile-detail-value">{{ profile.bio|default:"Add a short introduction about yourself." }}</p>
+            </div>
+        </section>
 
-        {% endfor %}
+        <!-- Learning statistics -->
+        <section class="profile-card">
+            <h2 class="profile-card-heading">Learning Stats</h2>
+
+            <div class="profile-stats-grid">
+
+                <div class="profile-stat">
+                    <span class="profile-stat-label">CEFR Level</span>
+                    <p class="profile-stat-value profile-stat-highlight">
+                        {{ profile.cefr_level|default:"A1" }}
+                    </p>
+                </div>
+
+                <div class="profile-stat">
+                    <span class="profile-stat-label">Total Points</span>
+                    <p class="profile-stat-value">
+                        {{ profile.points|default:0 }}
+                    </p>
+                </div>
+
+                <div class="profile-stat">
+                    <span class="profile-stat-label">Learning Streak</span>
+                    <p class="profile-stat-value">
+                        {{ profile.streak|default:0 }}
+                        <span style="font-size:15px; font-weight:600;">days</span>
+                    </p>
+                </div>
+
+                <div class="profile-stat">
+                    <span class="profile-stat-label">Overall Progress</span>
+
+                    <p class="profile-stat-value profile-stat-highlight">
+                        {{ profile.progress_percent|default:0|floatformat:0 }}%
+                    </p>
+
+                    
+                    
+<div
+    class="profile-progress-track"
+    role="progressbar"
+    aria-label="Overall learning progress"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="{{ profile.progress_percent|default:0|floatformat:0 }}"
+>
+    <div
+        class="profile-progress-fill"
+        data-progress="{{ profile.progress_percent|default:0|floatformat:0 }}"
+    ></div>
+</div>
+
+
+                </div>
+
+            </div>
+        </section>
 
     </div>
 
-</div>
+    <!-- Achievements -->
+    <section class="profile-achievements-section">
 
+        <header class="profile-achievements-header">
+            <div>
+                <h2>Achievements</h2>
+                <p>Celebrate the milestones you unlock as you keep learning.</p>
+            </div>
+
+            <span class="profile-achievement-count">
+                {{ achievements|length }} unlocked
+            </span>
+        </header>
+
+        <div class="profile-achievements-grid">
+
+            {% for item in achievements %}
+                <article class="profile-achievement">
+
+                    <div class="profile-achievement-icon" aria-hidden="true">
+                        {{ item.achievement.icon|default:"🏆" }}
+                    </div>
+
+                    <h3>{{ item.achievement.title }}</h3>
+
+                    <p>{{ item.achievement.description }}</p>
+
+                </article>
+            {% empty %}
+                <div class="profile-empty">
+                    <div class="profile-empty-icon" aria-hidden="true">🏆</div>
+                    <h3>Your achievements start here</h3>
+                    <p>
+                        Keep practising, build your learning streak, and
+                        earn points to unlock achievements.
+                    </p>
+                </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+</div>
 {% endblock %}

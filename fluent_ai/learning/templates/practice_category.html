@@ -1,0 +1,294 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ category_title }} Practice | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-practice-page {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 8px 0 42px;
+        color: var(--text);
+    }
+
+    .category-practice-hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding: clamp(24px, 4vw, 38px);
+        margin-bottom: 28px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background:
+            radial-gradient(circle at 92% 5%, rgba(111, 91, 245, .14), transparent 38%),
+            linear-gradient(135deg, var(--surface), var(--surface-secondary));
+    }
+
+    .category-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 23px;
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .category-back:hover {
+        text-decoration: underline;
+    }
+
+    .category-eyebrow {
+        margin-bottom: 12px;
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+    }
+
+    .category-practice-hero h1 {
+        margin: 0;
+        color: var(--text);
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 780;
+        line-height: 1.2;
+        letter-spacing: -1.2px;
+        overflow-wrap: anywhere;
+    }
+
+    .category-practice-hero p {
+        max-width: 660px;
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .exercise-section-heading {
+        margin-bottom: 17px;
+    }
+
+    .exercise-section-heading h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 19px;
+        font-weight: 750;
+        letter-spacing: -.35px;
+    }
+
+    .exercise-section-heading p {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .exercise-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .exercise-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 245px;
+        padding: 23px;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        color: var(--text);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        text-decoration: none;
+        transition: transform .2s ease, border-color .2s ease,
+                    box-shadow .2s ease;
+    }
+
+    .exercise-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary);
+        box-shadow: 0 12px 28px rgba(49, 91, 234, .09);
+    }
+
+    .exercise-card:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+    }
+
+    .exercise-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 23px;
+    }
+
+    .exercise-number {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.1px;
+    }
+
+    .exercise-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .exercise-card h3 {
+        margin: 0 0 10px;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 720;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .exercise-card p {
+        flex: 1;
+        margin: 0 0 22px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .exercise-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .exercise-link span {
+        transition: transform .2s ease;
+    }
+
+    .exercise-card:hover .exercise-link span {
+        transform: translateX(4px);
+    }
+
+    .exercise-empty {
+        grid-column: 1 / -1;
+        padding: 30px 20px;
+        border: 1px dashed var(--border);
+        border-radius: 14px;
+        color: var(--muted);
+        background: var(--surface);
+        text-align: center;
+    }
+
+    @media (max-width: 1000px) {
+        .exercise-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .category-practice-hero {
+            padding: 23px 19px;
+            border-radius: 14px;
+        }
+
+        .category-practice-hero h1 {
+            letter-spacing: -.7px;
+        }
+
+        .exercise-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 13px;
+        }
+
+        .exercise-card {
+            min-height: 0;
+            padding: 20px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .exercise-card,
+        .exercise-link span {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="category-practice-page">
+
+    <section class="category-practice-hero">
+        <a class="category-back" href="{% url 'practice' %}">
+            <span aria-hidden="true">&larr;</span>
+            Back to Practice Hub
+        </a>
+
+        <div class="category-eyebrow">Focused learning</div>
+
+        <h1>{{ category_title }} Practice</h1>
+
+        <p>
+            Choose an exercise that matches your learning goals.
+            Work through each activity at your own pace and build
+            stronger, more confident English skills.
+        </p>
+    </section>
+
+    <section aria-labelledby="exercise-list-heading">
+        <div class="exercise-section-heading">
+            <h2 id="exercise-list-heading">Choose an exercise</h2>
+            <p>Select an activity below to get started.</p>
+        </div>
+
+        <div class="exercise-grid">
+            {% for slug, title, description in practice_types %}
+                <a
+                    class="exercise-card"
+                    href="{% url 'practice_type_page' category slug %}"
+                >
+                    <div class="exercise-card-top">
+                        <span class="exercise-number">
+                            EXERCISE {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+
+                        <span class="exercise-mark" aria-hidden="true">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+                    </div>
+
+                    <h3>{{ title }}</h3>
+
+                    <p>{{ description }}</p>
+
+                    <span class="exercise-link">
+                        Start exercise <span aria-hidden="true">&rarr;</span>
+                    </span>
+                </a>
+            {% empty %}
+                <div class="exercise-empty">
+                    No exercises are available in this category yet.
+                    Please check back soon.
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}

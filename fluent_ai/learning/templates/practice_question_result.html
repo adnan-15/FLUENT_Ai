@@ -1,0 +1,430 @@
+
+{% extends "base.html" %}
+
+{% block title %}Practice Results | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .practice-results {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 12px 0 40px;
+        color: var(--text);
+    }
+
+    .result-header {
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        padding: 36px 24px;
+        margin-bottom: 30px;
+        background:
+            radial-gradient(
+                circle at 50% 0%,
+                var(--primary-soft),
+                transparent 65%
+            ),
+            var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+    }
+
+    .result-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 11px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--primary);
+        background: var(--surface);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .result-header h1 {
+        margin: 16px 0 8px;
+        color: var(--text);
+        font-size: clamp(25px, 4vw, 34px);
+        line-height: 1.25;
+        font-weight: 750;
+        letter-spacing: -.035em;
+    }
+
+    .result-subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+    }
+
+    .score-ring {
+        width: 142px;
+        height: 142px;
+        margin: 26px auto 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 7px solid var(--primary-soft);
+        background: var(--surface);
+        box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .result-score {
+        color: var(--primary);
+        font-size: 39px;
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -.04em;
+    }
+
+    .score-label {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .result-summary {
+        margin: 0;
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .result-feedback {
+        max-width: 600px;
+        margin: 12px auto 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .result-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .practice-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 11px 18px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 650;
+        transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .practice-btn:hover {
+        color: #fff;
+        opacity: .92;
+        transform: translateY(-1px);
+    }
+
+    .practice-btn.secondary {
+        background: var(--surface);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .practice-btn.secondary:hover {
+        background: var(--surface-secondary);
+        color: var(--text);
+    }
+
+    .review-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 30px 0 16px;
+    }
+
+    .review-heading h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 750;
+        letter-spacing: -.025em;
+    }
+
+    .review-heading p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .answer-card {
+        position: relative;
+        margin-bottom: 14px;
+        padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .answer-card.correct {
+        border-left: 4px solid var(--success);
+    }
+
+    .answer-card.incorrect {
+        border-left: 4px solid var(--danger);
+    }
+
+    .answer-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 14px;
+        padding: 6px 10px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .correct-text {
+        color: var(--success);
+        background: var(--surface-secondary);
+    }
+
+    .incorrect-text {
+        color: var(--danger);
+        background: var(--surface-secondary);
+    }
+
+    .answer-card h3 {
+        margin: 0 0 17px;
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.65;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .answer-detail {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.75;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    .answer-detail strong {
+        color: var(--text);
+        font-weight: 650;
+    }
+
+    .answer-detail.explanation {
+        margin-top: 16px;
+        padding: 13px 15px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-secondary);
+    }
+
+    .answer-detail.explanation strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .results-empty {
+        padding: 32px 20px;
+        text-align: center;
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        color: var(--muted);
+    }
+
+    .results-empty h3 {
+        margin: 0 0 8px;
+        color: var(--text);
+        font-size: 18px;
+    }
+
+    @media (max-width: 600px) {
+        .practice-results {
+            padding-top: 4px;
+        }
+
+        .result-header {
+            padding: 28px 16px;
+            border-radius: 16px;
+        }
+
+        .score-ring {
+            width: 126px;
+            height: 126px;
+            margin: 22px auto 16px;
+        }
+
+        .result-score {
+            font-size: 34px;
+        }
+
+        .result-actions {
+            flex-direction: column;
+        }
+
+        .practice-btn {
+            width: 100%;
+        }
+
+        .answer-card {
+            padding: 17px;
+        }
+
+        .review-heading h2 {
+            font-size: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="practice-results">
+
+    <section class="result-header">
+        <span class="result-eyebrow">Practice completed</span>
+
+        <h1>{{ category_title }} Practice Results</h1>
+        <p class="result-subtitle">{{ practice_type_title }}</p>
+
+        <div class="score-ring">
+            <div class="result-score">{{ score }}%</div>
+            <div class="score-label">Your score</div>
+        </div>
+
+        <p class="result-summary">
+            You answered <strong>{{ correct_count }}</strong> out of
+            <strong>{{ total_questions }}</strong> questions correctly.
+        </p>
+
+        {% if feedback %}
+            <p class="result-feedback">{{ feedback }}</p>
+        {% endif %}
+
+        <div class="result-actions">
+            <a
+                class="practice-btn"
+                href="{% url 'practice_type_page' category practice_type %}"
+            >
+                Try Again
+            </a>
+
+            <a
+                class="practice-btn secondary"
+                href="{% url 'practice_category' category %}"
+            >
+                Back to Exercises
+            </a>
+        </div>
+    </section>
+
+    <div class="review-heading">
+        <div>
+            <h2>Answer Review</h2>
+            <p>Review your answers and learn from your mistakes.</p>
+        </div>
+    </div>
+
+    {% for item in results %}
+        <article class="answer-card {% if item.is_correct %}correct{% else %}incorrect{% endif %}">
+
+            <div class="answer-status {% if item.is_correct %}correct-text{% else %}incorrect-text{% endif %}">
+                {% if item.is_correct %}
+                    Correct
+                {% else %}
+                    Incorrect
+                {% endif %}
+            </div>
+
+            <h3>
+                {{ forloop.counter }}. {{ item.question.question_text }}
+            </h3>
+
+            {% if item.question.question_type == "mcq" %}
+                <p class="answer-detail">
+                    <strong>Your answer:</strong>
+                    {% if item.submitted_answer %}
+                        {{ item.submitted_answer|upper }}
+                        {% if item.submitted_answer|upper == "A" and item.question.option_a %}
+                            — {{ item.question.option_a }}
+                        {% elif item.submitted_answer|upper == "B" and item.question.option_b %}
+                            — {{ item.question.option_b }}
+                        {% elif item.submitted_answer|upper == "C" and item.question.option_c %}
+                            — {{ item.question.option_c }}
+                        {% elif item.submitted_answer|upper == "D" and item.question.option_d %}
+                            — {{ item.question.option_d }}
+                        {% endif %}
+                    {% else %}
+                        Not answered
+                    {% endif %}
+                </p>
+
+                <p class="answer-detail">
+                    <strong>Correct option:</strong>
+                    {{ item.correct_answer|upper }}
+
+                    {% if item.correct_answer|upper == "A" %}
+                        — {{ item.question.option_a }}
+                    {% elif item.correct_answer|upper == "B" %}
+                        — {{ item.question.option_b }}
+                    {% elif item.correct_answer|upper == "C" %}
+                        — {{ item.question.option_c }}
+                    {% elif item.correct_answer|upper == "D" %}
+                        — {{ item.question.option_d }}
+                    {% endif %}
+                </p>
+            {% else %}
+                <p class="answer-detail">
+                    <strong>Your answer:</strong>
+                    {% if item.submitted_answer %}
+                        {{ item.submitted_answer }}
+                    {% else %}
+                        Not answered
+                    {% endif %}
+                </p>
+
+                <p class="answer-detail">
+                    <strong>Expected answer:</strong>
+                    {{ item.correct_answer|default:"Not provided" }}
+                </p>
+            {% endif %}
+
+            {% if item.explanation %}
+                <p class="answer-detail explanation">
+                    <strong>Explanation</strong>
+                    {{ item.explanation }}
+                </p>
+            {% endif %}
+
+        </article>
+    {% empty %}
+        <div class="results-empty">
+            <h3>No answer review available</h3>
+            <p>There are no individual answers to display for this attempt.</p>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

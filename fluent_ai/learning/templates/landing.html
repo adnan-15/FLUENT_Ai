@@ -1,101 +1,986 @@
-{% extends "base.html" %}
 
-{% block title %}Fluent AI - Learn English Smarter{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Fluent AI | Your English, Your Future{% endblock %}
+
+{% block extra_css %}
+<style>
+/* =========================================
+   FLUENT AI — LANDING PAGE
+========================================= */
+
+.landing {
+    --lp-bg: #f5f7ff;
+    --lp-text: #18223d;
+    --lp-muted: #68758f;
+    --lp-card: rgba(255, 255, 255, .68);
+    --lp-card-solid: #ffffff;
+    --lp-border: rgba(125, 145, 190, .20);
+    --lp-primary: #405de6;
+    --lp-secondary: #7956e8;
+    --lp-soft: rgba(64, 93, 230, .09);
+    --lp-nav: rgba(255, 255, 255, .60);
+    --lp-shadow: 0 18px 55px rgba(46, 61, 120, .09);
+
+    position: relative;
+    isolation: isolate;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0;
+    min-height: 100vh;
+    margin: 0;
+    overflow: clip;
+    color: var(--lp-text);
+    background: var(--lp-bg);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    transition: background .25s ease, color .25s ease;
+}
+
+.landing[data-theme="dark"] {
+    --lp-bg: #0b1020;
+    --lp-text: #f1f4ff;
+    --lp-muted: #a4afc8;
+    --lp-card: rgba(24, 33, 58, .68);
+    --lp-card-solid: #151d33;
+    --lp-border: rgba(167, 183, 225, .15);
+    --lp-primary: #8298ff;
+    --lp-secondary: #b19aff;
+    --lp-soft: rgba(130, 152, 255, .12);
+    --lp-nav: rgba(14, 20, 38, .72);
+    --lp-shadow: 0 18px 55px rgba(0, 0, 0, .20);
+}
+
+.landing *,
+.landing *::before,
+.landing *::after {
+    box-sizing: border-box;
+}
+
+.landing a {
+    text-decoration: none;
+}
+
+.landing-container {
+    width: min(1160px, calc(100% - 48px));
+    max-width: 1160px;
+    margin-inline: auto;
+}
+
+.landing .ambient {
+    position: absolute;
+    z-index: -1;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .23;
+    pointer-events: none;
+}
+
+.landing .ambient-one {
+    top: 50px;
+    left: -200px;
+    background: #6686ff;
+}
+
+.landing .ambient-two {
+    top: 440px;
+    right: -220px;
+    background: #a18aff;
+}
+
+.landing .ambient-three {
+    top: 1350px;
+    left: 20%;
+    background: #55c9e8;
+    opacity: .10;
+}
+
+/* Navigation */
+
+.landing .landing-nav {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--lp-border);
+}
+
+.landing .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--lp-text);
+}
+
+.landing .brand-icon {
+    display: grid;
+    place-items: center;
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    color: white;
+    background: linear-gradient(135deg, #355ce8, #8a58e8);
+    box-shadow: 0 8px 22px rgba(74, 88, 220, .25);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.landing .brand h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.6px;
+}
+
+.landing .brand span {
+    display: block;
+    margin-top: 3px;
+    color: var(--lp-muted);
+    font-size: 11px;
+    letter-spacing: .2px;
+}
+
+.landing .nav-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.landing .lp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0 19px;
+    border: 1px solid var(--lp-border);
+    border-radius: 12px;
+    color: var(--lp-text);
+    background: var(--lp-card);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.landing .lp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(54, 73, 140, .12);
+}
+
+.landing .lp-btn-primary {
+    border-color: transparent;
+    color: #fff;
+    background: linear-gradient(120deg, #365be7, #7855e8);
+    box-shadow: 0 8px 22px rgba(64, 83, 220, .20);
+}
+
+.landing[data-theme="dark"] .lp-btn-primary {
+    color: #fff;
+}
+
+.landing .theme-toggle {
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+    font-size: 19px;
+}
+
+/* Hero */
+
+.landing .hero {
+    display: block !important;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 108px 0 86px;
+    text-align: center;
+}
+
+.landing .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 15px;
+    border: 1px solid var(--lp-border);
+    border-radius: 100px;
+    color: var(--lp-primary);
+    background: var(--lp-card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: .4px;
+}
+
+.landing .badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #54c6a0;
+    box-shadow: 0 0 0 4px rgba(84, 198, 160, .12);
+}
+
+.landing .hero h1 {
+    margin: 28px 0 22px;
+    color: var(--lp-text);
+    font-size: clamp(43px, 7vw, 76px);
+    font-weight: 850;
+    line-height: 1.08;
+    letter-spacing: -3.8px;
+}
+
+.landing .gradient-text {
+    display: block;
+    padding-bottom: 5px;
+    color: var(--lp-primary);
+    background: linear-gradient(100deg, #3862ee, #8754e8 78%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.landing[data-theme="dark"] .gradient-text {
+    background-image: linear-gradient(100deg, #91a6ff, #c0a0ff 78%);
+}
+
+.landing .hero-description {
+    max-width: 690px;
+    margin: 0 auto;
+    color: var(--lp-muted);
+    font-size: 16px;
+    line-height: 1.95;
+}
+
+.landing .hero-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.landing .hero-note {
+    margin-top: 19px;
+    color: var(--lp-muted);
+    font-size: 12px;
+}
+
+/* Shared sections */
+
+.landing .lp-section {
+    display: block !important;
+    width: 100%;
+    padding: 76px 0;
+}
+
+.landing .section-heading {
+    max-width: 680px;
+    margin: 0 auto 42px;
+    text-align: center;
+}
+
+.landing .section-eyebrow {
+    margin-bottom: 12px;
+    color: var(--lp-primary);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.landing .section-heading h2 {
+    margin: 0 0 14px;
+    color: var(--lp-text);
+    font-size: clamp(29px, 4vw, 42px);
+    line-height: 1.2;
+    letter-spacing: -1.5px;
+}
+
+.landing .section-heading p {
+    margin: 0;
+    color: var(--lp-muted);
+    font-size: 15px;
+    line-height: 1.85;
+}
+
+/* Feature cards */
+
+.landing .feature-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.landing .feature-card {
+    min-width: 0;
+    padding: 29px;
+    border: 1px solid var(--lp-border);
+    border-radius: 20px;
+    background: var(--lp-card);
+    box-shadow: var(--lp-shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: transform .22s ease, border-color .22s ease;
+}
+
+.landing .feature-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(103, 120, 240, .4);
+}
+
+.landing .feature-icon {
+    display: grid;
+    place-items: center;
+    width: 49px;
+    height: 49px;
+    margin-bottom: 23px;
+    border: 1px solid var(--lp-border);
+    border-radius: 15px;
+    color: var(--lp-primary);
+    background: var(--lp-soft);
+}
+
+.landing .feature-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.landing .feature-card h3 {
+    margin: 0 0 10px;
+    color: var(--lp-text);
+    font-size: 17px;
+    font-weight: 750;
+    letter-spacing: -.3px;
+}
+
+.landing .feature-card p {
+    margin: 0;
+    color: var(--lp-muted);
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+/* Team */
+
+.landing .team-section {
+    display: block !important;
+    width: 100%;
+    padding: 80px 0 90px;
+    border-top: 1px solid var(--lp-border);
+    border-bottom: 1px solid var(--lp-border);
+    background: linear-gradient(
+        135deg,
+        rgba(105, 128, 245, .07),
+        rgba(154, 119, 240, .06)
+    );
+}
+
+.landing .team-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 22px;
+}
+
+.landing .team-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: 30px 14px 25px;
+    border: 1px solid var(--lp-border);
+    border-radius: 22px;
+    background: var(--lp-card);
+    box-shadow: var(--lp-shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    text-align: center;
+    transition: transform .22s ease, border-color .22s ease;
+}
+
+.landing .team-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(103, 120, 240, .4);
+}
+
+.landing .team-photo-wrap {
+    display: grid;
+    place-items: center;
+    width: 148px;
+    height: 148px;
+    flex: 0 0 148px;
+    margin-bottom: 19px;
+    overflow: hidden;
+    border: 4px solid var(--lp-card-solid);
+    border-radius: 50%;
+    background: var(--lp-soft);
+    box-shadow: 0 0 0 1px var(--lp-border), 0 9px 25px rgba(40, 60, 130, .10);
+}
+
+.landing .team-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.landing .team-info {
+    width: 100%;
+    padding: 0;
+}
+
+.landing .team-info h3 {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--lp-text);
+    font-size: 16px;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.landing .team-role {
+    margin: 7px 0 0;
+    color: var(--lp-muted);
+    font-size: 12px;
+}
+
+/* Call to action */
+
+.landing .cta-panel {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    width: 100%;
+    margin: 76px 0 55px;
+    padding: 42px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .20);
+    border-radius: 26px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(255, 255, 255, .18), transparent 35%),
+        linear-gradient(115deg, #2f53dc, #7551e5);
+    box-shadow: 0 20px 55px rgba(64, 73, 195, .23);
+}
+
+.landing .cta-panel h2 {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: clamp(23px, 3vw, 31px);
+    letter-spacing: -.8px;
+}
+
+.landing .cta-panel p {
+    max-width: 560px;
+    margin: 0;
+    color: rgba(255, 255, 255, .84);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.landing .cta-panel .lp-btn {
+    flex-shrink: 0;
+    border-color: transparent;
+    color: #304bc5;
+    background: #fff;
+}
+
+/* Footer */
+
+.landing .landing-footer {
+    display: block !important;
+    width: 100%;
+    padding: 25px 0 30px;
+    border-top: 1px solid var(--lp-border);
+    color: var(--lp-muted);
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .landing .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .landing .team-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .landing .hero {
+        padding-top: 80px;
+    }
+}
+
+@media (max-width: 560px) {
+    .landing-container {
+        width: calc(100% - 32px);
+    }
+
+    .landing .landing-nav {
+        align-items: center;
+        padding: 16px 0;
+        gap: 10px;
+    }
+
+    .landing .brand {
+        gap: 8px;
+    }
+
+    .landing .brand-icon {
+        width: 39px;
+        height: 39px;
+        border-radius: 12px;
+        font-size: 19px;
+    }
+
+    .landing .brand h2 {
+        font-size: 17px;
+    }
+
+    .landing .brand span {
+        font-size: 10px;
+    }
+
+    .landing .nav-actions {
+        gap: 6px;
+    }
+
+    .landing .nav-actions .lp-btn {
+        min-height: 38px;
+        padding: 0 10px;
+        font-size: 11px;
+    }
+
+    .landing .nav-actions .theme-toggle {
+        width: 38px;
+        min-width: 38px;
+        padding: 0;
+        font-size: 17px;
+    }
+
+    .landing .hero {
+        padding: 66px 0 55px;
+    }
+
+    .landing .hero h1 {
+        font-size: clamp(39px, 11vw, 54px);
+        letter-spacing: -2px;
+    }
+
+    .landing .hero-description {
+        font-size: 14px;
+    }
+
+    .landing .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .landing .hero-actions .lp-btn {
+        width: 100%;
+    }
+
+    .landing .lp-section {
+        padding: 55px 0;
+    }
+
+    .landing .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .landing .feature-card {
+        padding: 23px;
+    }
+
+    .landing .team-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .landing .team-card {
+        padding: 22px 8px;
+        border-radius: 17px;
+    }
+
+    .landing .team-photo-wrap {
+        width: 112px;
+        height: 112px;
+        flex-basis: 112px;
+        margin-bottom: 14px;
+    }
+
+    .landing .team-info h3 {
+        font-size: 14px;
+    }
+
+    .landing .team-role {
+        font-size: 11px;
+    }
+
+    .landing .cta-panel {
+        align-items: flex-start;
+        flex-direction: column;
+        margin: 48px 0 35px;
+        padding: 27px 22px;
+        border-radius: 21px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .landing *,
+    .landing *::before,
+    .landing *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+    }
+}
+</style>
+{% endblock %}
 
 {% block public_content %}
 
-<div class="landing">
+<div class="landing" id="fluentLanding" data-theme="light">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="ambient ambient-three"></div>
 
     <div class="landing-container">
 
-        <div class="landing-nav">
-
-            <a href="{% url 'landing' %}" class="brand">
+        <!-- Navigation -->
+        <nav class="landing-nav">
+            <a href="{% url 'landing' %}" class="brand" aria-label="Fluent AI home">
                 <div class="brand-icon">F</div>
-
                 <div>
                     <h2>Fluent AI</h2>
-                    <span>AI English Learning</span>
+                    <span>English learning, reimagined</span>
                 </div>
             </a>
 
-            <div style="display:flex; gap:10px;">
-                <a href="{% url 'login' %}" class="btn btn-secondary">
-                    Login
-                </a>
+            <div class="nav-actions">
+                <button
+                    type="button"
+                    class="lp-btn theme-toggle"
+                    id="themeToggle"
+                    aria-label="Switch to dark mode"
+                    title="Switch theme"
+                >
+                    <span id="themeIcon" aria-hidden="true">☾</span>
+                </button>
 
-                <a href="{% url 'signup' %}" class="btn btn-primary">
-                    Get Started
+                <a href="{% url 'login' %}" class="lp-btn">Log in</a>
+                <a href="{% url 'signup' %}" class="lp-btn lp-btn-primary">
+                    Get started <span aria-hidden="true">→</span>
                 </a>
             </div>
+        </nav>
 
-        </div>
-
-
-        <section class="hero">
-
-            <div class="badge" style="margin-bottom:18px;">
-                AI-Powered English Learning
+        <!-- Hero -->
+        <header class="hero">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                A smarter way to learn English
             </div>
 
             <h1>
-                Improve Your English
-                <span class="gradient-text">With Fluent AI</span>
+                Build confidence.
+                <span class="gradient-text">Speak with purpose.</span>
             </h1>
 
-            <p>
-                Learn through personalized lessons, practice activities,
-                games, AI tutoring and intelligent CEFR level assessment.
+            <p class="hero-description">
+                Develop your English skills through structured lessons,
+                meaningful practice, personalized learning support, and
+                level assessments. Make steady progress with tools designed
+                to support your goals.
             </p>
 
             <div class="hero-actions">
-
-                <a href="{% url 'signup' %}" class="btn btn-primary">
-                    Start Learning
+                <a href="{% url 'signup' %}" class="lp-btn lp-btn-primary">
+                    Start your learning journey <span aria-hidden="true">→</span>
                 </a>
-
-                <a href="{% url 'login' %}" class="btn btn-secondary">
-                    I Already Have an Account
+                <a href="{% url 'login' %}" class="lp-btn">
+                    Sign in to your account
                 </a>
-
             </div>
 
+            <div class="hero-note">
+                Learn at your own pace. Build skills that last.
+            </div>
+        </header>
+
+        <!-- Features -->
+        <section class="lp-section" aria-labelledby="featuresHeading">
+            <div class="section-heading">
+                <div class="section-eyebrow">The Fluent AI experience</div>
+                <h2 id="featuresHeading">A clearer path to better English</h2>
+                <p>
+                    Bring learning, practice, and progress together in one
+                    focused experience.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/>
+                            <path d="M4 5.5v16M8 7h8M8 11h7"/>
+                        </svg>
+                    </div>
+                    <h3>Structured learning</h3>
+                    <p>
+                        Follow an organized learning path that helps you
+                        strengthen your English step by step.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3a8 8 0 0 0-8 8v3a3 3 0 0 0 3 3h1v-6H5"/>
+                            <path d="M12 3a8 8 0 0 1 8 8v3a3 3 0 0 1-3 3h-1v-6h3"/>
+                            <path d="M9 20h6"/>
+                        </svg>
+                    </div>
+                    <h3>AI learning support</h3>
+                    <p>
+                        Explore questions, clarify difficult concepts, and
+                        get support as you develop your skills.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3 19 6v5c0 4.5-3 7.5-7 10-4-2.5-7-5.5-7-10V6z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3>English level assessment</h3>
+                    <p>
+                        Understand your current level and identify areas
+                        that deserve more attention.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 4h14v16H5z"/>
+                            <path d="M8 8h8M8 12h8M8 16h5"/>
+                        </svg>
+                    </div>
+                    <h3>Personal learning notes</h3>
+                    <p>
+                        Revisit useful notes, vocabulary, and concepts
+                        whenever you need a refresher.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19V5M4 19h17"/>
+                            <path d="m7 15 4-4 3 2 6-7"/>
+                        </svg>
+                    </div>
+                    <h3>Visible progress</h3>
+                    <p>
+                        Review your learning activity and follow your
+                        development over time.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 7v5l3 2"/>
+                        </svg>
+                    </div>
+                    <h3>Focused practice</h3>
+                    <p>
+                        Reinforce what you learn with activities that help
+                        you apply your knowledge.
+                    </p>
+                </article>
+
+            </div>
         </section>
-
-
-        <div class="grid grid-3" style="margin-top:80px;">
-
-            <div class="card">
-                <div style="font-size:25px; margin-bottom:12px;">◈</div>
-                <h3>Learning Path</h3>
-                <p class="muted">
-                    Follow a structured English learning journey
-                    from Beginner to Advanced.
-                </p>
-            </div>
-
-            <div class="card">
-                <div style="font-size:25px; margin-bottom:12px;">◉</div>
-                <h3>AI Tutor</h3>
-                <p class="muted">
-                    Ask questions and receive learning assistance
-                    based on your lessons.
-                </p>
-            </div>
-
-            <div class="card">
-                <div style="font-size:25px; margin-bottom:12px;">✓</div>
-                <h3>Level Assessment</h3>
-                <p class="muted">
-                    Test your English and receive an estimated
-                    CEFR level with recommendations.
-                </p>
-            </div>
-
-        </div>
 
     </div>
 
+    <!-- Team -->
+    <section class="team-section lp-section" aria-labelledby="teamHeading">
+        <div class="landing-container">
+            <div class="section-heading">
+                <div class="section-eyebrow">The people behind Fluent AI</div>
+                <h2 id="teamHeading">Meet our team</h2>
+                <p>
+                    A team working toward a more accessible, thoughtful,
+                    and effective English-learning experience.
+                </p>
+            </div>
+
+            <div class="team-grid">
+
+                <article class="team-card">
+                    <div class="team-photo-wrap" style="background-color: #D1D1D1;">
+                        <img
+                            class="team-photo"
+                            src="{% static 'images/AlishaKhan.png' %}"
+                            alt="Alisha Khan"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="team-info">
+                        <h3>Alisha Khan</h3>
+                        <p class="team-role">Team Member</p>
+                    </div>
+                </article>
+
+                <article class="team-card">
+                    <div class="team-photo-wrap">
+                        <img
+                            class="team-photo"
+                            src="{% static 'images/IramKhan.jpeg' %}"
+                            alt="Iram Khan"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="team-info">
+                        <h3>Iram Khan</h3>
+                        <p class="team-role">Team Member</p>
+                    </div>
+                </article>
+
+                <article class="team-card">
+                    <div class="team-photo-wrap" style="background-color: #151618;">
+                        <img
+                            class="team-photo"
+                            src="{% static 'images/AdnanKhan.jpeg' %}"
+                            alt="Adnan Khan"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="team-info">
+                        <h3>Adnan Khan</h3>
+                        <p class="team-role">Team Member</p>
+                    </div>
+                </article>
+
+                <article class="team-card">
+                    <div class="team-photo-wrap">
+                        <img
+                            class="team-photo"
+                            src="{% static 'images/IbaadUllahKhan.png' %}"
+                            alt="Ibaad Ullah Khan"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="team-info">
+                        <h3>Ibaad Ullah Khan</h3>
+                        <p class="team-role">Team Member</p>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Final call to action and footer -->
+    <div class="landing-container">
+        <section class="cta-panel">
+            <div>
+                <h2>Make your next step count.</h2>
+                <p>
+                    Start building your English skills with a learning
+                    experience designed around steady progress.
+                </p>
+            </div>
+            <a href="{% url 'signup' %}" class="lp-btn">
+                Create your account <span aria-hidden="true">→</span>
+            </a>
+        </section>
+
+        <footer class="landing-footer">
+            © {% now "Y" %} Fluent AI. Learn with purpose. Grow with confidence.
+        </footer>
+    </div>
 </div>
+
+<script>
+(function () {
+    const landing = document.getElementById("fluentLanding");
+    const toggle = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
+
+    if (!landing || !toggle || !icon) return;
+
+    const storageKey = "fluent-ai-landing-theme";
+
+    function applyTheme(theme) {
+        const dark = theme === "dark";
+
+        landing.setAttribute("data-theme", dark ? "dark" : "light");
+        icon.textContent = dark ? "☀" : "☾";
+        toggle.setAttribute(
+            "aria-label",
+            dark ? "Switch to light mode" : "Switch to dark mode"
+        );
+        toggle.setAttribute(
+            "title",
+            dark ? "Switch to light mode" : "Switch to dark mode"
+        );
+    }
+
+    let savedTheme = "light";
+
+    try {
+        savedTheme = localStorage.getItem(storageKey) || "light";
+    } catch (error) {
+        savedTheme = "light";
+    }
+
+    applyTheme(savedTheme);
+
+    toggle.addEventListener("click", function () {
+        const nextTheme =
+            landing.getAttribute("data-theme") === "dark" ? "light" : "dark";
+
+        applyTheme(nextTheme);
+
+        try {
+            localStorage.setItem(storageKey, nextTheme);
+        } catch (error) {
+            // Theme still works for this page even if storage is unavailable.
+        }
+    });
+})();
+</script>
 
 {% endblock %}

@@ -1,0 +1,442 @@
+
+{% extends "base.html" %}
+
+{% block title %}MCQ Assessment | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .mcq-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 8px 0 40px;
+        color: var(--text);
+    }
+
+    .mcq-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        margin-bottom: 24px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle at 100% 0%,
+                var(--primary-soft),
+                transparent 48%
+            ),
+            var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .mcq-eyebrow {
+        display: inline-block;
+        padding: 6px 11px;
+        margin-bottom: 13px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+    }
+
+    .mcq-hero h1 {
+        margin: 0 0 9px;
+        color: var(--text);
+        font-size: clamp(26px, 4vw, 34px);
+        font-weight: 750;
+        letter-spacing: -.035em;
+    }
+
+    .mcq-hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .mcq-progress {
+        margin-top: 22px;
+    }
+
+    .mcq-progress-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 9px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .mcq-progress-track {
+        width: 100%;
+        height: 7px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--border);
+    }
+
+    .mcq-progress-fill {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--primary);
+    }
+
+    .mcq-question-card {
+        padding: 24px;
+        margin-bottom: 17px;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .mcq-question-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 17px;
+    }
+
+    .mcq-question-number {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface-secondary);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .mcq-category {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    .mcq-question-title {
+        margin: 0 0 20px;
+        color: var(--text);
+        font-size: 17px;
+        line-height: 1.75;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .mcq-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .mcq-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        min-width: 0;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        cursor: pointer;
+        transition:
+            border-color .18s ease,
+            background .18s ease,
+            box-shadow .18s ease;
+    }
+
+    .mcq-option:hover {
+        border-color: var(--primary);
+        background: var(--surface-secondary);
+    }
+
+    .mcq-option:has(input:checked) {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+        box-shadow: 0 0 0 1px var(--primary);
+    }
+
+    .mcq-option input[type="radio"] {
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+        margin: 2px 0 0;
+        accent-color: var(--primary);
+        cursor: pointer;
+    }
+
+    .mcq-option-text {
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .mcq-option-letter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        margin-top: -3px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--surface);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .mcq-option:has(input:checked) .mcq-option-letter {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .mcq-empty {
+        padding: 28px 20px;
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.8;
+    }
+
+    .mcq-empty strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text);
+        font-size: 16px;
+    }
+
+    .mcq-submit-area {
+        position: sticky;
+        bottom: 12px;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 22px;
+        padding: 16px 18px;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .mcq-submit-note {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .mcq-submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 45px;
+        padding: 12px 20px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .mcq-submit-btn:hover {
+        opacity: .92;
+        transform: translateY(-1px);
+    }
+
+    .mcq-submit-btn:focus-visible,
+    .mcq-option:focus-within {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 700px) {
+        .mcq-hero {
+            padding: 23px 19px;
+            border-radius: 16px;
+        }
+
+        .mcq-question-card {
+            padding: 18px;
+        }
+
+        .mcq-options {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .mcq-submit-area {
+            bottom: 8px;
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .mcq-submit-btn {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .mcq-option,
+        .mcq-submit-btn {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mcq-page">
+
+    <section class="mcq-hero">
+        <span class="mcq-eyebrow">English proficiency</span>
+
+        <h1>MCQ Assessment</h1>
+
+        <p>
+            Answer all 20 questions to estimate your English proficiency.
+            Select one answer for each question before submitting.
+        </p>
+
+        <div class="mcq-progress">
+            <div class="mcq-progress-label">
+                <span>Assessment overview</span>
+                <span>20 questions</span>
+            </div>
+
+            <div
+                class="mcq-progress-track"
+                role="progressbar"
+                aria-label="Total assessment questions"
+                aria-valuemin="0"
+                aria-valuemax="20"
+                aria-valuenow="20"
+            >
+                <div class="mcq-progress-fill"></div>
+            </div>
+        </div>
+    </section>
+
+    <form method="post" id="mcq-assessment-form">
+        {% csrf_token %}
+
+        {% for question in questions %}
+            <section class="mcq-question-card">
+
+                <div class="mcq-question-meta">
+                    <span class="mcq-question-number">
+                        Question {{ forloop.counter }} of 20
+                    </span>
+
+                    <span class="mcq-category">
+                        {{ question.category }}
+                    </span>
+                </div>
+
+                <h2 class="mcq-question-title">
+                    {{ question.question }}
+                </h2>
+
+                <div class="mcq-options">
+
+                    <label class="mcq-option">
+                        <input
+                            type="radio"
+                            name="question_{{ question.id }}"
+                            value="A"
+                            required
+                        >
+                        <span class="mcq-option-letter">A</span>
+                        <span class="mcq-option-text">
+                            {{ question.option_a }}
+                        </span>
+                    </label>
+
+                    <label class="mcq-option">
+                        <input
+                            type="radio"
+                            name="question_{{ question.id }}"
+                            value="B"
+                            required
+                        >
+                        <span class="mcq-option-letter">B</span>
+                        <span class="mcq-option-text">
+                            {{ question.option_b }}
+                        </span>
+                    </label>
+
+                    <label class="mcq-option">
+                        <input
+                            type="radio"
+                            name="question_{{ question.id }}"
+                            value="C"
+                            required
+                        >
+                        <span class="mcq-option-letter">C</span>
+                        <span class="mcq-option-text">
+                            {{ question.option_c }}
+                        </span>
+                    </label>
+
+                    <label class="mcq-option">
+                        <input
+                            type="radio"
+                            name="question_{{ question.id }}"
+                            value="D"
+                            required
+                        >
+                        <span class="mcq-option-letter">D</span>
+                        <span class="mcq-option-text">
+                            {{ question.option_d }}
+                        </span>
+                    </label>
+
+                </div>
+            </section>
+
+        {% empty %}
+            <div class="mcq-empty">
+                <strong>No questions available</strong>
+                Please contact the administrator to add assessment questions.
+            </div>
+        {% endfor %}
+
+        {% if questions|length == 20 %}
+            <div class="mcq-submit-area">
+                <div class="mcq-submit-note">
+                    Make sure you have selected an answer for every question.
+                </div>
+
+                <button
+                    type="submit"
+                    class="mcq-submit-btn"
+                >
+                    Submit MCQ Assessment
+                    <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        {% endif %}
+    </form>
+
+</div>
+{% endblock %}

@@ -256,6 +256,74 @@ class PracticeSession(models.Model):
         return f"{self.user.username} - {self.practice_type}"
 
 
+class PracticeQuestion(models.Model):
+
+    CATEGORY_CHOICES = [
+        ("grammar", "Grammar"),
+        ("vocabulary", "Vocabulary"),
+        ("conversations", "Conversations"),
+    ]
+
+    TYPE_CHOICES = [
+        ("mcq", "MCQ Questions"),
+        ("spot_error", "Spot the Error"),
+        ("one_word", "One Word"),
+    ]
+
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+    )
+
+    question_type = models.CharField(
+        max_length=20,
+        choices=TYPE_CHOICES,
+    )
+
+    question_text = models.TextField()
+
+    option_a = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    option_b = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    option_c = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    option_d = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    correct_answer = models.CharField(
+        max_length=300,
+        blank=True,
+    )
+
+    explanation = models.TextField(blank=True)
+
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["category", "question_type", "id"]
+
+    def __str__(self):
+        return (
+            f"{self.get_category_display()} - "
+            f"{self.question_text[:60]}"
+        )
+
+
+
 class GameResult(models.Model):
 
     GAME_CHOICES = [
@@ -287,26 +355,32 @@ class GameResult(models.Model):
         return f"{self.user.username} - {self.game_type}"
 
 
+
 class AssessmentQuestion(models.Model):
+    CATEGORY_CHOICES = [
+        ("Grammar", "Grammar"),
+        ("Vocabulary", "Vocabulary"),
+        ("Conversation", "Conversation"),
+    ]
+
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default="Grammar",
+    )
 
     question = models.TextField()
-
     option_a = models.CharField(max_length=300)
     option_b = models.CharField(max_length=300)
     option_c = models.CharField(max_length=300)
     option_d = models.CharField(max_length=300)
-
     correct_answer = models.CharField(max_length=1)
-
-    difficulty = models.CharField(
-        max_length=10,
-        default="A1"
-    )
-
+    difficulty = models.CharField(max_length=10, default="A1")
     explanation = models.TextField(blank=True)
 
     def __str__(self):
-        return self.question
+        return f"{self.category}: {self.question}"
+
 
 
 class AssessmentAttempt(models.Model):
@@ -325,9 +399,11 @@ class AssessmentAttempt(models.Model):
     final_score = models.FloatField(default=0)
 
     predicted_level = models.CharField(
-        max_length=5,
-        blank=True
-    )
+        max_length=30,
+        blank=True,
+        default="",
+        )
+
 
     writing_response = models.TextField(
         blank=True
@@ -458,3 +534,44 @@ class LearningEvent(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.title}"
+
+
+
+class InterviewQuestion(models.Model):
+
+    CATEGORY_CHOICES = [
+        ("introduction", "Self Introduction"),
+        ("hr", "HR Questions"),
+        ("strengths", "Strengths and Weaknesses"),
+        ("teamwork", "Teamwork and Situational"),
+        ("career", "Career Goals"),
+    ]
+
+    category = models.CharField(
+        max_length=30,
+        choices=CATEGORY_CHOICES,
+        default="hr",
+    )
+
+    question_text = models.TextField()
+
+    sample_answer = models.TextField()
+
+    answer_tips = models.TextField(blank=True)
+
+    keywords = models.JSONField(
+        default=list,
+        blank=True,
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        ordering = ["category", "id"]
+
+    def __str__(self):
+        return self.question_text[:100]

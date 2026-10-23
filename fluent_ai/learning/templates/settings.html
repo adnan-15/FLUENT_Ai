@@ -1,186 +1,612 @@
+
 {% extends "base.html" %}
 
-{% block title %}Settings - Fluent AI{% endblock %}
+{% block title %}Settings | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-bottom: 40px;
+        color: var(--text);
+    }
+
+    .settings-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .settings-eyebrow {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .settings-header h1 {
+        margin: 0 0 8px;
+        font-size: clamp(27px, 4vw, 35px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        line-height: 1.2;
+    }
+
+    .settings-header p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .settings-header-icon {
+        display: grid;
+        flex: 0 0 58px;
+        width: 58px;
+        height: 58px;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 26px;
+    }
+
+    .settings-messages {
+        margin-bottom: 22px;
+    }
+
+    .settings-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .settings-message.success {
+        border-left: 4px solid var(--success);
+    }
+
+    .settings-message.error {
+        border-left: 4px solid var(--danger);
+    }
+
+    .settings-message-icon {
+        font-weight: 800;
+        color: var(--success);
+    }
+
+    .settings-message.error .settings-message-icon {
+        color: var(--danger);
+    }
+
+    .settings-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: start;
+        gap: 20px;
+    }
+
+    .settings-card {
+        min-width: 0;
+        padding: 25px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+    }
+
+    .settings-card-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        margin-bottom: 24px;
+    }
+
+    .settings-card-icon {
+        display: grid;
+        flex: 0 0 43px;
+        width: 43px;
+        height: 43px;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--primary-soft);
+        font-size: 20px;
+    }
+
+    .settings-card-heading h2 {
+        margin: 1px 0 5px;
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -.35px;
+    }
+
+    .settings-card-heading p {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .settings-form-group {
+        margin-bottom: 20px;
+    }
+
+    .settings-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .settings-input {
+        display: block;
+        width: 100%;
+        min-height: 45px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        outline: none;
+        background: var(--surface-secondary);
+        color: var(--text);
+        font-size: 13px;
+        transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .settings-input::placeholder {
+        color: var(--subtle);
+    }
+
+    .settings-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(49, 91, 234, .12);
+    }
+
+    textarea.settings-input {
+        min-height: 125px;
+        resize: vertical;
+        line-height: 1.7;
+    }
+
+    .settings-help {
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .settings-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 44px;
+        padding: 11px 17px;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: #315bea;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .settings-btn:hover {
+        opacity: .92;
+        transform: translateY(-1px);
+    }
+
+    .settings-btn:focus-visible {
+        outline: 3px solid rgba(49, 91, 234, .3);
+        outline-offset: 3px;
+    }
+
+    .settings-btn-secondary {
+        background: var(--primary-soft);
+        color: var(--primary);
+        border-color: var(--border);
+    }
+
+    html[data-theme="dark"] .settings-btn {
+        background: var(--primary);
+        color: #111827;
+    }
+
+    html[data-theme="dark"] .settings-btn-secondary {
+        background: var(--primary-soft);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .settings-divider {
+        height: 1px;
+        margin: 22px 0;
+        border: 0;
+        background: var(--border);
+    }
+
+    .settings-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px;
+        margin-bottom: 22px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface-secondary);
+    }
+
+    .settings-option-copy {
+        min-width: 0;
+    }
+
+    .settings-option-copy strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .settings-option-copy p {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .settings-switch {
+        position: relative;
+        flex: 0 0 46px;
+        width: 46px;
+        height: 26px;
+    }
+
+    .settings-switch input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    .settings-switch-track {
+        position: absolute;
+        inset: 0;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--border);
+        cursor: pointer;
+        transition: background .2s ease;
+    }
+
+    .settings-switch-track::before {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        content: "";
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+        transition: transform .2s ease;
+    }
+
+    .settings-switch input:checked + .settings-switch-track {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .settings-switch input:checked + .settings-switch-track::before {
+        transform: translateX(20px);
+    }
+
+    .settings-switch input:focus-visible + .settings-switch-track {
+        outline: 3px solid rgba(49, 91, 234, .3);
+        outline-offset: 3px;
+    }
+
+    .settings-password-card {
+        margin-top: 20px;
+    }
+
+    .settings-password-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .settings-security-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px 15px;
+        margin-bottom: 22px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-secondary);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .settings-security-note span {
+        color: var(--primary);
+        font-size: 16px;
+    }
+
+    .settings-password-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .settings-password-actions .settings-btn {
+        width: auto;
+        min-width: 190px;
+    }
+
+    .settings-footer {
+        padding-top: 22px;
+        color: var(--muted);
+        font-size: 11px;
+        text-align: center;
+    }
+
+    @media (max-width: 850px) {
+        .settings-layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 560px) {
+        .settings-header {
+            align-items: flex-start;
+        }
+
+        .settings-header-icon {
+            flex-basis: 46px;
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            font-size: 21px;
+        }
+
+        .settings-card {
+            padding: 19px;
+        }
+
+        .settings-password-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0;
+        }
+
+        .settings-password-actions .settings-btn {
+            width: 100%;
+        }
+
+        .settings-option {
+            padding: 13px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .settings-btn,
+        .settings-input,
+        .settings-switch-track,
+        .settings-switch-track::before {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="settings-page">
 
-<div class="topbar">
-
-    <div class="page-title">
-
-        <h1>Settings</h1>
-
-        <p>
-            Manage your Fluent AI account and preferences.
-        </p>
-
-    </div>
-
-</div>
-
-
-{% if messages %}
-
-    {% for message in messages %}
-
-        <div class="alert alert-success">
-            {{ message }}
+    <header class="settings-header">
+        <div>
+            <span class="settings-eyebrow">Account & preferences</span>
+            <h1>Settings</h1>
+            <p>Personalize your learning experience and manage your account.</p>
         </div>
 
-    {% endfor %}
+        <div class="settings-header-icon" aria-hidden="true">⚙</div>
+    </header>
 
-{% endif %}
-
-
-<div class="grid grid-2">
-
-    <div class="card">
-
-        <h3>Profile Settings</h3>
-
-        <form method="post" style="margin-top:20px;">
-
-            {% csrf_token %}
-
-            <input type="hidden" name="action" value="profile">
-
-
-            <div class="form-group">
-
-                <label>Email</label>
-
-                <input
-                    type="email"
-                    name="email"
-                    class="form-control"
-                    value="{{ user.email }}"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Bio</label>
-
-                <textarea
-                    name="bio"
-                    class="form-control"
-                    placeholder="Tell us about yourself..."
-                >{{ profile.bio }}</textarea>
-
-            </div>
-
-
-            <button type="submit" class="btn btn-primary">
-                Save Profile
-            </button>
-
-        </form>
-
+    {% if messages %}
+    <div class="settings-messages" aria-live="polite">
+        {% for message in messages %}
+        <div class="settings-message {% if 'error' in message.tags %}error{% else %}success{% endif %}">
+            <span class="settings-message-icon" aria-hidden="true">
+                {% if 'error' in message.tags %}✕{% else %}✓{% endif %}
+            </span>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
     </div>
+    {% endif %}
 
+    <div class="settings-layout">
 
-    <div class="card">
-
-        <h3>Preferences</h3>
-
-        <form method="post" style="margin-top:20px;">
-
-            {% csrf_token %}
-
-            <input type="hidden" name="action" value="preferences">
-
-
-            <div
-                class="card"
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    margin-bottom:15px;
-                "
-            >
-
+        <!-- Profile settings -->
+        <section class="settings-card">
+            <div class="settings-card-heading">
+                <div class="settings-card-icon" aria-hidden="true">👤</div>
                 <div>
+                    <h2>Profile Settings</h2>
+                    <p>Keep your personal information up to date.</p>
+                </div>
+            </div>
 
-                    <strong>Notifications</strong>
+            <form method="post" action="{% url 'settings' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="profile">
 
-                    <p class="muted" style="font-size:12px; margin-top:3px;">
-                        Receive learning notifications.
+                <div class="settings-form-group">
+                    <label for="settings-email">Email address</label>
+                    <input
+                        id="settings-email"
+                        type="email"
+                        name="email"
+                        class="settings-input"
+                        value="{{ user.email }}"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                    >
+                    <p class="settings-help">
+                        Used for account-related communication.
                     </p>
-
                 </div>
 
-                <input
-                    type="checkbox"
-                    name="notifications_enabled"
-                    {% if profile.notifications_enabled %}checked{% endif %}
-                >
+                <div class="settings-form-group">
+                    <label for="settings-bio">About me</label>
+                    <textarea
+                        id="settings-bio"
+                        name="bio"
+                        class="settings-input"
+                        rows="4"
+                        maxlength="500"
+                        placeholder="Tell us about yourself and your learning goals..."
+                    >{{ profile.bio|default_if_none:"" }}</textarea>
+                    <p class="settings-help">
+                        Share a short introduction or your English learning goals.
+                    </p>
+                </div>
 
+                <button type="submit" class="settings-btn">
+                    <span aria-hidden="true">✓</span>
+                    Save Profile
+                </button>
+            </form>
+        </section>
+
+        <!-- Learning preferences -->
+        <section class="settings-card">
+            <div class="settings-card-heading">
+                <div class="settings-card-icon" aria-hidden="true">🔔</div>
+                <div>
+                    <h2>Preferences</h2>
+                    <p>Choose how Fluent AI keeps you informed.</p>
+                </div>
             </div>
 
+            <form method="post" action="{% url 'settings' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="preferences">
 
-            <button type="submit" class="btn btn-primary">
-                Save Preferences
-            </button>
+                <div class="settings-option">
+                    <div class="settings-option-copy">
+                        <strong>Learning notifications</strong>
+                        <p>Receive updates and reminders about your learning activities.</p>
+                    </div>
 
-        </form>
+                    <label class="settings-switch">
+                        <input
+                            type="checkbox"
+                            name="notifications_enabled"
+                            value="on"
+                            {% if profile.notifications_enabled %}checked{% endif %}
+                            aria-label="Enable learning notifications"
+                        >
+                        <span class="settings-switch-track"></span>
+                    </label>
+                </div>
+
+                <hr class="settings-divider">
+
+                <div class="settings-security-note">
+                    <span aria-hidden="true">ℹ</span>
+                    <div>
+                        Your notification preference is saved to your account when
+                        you select Save Preferences.
+                    </div>
+                </div>
+
+                <button type="submit" class="settings-btn settings-btn-secondary">
+                    <span aria-hidden="true">✓</span>
+                    Save Preferences
+                </button>
+            </form>
+        </section>
 
     </div>
 
-</div>
-
-
-<div class="card" style="margin-top:20px;">
-
-    <h3>Change Password</h3>
-
-    <form method="post" style="margin-top:20px;">
-
-        {% csrf_token %}
-
-        <input type="hidden" name="action" value="password">
-
-
-        <div class="grid grid-2">
-
-            <div class="form-group">
-
-                <label>New Password</label>
-
-                <input
-                    type="password"
-                    name="password1"
-                    class="form-control"
-                    required
-                >
-
+    <!-- Password settings -->
+    <section class="settings-card settings-password-card">
+        <div class="settings-card-heading">
+            <div class="settings-card-icon" aria-hidden="true">🔒</div>
+            <div>
+                <h2>Change Password</h2>
+                <p>Update your password to help keep your account secure.</p>
             </div>
-
-
-            <div class="form-group">
-
-                <label>Confirm Password</label>
-
-                <input
-                    type="password"
-                    name="password2"
-                    class="form-control"
-                    required
-                >
-
-            </div>
-
         </div>
 
+        <div class="settings-security-note">
+            <span aria-hidden="true">🛡</span>
+            <div>
+                Choose a strong password that you do not use on other websites.
+                Your new password and confirmation must match.
+            </div>
+        </div>
 
-        <button type="submit" class="btn btn-primary">
-            Change Password
-        </button>
+        <form method="post" action="{% url 'settings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="password">
 
-    </form>
+            <div class="settings-password-grid">
+                <div class="settings-form-group">
+                    <label for="settings-password1">New password</label>
+                    <input
+                        id="settings-password1"
+                        type="password"
+                        name="password1"
+                        class="settings-input"
+                        placeholder="Enter new password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <div class="settings-form-group">
+                    <label for="settings-password2">Confirm new password</label>
+                    <input
+                        id="settings-password2"
+                        type="password"
+                        name="password2"
+                        class="settings-input"
+                        placeholder="Re-enter new password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="settings-password-actions">
+                <button type="submit" class="settings-btn">
+                    <span aria-hidden="true">🔒</span>
+                    Update Password
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <footer class="settings-footer">
+        Fluent AI · Your learning journey, your way.
+    </footer>
 
 </div>
-
 {% endblock %}

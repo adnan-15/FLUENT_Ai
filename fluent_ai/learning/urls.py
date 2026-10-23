@@ -48,13 +48,46 @@ urlpatterns = [
         name="lesson_test",
     ),
 
-    # Practice
+
+    # Practice Hub
     path("practice/", views.practice, name="practice"),
+
+    # Interview Practice — keep these above the category route
+    path(
+        "practice/interview/",
+        views.interview_hub,
+        name="interview_hub",
+    ),
+    path(
+        "practice/interview/<str:activity>/",
+        views.interview_activity,
+        name="interview_activity",
+    ),
+
+    # Existing question-based practice
+    path(
+        "practice/<str:category>/",
+        views.practice_category,
+        name="practice_category",
+    ),
+    path(
+        "practice/<str:category>/<str:practice_type>/",
+        views.practice_type_page,
+        name="practice_type_page",
+    ),
+    path(
+        "practice/<str:category>/<str:practice_type>/submit/",
+        views.practice_question_submit,
+        name="practice_question_submit",
+    ),
+
+    # Existing writing practice — do not remove
     path(
         "practice/<str:practice_type>/submit/",
         views.practice_submit,
         name="practice_submit",
     ),
+
 
     # Games
     path("games/", views.games, name="games"),
@@ -76,22 +109,31 @@ urlpatterns = [
         name="leaderboard",
     ),
 
-    # Assessments
-    path(
-        "assessment/",
-        views.assessment,
-        name="assessment",
-    ),
-    path(
-        "assessment/writing/<int:attempt_id>/",
-        views.assessment_writing,
-        name="assessment_writing",
-    ),
-    path(
-        "assessment/result/<int:attempt_id>/",
-        views.assessment_result,
-        name="assessment_result",
-    ),
+    
+
+# Assessments
+path(
+    "assessment/",
+    views.assessment,
+    name="assessment",
+),
+path(
+    "assessment/mcq/",
+    views.assessment_mcq,
+    name="assessment_mcq",
+),
+path(
+    "assessment/writing/",
+    views.assessment_writing,
+    name="assessment_writing",
+),
+path(
+    "assessment/result/<int:attempt_id>/",
+    views.assessment_result,
+    name="assessment_result",
+),
+
+
 
     # AI Tutor
     path(

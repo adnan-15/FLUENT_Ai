@@ -1,323 +1,1075 @@
+
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Fluent AI{% endblock %}
+{% block title %}Dashboard | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard-specific styles */
+
+    .dashboard {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    .dashboard .topbar {
+        margin-bottom: 26px;
+    }
+
+    .dashboard .page-title h1 {
+        font-size: clamp(24px, 2.5vw, 30px);
+        letter-spacing: -0.8px;
+    }
+
+    .dashboard .page-title p {
+        max-width: 560px;
+        line-height: 1.7;
+    }
+
+    .dashboard .user-pill {
+        padding: 8px 12px 8px 8px;
+    }
+
+    .dashboard .user-meta {
+        min-width: 0;
+    }
+
+    .dashboard .user-meta strong {
+        display: block;
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+    .dashboard .user-meta small {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .dashboard .section-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard .section-heading h2,
+    .dashboard .section-heading h3 {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -.25px;
+    }
+
+    .dashboard .section-heading p {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .dashboard .section {
+        margin-top: 22px;
+    }
+
+    .dashboard .stats-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .dashboard .stat-card {
+        position: relative;
+        min-width: 0;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    .dashboard .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .dashboard .stat-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 550;
+    }
+
+    .dashboard .stat-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: var(--primary);
+        background: var(--primary-soft);
+    }
+
+    .dashboard .stat-mark svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .dashboard .stat-value {
+        display: block;
+        margin-top: 16px;
+        font-size: clamp(25px, 2.3vw, 32px);
+        line-height: 1.15;
+        font-weight: 740;
+        letter-spacing: -1px;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard .stat-description {
+        margin-top: 9px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .dashboard .stat-description strong {
+        color: var(--text);
+        font-weight: 650;
+    }
+
+    .dashboard .dashboard-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(280px, .85fr);
+        align-items: stretch;
+        gap: 18px;
+    }
+
+    .dashboard .panel {
+        min-width: 0;
+        padding: 22px;
+    }
+
+    .dashboard .panel-subtitle {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .dashboard .text-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .dashboard .text-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Progress chart */
+
+    .dashboard .progress-visual {
+        display: grid;
+        grid-template-columns: minmax(150px, .8fr) minmax(0, 1.2fr);
+        align-items: center;
+        gap: 25px;
+        padding: 12px 0 8px;
+    }
+
+    .dashboard .donut-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .dashboard .donut {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: min(180px, 100%);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: conic-gradient(
+            var(--primary) var(--progress, 0%),
+            var(--border) 0
+        );
+    }
+
+    .dashboard .donut::before {
+        position: absolute;
+        inset: 12px;
+        border-radius: 50%;
+        background: var(--surface);
+        content: "";
+    }
+
+    .dashboard .donut-center {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .dashboard .donut-number {
+        display: block;
+        font-size: 30px;
+        font-weight: 750;
+        letter-spacing: -1px;
+        line-height: 1.15;
+    }
+
+    .dashboard .donut-caption {
+        display: block;
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .dashboard .chart-legend {
+        display: grid;
+        gap: 17px;
+    }
+
+    .dashboard .legend-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .dashboard .legend-dot {
+        width: 9px;
+        height: 9px;
+        flex: 0 0 9px;
+        margin-top: 5px;
+        border-radius: 3px;
+        background: var(--primary);
+    }
+
+    .dashboard .legend-dot.remaining {
+        background: var(--border);
+        border: 1px solid var(--subtle);
+    }
+
+    .dashboard .legend-copy {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .dashboard .legend-copy span {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .dashboard .legend-copy strong {
+        display: block;
+        margin-top: 3px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .dashboard .overview-divider {
+        height: 1px;
+        margin: 20px 0;
+        background: var(--border);
+    }
+
+    .dashboard .metric-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+
+    .dashboard .metric-row strong {
+        font-weight: 650;
+    }
+
+    .dashboard .metric-row span {
+        color: var(--muted);
+    }
+
+    .dashboard .metric-progress {
+        height: 6px;
+        overflow: hidden;
+        border-radius: 99px;
+        background: var(--border);
+    }
+
+    .dashboard .metric-progress > span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--primary);
+        transition: width .45s ease;
+    }
+
+    /* Quick actions */
+
+    .dashboard .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .dashboard .action-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 142px;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        transition: border-color .15s ease, background .15s ease;
+    }
+
+    .dashboard .action-card:hover {
+        border-color: var(--primary);
+        background: var(--surface-secondary);
+    }
+
+    .dashboard .action-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        color: var(--primary);
+        background: var(--primary-soft);
+    }
+
+    .dashboard .action-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .dashboard .action-card strong {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .dashboard .action-card p {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .dashboard .action-arrow {
+        margin-top: auto;
+        padding-top: 10px;
+        color: var(--primary);
+        font-size: 12px;
+    }
+
+    /* Activity */
+
+    .dashboard .activity-list {
+        display: grid;
+    }
+
+    .dashboard .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-width: 0;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .dashboard .activity-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .dashboard .activity-marker {
+        display: flex;
+        flex: 0 0 36px;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: var(--primary);
+        background: var(--surface-secondary);
+    }
+
+    .dashboard .activity-marker svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .dashboard .activity-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .dashboard .activity-details strong {
+        display: block;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dashboard .activity-details span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .dashboard .activity-score {
+        flex: 0 0 auto;
+        padding: 5px 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--muted);
+        background: var(--surface-secondary);
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+    .dashboard .empty-state {
+        padding: 25px 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.8;
+        text-align: center;
+    }
+
+    .dashboard .empty-state a {
+        color: var(--primary);
+        font-weight: 650;
+    }
+
+    .dashboard .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--muted);
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .dashboard .status-indicator::before {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--success);
+        content: "";
+    }
+
+    .dashboard .status-indicator.offline::before {
+        background: var(--danger);
+    }
+
+    .dashboard .welcome-note {
+        margin-top: 22px;
+        padding: 18px 20px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-secondary);
+    }
+
+    .dashboard .welcome-note h3 {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .dashboard .welcome-note p {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .dashboard .alert {
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 1150px) {
+        .dashboard .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .dashboard .dashboard-columns {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard .stats-grid {
+            gap: 10px;
+        }
+
+        .dashboard .stat-card {
+            padding: 15px;
+        }
+
+        .dashboard .stat-mark {
+            width: 29px;
+            height: 29px;
+            flex-basis: 29px;
+        }
+
+        .dashboard .stat-value {
+            margin-top: 12px;
+            font-size: 25px;
+        }
+
+        .dashboard .panel {
+            padding: 16px;
+        }
+
+        .dashboard .progress-visual {
+            grid-template-columns: minmax(100px, .8fr) minmax(0, 1fr);
+            gap: 16px;
+        }
+
+        .dashboard .donut {
+            width: 100%;
+        }
+
+        .dashboard .donut::before {
+            inset: 8px;
+        }
+
+        .dashboard .donut-number {
+            font-size: 24px;
+        }
+
+        .dashboard .actions-grid {
+            gap: 8px;
+        }
+
+        .dashboard .action-card {
+            min-height: 135px;
+            padding: 12px;
+        }
+
+        .dashboard .section-heading {
+            gap: 8px;
+        }
+
+        .dashboard .section-heading h2,
+        .dashboard .section-heading h3 {
+            font-size: 15px;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .dashboard .progress-visual {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard .donut {
+            width: 155px;
+        }
+
+        .dashboard .chart-legend {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-
-<div class="topbar">
-
-    <div class="page-title">
-
-        <h1>
-            Welcome back, {{ user.first_name|default:user.username }}
-        </h1>
-
-        <p>
-            Keep learning and improve your English every day.
-        </p>
-
-    </div>
-
-
-    <div class="user-pill">
-
-        <div class="avatar">
-            {{ user.username|first|upper }}
-        </div>
-
-        <div>
-            <strong>{{ user.username }}</strong>
-            <div class="muted" style="font-size:11px;">
-                {{ payload.cefr|default:"A1" }} Level
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
-
-
-<div class="grid grid-4">
-
-    <div class="card">
-        <p class="muted">Learning Progress</p>
-
-        <h2 id="progressValue">
-            {{ payload.progress|default:0 }}%
-        </h2>
-
-        <div class="progress" style="margin-top:12px;">
-            <div
-                id="progressBar"
-                class="progress-bar"
-                data-width="{{ payload.progress|default:0 }}"
-            ></div>
-        </div>
-    </div>
-
-
-    <div class="card">
-        <p class="muted">Current Streak</p>
-
-        <h2>
-            {{ payload.streak|default:0 }}
-            <span style="font-size:13px;">days</span>
-        </h2>
-
-        <p class="muted" style="margin-top:7px;">
-            Keep your streak alive.
-        </p>
-    </div>
-
-
-    <div class="card">
-        <p class="muted">Total Points</p>
-
-        <h2 id="pointsValue">
-            {{ payload.points|default:0 }}
-        </h2>
-
-        <p class="muted" style="margin-top:7px;">
-            Earn more by practicing.
-        </p>
-    </div>
-
-
-    <div class="card">
-        <p class="muted">CEFR Level</p>
-
-        <h2 id="cefrValue">
-            {{ payload.cefr|default:"A1" }}
-        </h2>
-
-        <p class="muted" style="margin-top:7px;">
-            Estimated English level
-        </p>
-    </div>
-
-</div>
-
-
-<div class="grid grid-2" style="margin-top:20px;">
-
-    <div class="card">
-
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-
-            <div>
-                <h3>Learning Overview</h3>
-
-                <p class="muted">
-                    Track your progress across Fluent AI.
-                </p>
-            </div>
-
-            <span class="badge">
-                Live
-            </span>
-
-        </div>
-
-
-        <div style="margin-top:25px;">
-
-            <div style="display:flex; justify-content:space-between; margin-bottom:7px;">
-                <strong>Lessons Completed</strong>
-                <span>{{ payload.completed_lessons|default:0 }}</span>
-            </div>
-
-            <div class="progress">
-                <div
-                    class="progress-bar"
-                    data-width="{{ payload.progress|default:0 }}"
-                ></div>
-            </div>
-
-        </div>
-
-
-        <div style="margin-top:25px;">
-
-            <div style="display:flex; justify-content:space-between; margin-bottom:7px;">
-                <strong>Practice Sessions</strong>
-                <span>{{ payload.practice|default:0 }}</span>
-            </div>
-
-        </div>
-
-
-        <div style="margin-top:25px;">
-
-            <a href="{% url 'learning_path' %}" class="btn btn-primary">
-                Continue Learning
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <div style="display:flex; justify-content:space-between;">
-
-            <div>
-                <h3>Quick Actions</h3>
-                <p class="muted">Choose what you want to do next.</p>
-            </div>
-
-        </div>
-
-
-        <div class="grid grid-2" style="margin-top:20px;">
-
-            <a href="{% url 'practice' %}" class="card" style="padding:16px;">
-                <strong>Practice</strong>
-                <p class="muted" style="margin-top:5px;">
-                    Improve your English skills.
-                </p>
-            </a>
-
-            <a href="{% url 'assessment' %}" class="card" style="padding:16px;">
-                <strong>Assessment</strong>
-                <p class="muted" style="margin-top:5px;">
-                    Check your CEFR level.
-                </p>
-            </a>
-
-            <a href="{% url 'ai_tutor' %}" class="card" style="padding:16px;">
-                <strong>AI Tutor</strong>
-                <p class="muted" style="margin-top:5px;">
-                    Ask your learning assistant.
-                </p>
-            </a>
-
-            <a href="{% url 'games' %}" class="card" style="padding:16px;">
-                <strong>Test Games</strong>
-                <p class="muted" style="margin-top:5px;">
-                    Learn through games.
-                </p>
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="card" style="margin-top:20px;">
-
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-
-        <div>
-            <h3>Learning Activity</h3>
-            <p class="muted">
-                Your recent learning activity.
+<div class="dashboard">
+
+    <!-- PAGE HEADER -->
+    <header class="topbar">
+        <div class="page-title">
+            <h1>
+                Welcome back, {{ user.first_name|default:user.username }}
+            </h1>
+            <p>
+                Your learning workspace. Review your progress and continue
+                building your English skills.
             </p>
         </div>
 
-        <span id="liveStatus" class="badge badge-success">
-            Live
-        </span>
+        <div class="user-pill">
+            <div class="avatar">
+                {{ user.username|first|upper }}
+            </div>
+            <div class="user-meta">
+                <strong>{{ user.username }}</strong>
+                <small>{{ payload.cefr|default:"A1" }} proficiency level</small>
+            </div>
+        </div>
+    </header>
 
-    </div>
+    <!-- DJANGO MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success" role="status">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
+    <!-- KEY METRICS -->
+    <section class="grid stats-grid" aria-label="Learning statistics">
 
-    <div style="margin-top:25px;">
+        <article class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Learning progress</span>
+                <span class="stat-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 17l5-5 4 3 7-8"/>
+                        <path d="M14 7h6v6"/>
+                    </svg>
+                </span>
+            </div>
+            <strong class="stat-value" id="progressValue">
+                {{ payload.progress|default:0|floatformat:0 }}%
+            </strong>
+            <p class="stat-description">
+                Overall learning completion
+            </p>
+            <div class="progress" style="margin-top: 14px;">
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                    data-width="{{ payload.progress|default:0 }}">
+                </div>
+            </div>
+        </article>
 
-        {% for event in recent_events %}
+        <article class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Current streak</span>
+                <span class="stat-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 22c4.4 0 7-2.8 7-6.5 0-2.5-1.4-4.3-3.5-6.5-.2 2-1.2 3.1-2.5 3.5C13.5 8 11.5 4.5 8 2c.5 4-1 6.1-2.7 8.3C3.8 12.3 3 14 3 16c0 3.7 3.2 6 9 6Z"/>
+                    </svg>
+                </span>
+            </div>
+            <strong class="stat-value">
+                <span id="streakValue">{{ payload.streak|default:0 }}</span>
+                <span style="font-size: 13px; font-weight: 550; letter-spacing: 0;">days</span>
+            </strong>
+            <p class="stat-description">
+                Consecutive learning days
+            </p>
+        </article>
 
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                padding:13px 0;
-                border-bottom:1px solid #edf1f7;
-            ">
+        <article class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Total points</span>
+                <span class="stat-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>
+                    </svg>
+                </span>
+            </div>
+            <strong class="stat-value" id="pointsValue">
+                {{ payload.points|default:0 }}
+            </strong>
+            <p class="stat-description">
+                Points earned through learning
+            </p>
+        </article>
 
+        <article class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">CEFR level</span>
+                <span class="stat-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 19V5M4 5h12l-2 4 2 4H4"/>
+                        <path d="M8 19h12"/>
+                    </svg>
+                </span>
+            </div>
+            <strong class="stat-value" id="cefrValue">
+                {{ payload.cefr|default:"A1" }}
+            </strong>
+            <p class="stat-description">
+                Estimated English proficiency
+            </p>
+        </article>
+
+    </section>
+
+    <!-- ANALYTICS AND QUICK ACTIONS -->
+    <section class="dashboard-columns section">
+
+        <!-- PROGRESS ANALYTICS -->
+        <article class="card panel">
+
+            <div class="section-heading">
                 <div>
-                    <strong>{{ event.title }}</strong>
+                    <h2>Learning overview</h2>
+                    <p>Understand your current learning progress.</p>
+                </div>
+                <a href="{% url 'learning_path' %}" class="text-link">
+                    Learning path <span aria-hidden="true">→</span>
+                </a>
+            </div>
 
-                    <div class="muted" style="font-size:12px; margin-top:4px;">
-                        {{ event.event_type|title }}
+            <div class="progress-visual">
+
+                <div class="donut-wrap">
+                    <div
+                        class="donut"
+                        id="progressDonut"
+                        role="img"
+                        aria-label="Learning progress chart"
+                        style="--progress: {{ payload.progress|default:0 }}%;">
+                        <div class="donut-center">
+                            <strong class="donut-number" id="donutValue">
+                                {{ payload.progress|default:0|floatformat:0 }}%
+                            </strong>
+                            <span class="donut-caption">Completed</span>
+                        </div>
                     </div>
                 </div>
 
-                <span class="badge">
-                    +{{ event.score|floatformat:0 }}
-                </span>
+                <div class="chart-legend">
+
+                    <div class="legend-row">
+                        <span class="legend-dot"></span>
+                        <div class="legend-copy">
+                            <span>Learning completed</span>
+                            <strong id="completedPercent">
+                                {{ payload.progress|default:0|floatformat:0 }}%
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="legend-row">
+                        <span class="legend-dot remaining"></span>
+                        <div class="legend-copy">
+                            <span>Remaining progress</span>
+                            <strong id="remainingPercent">
+                                {% widthratio 100 1 1 as hundred %}
+                                {{ payload.progress|default:0|floatformat:0 }}%
+                            </strong>
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
 
-        {% empty %}
+            <div class="overview-divider"></div>
 
-            <p class="muted">
-                No activity yet. Start a lesson to see your progress here.
-            </p>
+            <div>
+                <div class="metric-row">
+                    <strong>Lessons completed</strong>
+                    <span id="lessonsValue">
+                        {{ payload.completed_lessons|default:0 }}
+                    </span>
+                </div>
+                <p class="muted" style="font-size: 11px; margin-bottom: 12px;">
+                    Completed lessons recorded in your learning profile.
+                </p>
 
-        {% endfor %}
+                <div class="metric-row">
+                    <strong>Practice sessions</strong>
+                    <span id="practiceValue">
+                        {{ payload.practice|default:0 }}
+                    </span>
+                </div>
+            </div>
 
-    </div>
+            <div style="margin-top: 22px;">
+                <a href="{% url 'learning_path' %}" class="btn btn-primary">
+                    Continue learning <span aria-hidden="true">→</span>
+                </a>
+            </div>
+
+        </article>
+
+        <!-- QUICK ACTIONS -->
+        <article class="card panel">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Continue learning</h2>
+                    <p>Choose your next learning activity.</p>
+                </div>
+            </div>
+
+            <div class="actions-grid">
+
+                <a href="{% url 'practice' %}" class="action-card">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3v18M3 12h18"/>
+                        </svg>
+                    </span>
+                    <strong>Practice Hub</strong>
+                    <p>Build your skills through regular practice.</p>
+                    <span class="action-arrow">Open practice →</span>
+                </a>
+
+                <a href="{% url 'assessment' %}" class="action-card">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="m5 12 4 4L19 6"/>
+                        </svg>
+                    </span>
+                    <strong>Level assessment</strong>
+                    <p>Check your current English proficiency.</p>
+                    <span class="action-arrow">Start assessment →</span>
+                </a>
+
+                <a href="{% url 'ai_tutor' %}" class="action-card">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3a7 7 0 0 0-4 12.74V19h8v-3.26A7 7 0 0 0 12 3Z"/>
+                            <path d="M9 22h6"/>
+                        </svg>
+                    </span>
+                    <strong>AI Tutor</strong>
+                    <p>Get help with English questions and concepts.</p>
+                    <span class="action-arrow">Open tutor →</span>
+                </a>
+
+                <a href="{% url 'vnotes' %}" class="action-card">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="5" y="3" width="14" height="18" rx="2"/>
+                            <path d="M9 8h6M9 12h6M9 16h4"/>
+                        </svg>
+                    </span>
+                    <strong>V-Notes</strong>
+                    <p>Explore video lessons by learning category.</p>
+                    <span class="action-arrow">Browse lessons →</span>
+                </a>
+
+            </div>
+
+        </article>
+
+    </section>
+
+    <!-- RECENT ACTIVITY -->
+    <section class="card panel section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Recent learning activity</h2>
+                <p>Review the latest activity recorded for your account.</p>
+            </div>
+
+            <span class="status-indicator" id="liveStatus">
+                Connected
+            </span>
+        </div>
+
+        <div class="activity-list">
+
+            {% for event in recent_events %}
+                <div class="activity-item">
+
+                    <span class="activity-marker" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 8v4l3 2"/>
+                            <circle cx="12" cy="12" r="9"/>
+                        </svg>
+                    </span>
+
+                    <div class="activity-details">
+                        <strong>{{ event.title }}</strong>
+                        <span>
+                            {{ event.event_type|title }}
+                        </span>
+                    </div>
+
+                    <span class="activity-score">
+                        {{ event.score|floatformat:0 }} pts
+                    </span>
+
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <p>No learning activity has been recorded yet.</p>
+                    <p>
+                        Start with the
+                        <a href="{% url 'practice' %}">Practice Hub</a>
+                        or explore your
+                        <a href="{% url 'learning_path' %}">Learning Path</a>.
+                    </p>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <section class="welcome-note">
+        <h3>Your next step</h3>
+        <p>
+            Consistent practice is more useful than occasional long sessions.
+            Choose a lesson, practise what you learn, and use your assessment
+            results to decide which skills need more attention.
+        </p>
+    </section>
 
 </div>
-
 {% endblock %}
 
 
 {% block extra_js %}
-
 <script>
+(function () {
+    "use strict";
 
-function updateDashboard() {
+    const progressBar = document.getElementById("progressBar");
+    const progressValue = document.getElementById("progressValue");
+    const progressDonut = document.getElementById("progressDonut");
+    const donutValue = document.getElementById("donutValue");
+    const completedPercent = document.getElementById("completedPercent");
+    const remainingPercent = document.getElementById("remainingPercent");
+    const pointsValue = document.getElementById("pointsValue");
+    const cefrValue = document.getElementById("cefrValue");
+    const streakValue = document.getElementById("streakValue");
+    const lessonsValue = document.getElementById("lessonsValue");
+    const practiceValue = document.getElementById("practiceValue");
+    const liveStatus = document.getElementById("liveStatus");
 
-    fetch("{% url 'dashboard_stats_api' %}")
-        .then(response => response.json())
-        .then(data => {
+    let requestInProgress = false;
+
+    function safeNumber(value, fallback) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : fallback;
+    }
+
+    function updateProgress(value) {
+        const progress = Math.max(0, Math.min(100, safeNumber(value, 0)));
+        const rounded = Math.round(progress);
+
+        if (progressValue) {
+            progressValue.textContent = rounded + "%";
+        }
+
+        if (progressBar) {
+            progressBar.style.width = progress + "%";
+        }
+
+        if (progressDonut) {
+            progressDonut.style.setProperty("--progress", progress + "%");
+            progressDonut.setAttribute(
+                "aria-label",
+                "Learning progress: " + rounded + "% completed"
+            );
+        }
+
+        if (donutValue) {
+            donutValue.textContent = rounded + "%";
+        }
+
+        if (completedPercent) {
+            completedPercent.textContent = rounded + "%";
+        }
+
+        if (remainingPercent) {
+            remainingPercent.textContent = (100 - rounded) + "%";
+        }
+    }
+
+    function updateText(element, value) {
+        if (element && value !== undefined && value !== null) {
+            element.textContent = String(value);
+        }
+    }
+
+    function setStatus(online) {
+        if (!liveStatus) return;
+
+        liveStatus.textContent = online ? "Connected" : "Stats unavailable";
+        liveStatus.classList.toggle("offline", !online);
+    }
+
+    async function updateDashboard() {
+        if (requestInProgress) return;
+
+        requestInProgress = true;
+
+        try {
+            const response = await fetch(
+                "{% url 'dashboard_stats_api' %}",
+                {
+                    method: "GET",
+                    headers: { "Accept": "application/json" },
+                    credentials: "same-origin",
+                    cache: "no-store"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Dashboard stats request failed");
+            }
+
+            const data = await response.json();
 
             if (data.progress !== undefined) {
-
-                const progress = Number(data.progress) || 0;
-
-                document.getElementById("progressValue").textContent =
-                    progress + "%";
-
-                document.getElementById("progressBar").style.width =
-                    Math.max(0, Math.min(100, progress)) + "%";
+                updateProgress(data.progress);
             }
 
-            if (data.points !== undefined) {
-                document.getElementById("pointsValue").textContent =
-                    data.points;
-            }
+            updateText(pointsValue, data.points);
+            updateText(cefrValue, data.cefr);
+            updateText(streakValue, data.streak);
+            updateText(lessonsValue, data.completed_lessons);
+            updateText(practiceValue, data.practice);
 
-            if (data.cefr !== undefined) {
-                document.getElementById("cefrValue").textContent =
-                    data.cefr;
-            }
+            setStatus(true);
 
-        })
-        .catch(() => {
-            const status = document.getElementById("liveStatus");
+        } catch (error) {
+            setStatus(false);
+        } finally {
+            requestInProgress = false;
+        }
+    }
 
-            if (status) {
-                status.textContent = "Offline";
-                status.classList.remove("badge-success");
-            }
-        });
-}
+    // Render the chart immediately from server-rendered data.
+    updateProgress(
+        progressDonut
+            ? parseFloat(
+                getComputedStyle(progressDonut).getPropertyValue("--progress")
+              ) || 0
+            : 0
+    );
 
-setInterval(updateDashboard, 5000);
-
+    // Refresh using the existing dashboard statistics endpoint.
+    updateDashboard();
+    window.setInterval(updateDashboard, 30000);
+})();
 </script>
-
 {% endblock %}
