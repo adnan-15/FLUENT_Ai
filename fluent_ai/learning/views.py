@@ -1,1481 +1,359 @@
 import json
-
 import random
-
 import re
-
 from datetime import timedelta
-
 from pathlib import Path
-
 from .ai_service import generate_ai_response
-
 from django.contrib.auth.decorators import login_required
-
 from django.http import JsonResponse
-
 from django.views.decorators.http import require_POST
-
-
-
 from .models import ChatMessage
-
-
-
 import joblib
-
-
-
 from django.contrib import messages
-
-from django.contrib.auth import (
-
-    authenticate,
-
-    login,
-
-    logout,
-
-)
-
+from django.contrib.auth import (authenticate,login,logout,)
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth.hashers import check_password
-
 from django.contrib.auth.models import User
-
 from django.db.models import Avg, Count, Sum
-
-from django.http import JsonResponse
-
-from django.shortcuts import (
-
-    get_object_or_404,
-
-    redirect,
-
-    render,
-
-)
-
+from django.shortcuts import (get_object_or_404,redirect,render,)
 from django.utils import timezone
 
-from django.views.decorators.http import require_POST
-
-
-
 from .models import (
-
     Achievement,
-
     AssessmentAttempt,
-
     AssessmentQuestion,
-
     ChatMessage,
-
     GameResult,
-
     LearningEvent,
-
     Lesson,
-
     LessonProgress,
-
     PracticeSession,
     PracticeQuestion,
     QuizAttempt,
     InterviewQuestion,
-
     UserAchievement,
-
     UserProfile,
-
     VideoNote,
-
 )
-
-
-
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
-
-
 def get_profile(user):
-
     profile, created = UserProfile.objects.get_or_create(
-
         user=user
-
     )
-
     return profile
-
-
-
-
 
 def refresh_profile_stats(user):
-
-
-
     profile = get_profile(user)
-
-
-
-    total_lessons = Lesson.objects.filter(
-
-        is_active=True
-
-    ).count()
-
-
-
-    completed_lessons = LessonProgress.objects.filter(
-
-        user=user,
-
-        completed=True
-
-    ).count()
-
-
+    total_lessons = Lesson.objects.filter(is_active=True).count()
+    completed_lessons = LessonProgress.objects.filter(user=user,completed=True).count()
 
     if total_lessons:
-
-        progress = (
-
-            completed_lessons /
-
-            total_lessons
-
-        ) * 100
-
+        progress = (completed_lessons / total_lessons) * 100
     else:
-
         progress = 0
 
-
-
-    events = LearningEvent.objects.filter(
-
-        user=user
-
-    )
-
-
+    events = LearningEvent.objects.filter(user=user)
 
     dates = sorted(
-
         {
-
             event.created_at.date()
-
             for event in events
-
         },
-
         reverse=True
-
     )
-
-
 
     streak = 0
-
-
-
     if dates:
-
-
-
         today = timezone.localdate()
-
-
-
         if dates[0] == today:
-
             current = today
-
         elif dates[0] == today - timedelta(days=1):
-
             current = today - timedelta(days=1)
-
         else:
-
             current = None
 
-
-
         if current:
-
-
-
             for date in dates:
-
-
-
                 if date == current:
-
                     streak += 1
-
                     current -= timedelta(days=1)
-
                 else:
-
                     break
 
-
-
     profile.completed_lessons = completed_lessons
-
-    profile.progress_percent = round(
-
-        progress,
-
-        1
-
-    )
-
+    profile.progress_percent = round(progress,1)
     profile.streak = streak
-
-
-
     profile.save()
-
-
-
     return profile
 
-
-
-
-
-def log_event(
-
-    user,
-
-    event_type,
-
-    title,
-
-    score=0
-
-):
-
-
-
-    event = LearningEvent.objects.create(
-
-        user=user,
-
-        event_type=event_type,
-
-        title=title,
-
-        score=score
-
-    )
-
-
-
+def log_event(user,event_type,title,score=0):
+    event = LearningEvent.objects.create(user=user,event_type=event_type,title=title,score=score)
     profile = get_profile(user)
-
-
-
     profile.points += int(score)
-
-
-
     profile.last_active = timezone.now()
-
-
-
     profile.save()
-
-
-
     refresh_profile_stats(user)
-
-
-
-    achievements = Achievement.objects.filter(
-
-        points_required__lte=profile.points
-
-    )
-
-
-
+    achievements = Achievement.objects.filter(points_required__lte=profile.points)
     for achievement in achievements:
-
-
-
-        UserAchievement.objects.get_or_create(
-
-            user=user,
-
-            achievement=achievement
-
-        )
-
-
-
+        UserAchievement.objects.get_or_create(user=user,achievement=achievement)
     return event
 
-
-
-
-
 def dashboard_payload(user):
-
-
-
     profile = refresh_profile_stats(user)
-
-
-
-    events = LearningEvent.objects.filter(
-
-        user=user
-
-    ).order_by("-created_at")
-
-
-
-    avg_score = events.aggregate(
-
-        value=Avg("score")
-
-    )["value"] or 0
-
-
-
+    events = LearningEvent.objects.filter(user=user).order_by("-created_at")
+    avg_score = events.aggregate(value=Avg("score"))["value"] or 0
     labels = []
-
     scores = []
 
-
-
-    for event in events.order_by(
-
-        "created_at"
-
-    )[:12]:
-
-
-
-        labels.append(
-
-            event.created_at.strftime("%d %b")
-
-        )
-
-
-
+    for event in events.order_by("created_at")[:12]:
+        labels.append(event.created_at.strftime("%d %b"))
         scores.append(
-
             round(event.score, 1)
-
         )
-
-
 
     payload = {
-
         "progress": profile.progress_percent,
-
         "streak": profile.streak,
-
         "points": profile.points,
-
         "cefr": profile.cefr_level,
-
-        "average_score": round(
-
-            avg_score,
-
-            1
-
-        ),
-
-        "lessons": LessonProgress.objects.filter(
-
-            user=user,
-
-            completed=True
-
-        ).count(),
-
-        "practice": PracticeSession.objects.filter(
-
-            user=user
-
-        ).count(),
-
-        "games": GameResult.objects.filter(
-
-            user=user
-
-        ).count(),
-
-        "assessments": AssessmentAttempt.objects.filter(
-
-            user=user
-
-        ).count(),
-
+        "average_score": round(avg_score,1),
+        "lessons": LessonProgress.objects.filter(user=user,completed=True).count(),
+        "practice": PracticeSession.objects.filter(user=user).count(),
+        "games": GameResult.objects.filter(user=user).count(),
+        "assessments": AssessmentAttempt.objects.filter(user=user).count(),
         "labels": labels,
-
         "scores": scores,
-
     }
-
-
-
     return payload
 
 
-
-
-
 def landing(request):
-
-
-
-    return render(
-
-        request,
-
-        "landing.html"
-
-    )
-
-
-
-
+    return render(request,"landing.html")
 
 def signup_view(request):
-
-
-
     if request.user.is_authenticated:
-
         return redirect("dashboard")
-
-
-
     if request.method == "POST":
-
-
-
-        username = request.POST.get(
-
-            "username",
-
-            ""
-
-        ).strip()
-
-
-
-        email = request.POST.get(
-
-            "email",
-
-            ""
-
-        ).strip().lower()
-
-
-
-        password = request.POST.get(
-
-            "password",
-
-            ""
-
-        )
-
-
-
-        confirm_password = request.POST.get(
-
-            "confirm_password",
-
-            ""
-
-        )
-
-
-
-        # -------------------------
+        username = request.POST.get("username","").strip()
+        email = request.POST.get("email","").strip().lower()
+        password = request.POST.get("password","")
+        confirm_password = request.POST.get("confirm_password","")
 
         # REQUIRED FIELDS
-
-        # -------------------------
-
-
-
         if not username or not email or not password:
-
-
-
-            messages.error(
-
-                request,
-
-                "Please fill all required fields."
-
-            )
-
-
-
-            return render(
-
-                request,
-
-                "signup.html",
-
-                {
-
-                    "username": username,
-
-                    "email": email,
-
-                }
-
-            )
-
-
-
-        # -------------------------
-
+            messages.error(request,"Please fill all required fields.")
+            return render(request,"signup.html",{"username": username,"email": email,})
+    
         # PASSWORD MATCH
-
-        # -------------------------
-
-
-
         if password != confirm_password:
+            messages.error(request,"Passwords do not match.")
+            return render(request,"signup.html",{"username": username,"email": email,})
 
 
 
-            messages.error(
-
-                request,
-
-                "Passwords do not match."
-
-            )
-
-
-
-            return render(
-
-                request,
-
-                "signup.html",
-
-                {
-
-                    "username": username,
-
-                    "email": email,
-
-                }
-
-            )
-
-
-
-        # -------------------------
-
+        
         # PASSWORD LENGTH
-
-        # -------------------------
-
-
-
         if len(password) < 8:
-
-
-
-            messages.error(
-
-                request,
-
-                "Password must contain at least 8 characters."
-
-            )
-
-
-
-            return render(
-
-                request,
-
-                "signup.html",
-
-                {
-
-                    "username": username,
-
-                    "email": email,
-
-                }
-
-            )
-
-
-
-        # -------------------------
+            messages.error(request,"Password must contain at least 8 characters.")
+            return render(request,"signup.html",{"username": username,"email": email,} )
 
         # USERNAME CHECK
-
-        # -------------------------
-
-
-
-        if User.objects.filter(
-
-            username__iexact=username
-
-        ).exists():
-
-
-
-            messages.error(
-
-                request,
-
-                "Username already exists."
-
-            )
-
-
-
-            return render(
-
-                request,
-
-                "signup.html",
-
-                {
-
-                    "username": username,
-
-                    "email": email,
-
-                }
-
-            )
-
-
-
-        # -------------------------
+        if User.objects.filter(username__iexact=username).exists():
+            messages.error(request,"Username already exists.")
+            return render(request,"signup.html",{"username": username,"email": email,})
 
         # EMAIL CHECK
-
-        # -------------------------
-
-
-
-        if User.objects.filter(
-
-            email__iexact=email
-
-        ).exists():
-
-
-
-            messages.error(
-
-                request,
-
-                "Email is already registered."
-
-            )
-
-
-
-            return render(
-
-                request,
-
-                "signup.html",
-
-                {
-
-                    "username": username,
-
-                    "email": email,
-
-                }
-
-            )
-
-
-
-        # -------------------------
+        if User.objects.filter(email__iexact=email).exists():
+            messages.error(request,"Email is already registered.")
+            return render( request,"signup.html",{"username": username,"email": email,})
 
         # CREATE USER
-
-        # -------------------------
-
-
-
-        user = User.objects.create_user(
-
-            username=username,
-
-            email=email,
-
-            password=password
-
-        )
-
-
-
-        # -------------------------
+        user = User.objects.create_user(username=username,email=email,password=password)
 
         # CREATE PROFILE
-
-        # -------------------------
-
-
-
         UserProfile.objects.create(
-
             user=user,
-
             level="BEGINNER",
-
             cefr_level="A1",
-
             points=0,
-
             streak=0,
-
             progress_percent=0,
-
             completed_lessons=0
+            )
 
-        )
-
-
-
-        messages.success(
-
-            request,
-
-            "Account created successfully. Please login."
-
-        )
-
-
-
+        messages.success(request,"Account created successfully. Please login.")
         return redirect("login")
 
-
-
-    return render(
-
-        request,
-
-        "signup.html"
-
-    )
-
-
-
+    return render(request,"signup.html")
 
 
 def login_view(request):
-
-
-
     if request.user.is_authenticated:
-
         return redirect("dashboard")
-
-
-
     if request.method == "POST":
-
-
-
-        username = request.POST.get(
-
-            "username",
-
-            ""
-
-        ).strip()
-
-
-
-        password = request.POST.get(
-
-            "password",
-
-            ""
-
-        )
-
-
-
-        user = authenticate(
-
-            request,
-
-            username=username,
-
-            password=password
-
-        )
-
-
-
+        username = request.POST.get("username","").strip()
+        password = request.POST.get("password","")
+        user = authenticate(request,username=username,password=password)
         if user:
-
-
-
-            login(
-
-                request,
-
-                user
-
-            )
-
-
+            login(request,user)
 
             get_profile(user)
-
-
-
             return redirect("dashboard")
-
-
-
-        messages.error(
-
-            request,
-
-            "Invalid username or password."
-
-        )
-
-
-
-    return render(
-
-        request,
-
-        "login.html"
-
-    )
-
-
-
-
+        messages.error(request,"Invalid username or password.")
+    return render(request,"login.html")
 
 @require_POST
-
 def logout_view(request):
-
-
-
     logout(request)
-
-
-
     return redirect("landing")
 
-
-
-
-
-
-
 @login_required
 
 @require_POST
-
 def clear_chat_history(request):
-
     """
-
     Permanently delete chat history belonging to the logged-in user.
-
     """
-
     ChatMessage.objects.filter(user=request.user).delete()
-
-
-
-    return JsonResponse({
-
-        "success": True,
-
-        "message": "Chat history cleared successfully."
-
-    })
-
-
-
-
+    return JsonResponse({"success": True,"message": "Chat history cleared successfully."})
 
 @login_required
-
 def dashboard(request):
-
-
-
-    payload = dashboard_payload(
-
-        request.user
-
-    )
-
-
-
-    recent = LearningEvent.objects.filter(
-
-        user=request.user
-
-    ).order_by("-created_at")[:6]
-
-
-
-    return render(
-
-        request,
-
-        "dashboard.html",
-
-        {
-
-            "profile": get_profile(request.user),
-
-            "payload": payload,
-
-            "recent": recent,
-
-        }
-
-    )
-
-
-
-
+    payload = dashboard_payload(request.user)
+    recent = LearningEvent.objects.filter(user=request.user).order_by("-created_at")[:6]
+    return render(request,"dashboard.html",{"profile": get_profile(request.user),"payload": payload,"recent": recent,})
 
 @login_required
-
 def dashboard_stats_api(request):
-
-
-
-    return JsonResponse(
-
-        dashboard_payload(
-
-            request.user
-
-        )
-
-    )
-
-
+    return JsonResponse(dashboard_payload(request.user))
 
 # ik
-
 @login_required
 
 def learning_path(request):
-
-
-
     profile = get_profile(request.user)
-
     modules = [
-
         {
-
             "key": "BEGINNER",
-
             "name": "Beginner",
-
             "icon": "🌱",
-
             "description": "Build your English foundations and everyday communication skills.",
-
             "stage_start": 1,
-
             "stage_end": 3,
-
         },
 
         {
-
             "key": "ELEMENTARY",
-
             "name": "Elementary",
-
             "icon": "🌿",
-
             "description": "Expand your vocabulary and improve your grammar and fluency.",
-
             "stage_start": 4,
-
             "stage_end": 6,
-
         },
 
         {
-
             "key": "INTERMEDIATE",
-
             "name": "Intermediate",
-
             "icon": "🌳",
-
             "description": "Develop your English skills for work, study and social situations.",
-
             "stage_start": 7,
-
             "stage_end": 9,
-
         },
 
         {
-
             "key": "ADVANCED",
-
             "name": "Advanced",
-
             "icon": "🌲",
-
             "description": "Refine your English skills for professional and academic success.",
-
             "stage_start": 10,
-
             "stage_end": 12,
-
         },
-
     ]
 
-
-
     for module in modules:
-
         lessons = Lesson.objects.filter(
-
             level=module["key"],
-
             is_active=True
-
         )
-
-
 
         completed = LessonProgress.objects.filter(
-
             user=request.user,
-
             lesson__in=lessons,
-
             completed=True
-
         ).count()
 
-
-
         module["total_levels"] = 15
-
         module["completed_levels"] = completed
-
-
-
         module["progress_percent"] = round(
-
             (completed / 15) * 100,
-
             1
-
         )
-
-
-
-    return render(
-
-        request,
-
-        "learning_path.html",
-
-        {
-
-            "profile": profile,
-
-            "modules": modules,
-
-        }
-
-    )  
-
-
+    return render(request,"learning_path.html",{"profile": profile,"modules": modules,})  
 
 
 
 @login_required
-
-def lesson_detail(
-
-    request,
-
-    lesson_id
-
-):
-
-
-
-    lesson = get_object_or_404(
-
-        Lesson,
-
-        id=lesson_id,
-
-        is_active=True
-
-    )
-
-
-
-    progress, created = LessonProgress.objects.get_or_create(
-
-        user=request.user,
-
-        lesson=lesson
-
-    )
-
-
-
-    return render(
-
-        request,
-
-        "lesson_detail.html",
-
-        {
-
-            "lesson": lesson,
-
-            "progress": progress,
-
-        }
-
-    )
-
-
-
+def lesson_detail(request,lesson_id):
+    lesson = get_object_or_404(Lesson,id=lesson_id,is_active=True )
+    progress, created = LessonProgress.objects.get_or_create(user=request.user,lesson=lesson)
+    return render(request,"lesson_detail.html",{"lesson": lesson,"progress": progress,} )
 
 
 @login_required
-
 @require_POST
-
-def complete_lesson(
-
-    request,
-
-    lesson_id
-
-):
-
-
-
-    lesson = get_object_or_404(
-
-        Lesson,
-
-        id=lesson_id,
-
-        is_active=True
-
-    )
-
-
-
-    progress, created = LessonProgress.objects.get_or_create(
-
-        user=request.user,
-
-        lesson=lesson
-
-    )
-
-
-
+def complete_lesson(request,lesson_id):
+    lesson = get_object_or_404(Lesson,id=lesson_id,is_active=True)
+    progress, created = LessonProgress.objects.get_or_create(user=request.user,lesson=lesson)
     if not progress.completed:
-
-
-
         progress.completed = True
-
         progress.progress_percent = 100
-
         progress.completed_at = timezone.now()
-
         progress.save()
 
+        log_event(request.user,"lesson",lesson.title,10)
+        messages.success(request,"Lesson completed! +10 points.")
 
-
-        log_event(
-
-            request.user,
-
-            "lesson",
-
-            lesson.title,
-
-            10
-
-        )
-
-
-
-        messages.success(
-
-            request,
-
-            "Lesson completed! +10 points."
-
-        )
-
-
-
-    return redirect(
-
-        "lesson_detail",
-
-        lesson_id=lesson.id
-
-    )
-
-
-
-
+    return redirect("lesson_detail",lesson_id=lesson.id)
 
 @login_required
-
-def lesson_test(
-
-    request,
-
-    lesson_id
-
-):
-
-
-
-    lesson = get_object_or_404(
-
-        Lesson,
-
-        id=lesson_id
-
-    )
-
-
-
+def lesson_test(request,lesson_id):
+    lesson = get_object_or_404(Lesson,id=lesson_id)
     quiz = lesson.quizzes.first()
-
-
-
     if not quiz:
-
-        messages.warning(
-
-            request,
-
-            "No test is available for this lesson yet."
-
-        )
-
-
-
-        return redirect(
-
-            "lesson_detail",
-
-            lesson_id=lesson.id
-
-        )
-
-
-
-    questions = list(
-
-        quiz.questions.all()
-
-    )
-
-
-
+        messages.warning(request,"No test is available for this lesson yet.")
+        return redirect("lesson_detail",lesson_id=lesson.id)
+    questions = list(quiz.questions.all())
     if request.method == "POST":
-
-
-
         correct = 0
-
-
-
         for question in questions:
-
-
-
-            answer = request.POST.get(
-
-                f"question_{question.id}"
-
-            )
-
-
-
+            answer = request.POST.get(f"question_{question.id}")
             if answer == question.correct_answer:
-
                 correct += 1
-
-
-
         total = len(questions)
-
-
-
-        score = (
-
-            correct / total * 100
-
+        score = (correct / total * 100
             if total
-
             else 0
-
         )
 
 
 
         #ik
-
-
-
         # Check if the student passed the test
-
         passed = score >= 70
-
-
-
         if passed:
-
-            progress, created = LessonProgress.objects.get_or_create(
-
-                user=request.user,
-
-                lesson=lesson
-
-            )
-
-
-
+            progress, created = LessonProgress.objects.get_or_create(user=request.user,lesson=lesson)
             if not progress.completed:
-
                 progress.completed = True
-
                 progress.progress_percent = 100
-
                 progress.completed_at = timezone.now()
-
                 progress.save()
 
-
-
-        QuizAttempt.objects.create(
-
-            user=request.user,
-
-            quiz=quiz,
-
-            score=score,
-
-            total_questions=total
-
-        )
-
-
-
-        log_event(
-
-            request.user,
-
-            "quiz",
-
-            quiz.title,
-
-            score
-
-        )
-
-
-
-        return render(
-
-            request,
-
-            "test_result.html",
-
-            {
-
-                "quiz": quiz,
-
-                "score": score,
-
-                "correct": correct,
-
-                "total": total,
-
-            }
-
-        )
-
-
-
-    return render(
-
-        request,
-
-        "lesson_test.html",
-
-        {
-
-            "lesson": lesson,
-
-            "quiz": quiz,
-
-            "questions": questions,
-
-        }
-
-    )
-
-
-
-
+        QuizAttempt.objects.create(user=request.user,quiz=quiz,score=score,total_questions=total)
+        log_event(request.user,"quiz",quiz.title,score)
+        return render(request,"test_result.html",{"quiz": quiz,"score": score,"correct": correct,"total": total,} )
+    return render(request,"lesson_test.html",{"lesson": lesson,"quiz": quiz,"questions": questions,})
 
 @login_required
 def practice(request):
@@ -1496,7 +374,6 @@ def practice(request):
             "Practice everyday English conversations.",
         ),
     ]
-
     return render(
         request,
         "practice.html",
@@ -1511,10 +388,8 @@ def practice_category(request, category):
         "vocabulary": "Vocabulary",
         "conversations": "Conversations",
     }
-
     if category not in category_titles:
         return redirect("practice")
-
     practice_types = [
         (
             "spot_error",
@@ -1700,177 +575,60 @@ def practice_question_submit(request, category, practice_type):
     )
 
 @login_required
-
 @require_POST
-
-def practice_submit(
-
-    request,
-
-    practice_type
-
-):
-
-
-
+def practice_submit(request,practice_type):
     prompts = {
-
         "conversation":
-
             "Introduce yourself and describe your daily routine.",
-
         "speaking":
-
             "Talk about your favorite hobby.",
-
         "grammar":
-
             "Write five sentences using the present perfect tense.",
-
         "structure":
-
             "Write a sentence containing a subject, verb and object.",
-
     }
-
-
-
-    prompt = prompts.get(
-
-        practice_type,
-
-        "Write a short paragraph in English."
-
-    )
-
-
-
-    response = request.POST.get(
-
-        "response",
-
-        ""
-
-    ).strip()
-
-
-
+    prompt = prompts.get(practice_type,"Write a short paragraph in English.")
+    response = request.POST.get("response","").strip()
     words = response.split()
-
-
-
-    score = min(
-
-        100,
-
-        max(
-
-            20,
-
-            len(words) * 4
-
-        )
-
-    )
+    score = min(100,max(20,len(words) * 4))
 
 
 
     if len(words) < 5:
-
-
-
         feedback = (
-
             "Try writing longer answers "
-
             "with complete sentences."
-
         )
-
-
-
     elif len(words) < 15:
-
-
-
         feedback = (
-
-            "Good start. Try adding more "
-
+            "Good start.Try adding more "
             "details and examples."
-
         )
-
-
-
     else:
-
-
-
         feedback = (
-
             "Good response. Continue working "
-
             "on grammar, vocabulary and fluency."
-
         )
-
-
 
     PracticeSession.objects.create(
-
         user=request.user,
-
         practice_type=practice_type,
-
         prompt=prompt,
-
         response=response,
-
         score=score,
-
         feedback=feedback
-
     )
-
-
 
     log_event(
-
-        request.user,
-
-        "practice",
-
-        f"{practice_type.title()} Practice",
-
-        score
-
-    )
-
-
-
-    return render(
-
-        request,
-
-        "practice_result.html",
-
+        request.user,"practice",f"{practice_type.title()} Practice",score)
+    return render(request,"practice_result.html",
         {
-
             "prompt": prompt,
-
             "response": response,
-
             "score": score,
-
             "feedback": feedback,
-
         }
-
     )
-
-
-
 
 @login_required
 def interview_hub(request):
@@ -1914,8 +672,6 @@ def interview_hub(request):
         },
     )
 
-
-
 @login_required
 def interview_activity(request, activity):
     activity_titles = {
@@ -1923,19 +679,15 @@ def interview_activity(request, activity):
         "answer": "Answer Practice",
         "mock": "Mock Interview",
     }
-
     if activity not in activity_titles:
         return redirect("interview_hub")
-
     questions = InterviewQuestion.objects.filter(
         is_active=True
     )
-
     if activity == "mock":
         questions = questions.order_by("?")[:5]
     else:
         questions = questions.order_by("category", "id")
-
     questions = list(questions)
     results = []
     total_score = 0
@@ -2083,303 +835,100 @@ def interview_activity(request, activity):
 @login_required
 
 def games(request):
-
-
-
     game_list = [
-
         (
-
             "jumble",
-
             "Word Jumble",
-
             "Unscramble English words."
-
         ),
-
         (
-
             "vocabulary",
-
             "Vocabulary Puzzle",
-
             "Test your vocabulary."
-
         ),
-
         (
-
             "grammar",
-
             "Grammar Challenge",
-
             "Choose the correct sentence."
-
         ),
-
         (
-
             "memory",
-
             "Memory Match",
-
             "Match words with meanings."
-
         ),
-
     ]
-
-
-
-    return render(
-
-        request,
-
-        "games.html",
-
-        {
-
-            "games": game_list
-
-        }
-
-    )
-
-
-
-
+    return render(request,"games.html",{"games": game_list})
 
 @login_required
-
-def game_page(
-
-    request,
-
-    game_type
-
-):
-
-
-
+def game_page(request,game_type):
     game_names = {
-
         "jumble": "Word Jumble",
-
         "vocabulary": "Vocabulary Puzzle",
-
         "grammar": "Grammar Challenge",
-
         "memory": "Memory Match",
-
     }
-
-
-
     if game_type not in game_names:
-
-
-
         return redirect("games")
 
-
-
-    return render(
-
-        request,
-
-        "game.html",
-
+    return render(request,"game.html",
         {
-
             "game_type": game_type,
-
             "game_name": game_names[game_type],
-
         }
-
     )
-
-
-
-
 
 @login_required
-
 @require_POST
-
 def save_game_result(request):
-
-
-
-    game_type = request.POST.get(
-
-        "game_type"
-
-    )
-
-
+    game_type = request.POST.get("game_type")
 
     score = int(
-
-        request.POST.get(
-
-            "score",
-
-            0
-
-        )
-
-    )
-
-
+        request.POST.get("score",0))
 
     total = int(
-
-        request.POST.get(
-
-            "total",
-
-            10
-
-        )
-
-    )
-
-
-
-    valid_games = {
-
-        "jumble",
-
-        "vocabulary",
-
-        "grammar",
-
-        "memory",
-
-    }
-
-
+        request.POST.get("total",10))
+    valid_games = {"jumble","vocabulary","grammar","memory",}
 
     if game_type not in valid_games:
-
-
-
         return JsonResponse(
-
             {
-
                 "success": False,
-
                 "message": "Invalid game."
-
             },
-
             status=400
-
         )
 
-
-
     GameResult.objects.create(
-
         user=request.user,
-
         game_type=game_type,
-
         score=score,
-
         total=total
-
     )
 
-
-
-    percentage = (
-
-        score / total * 100
-
-        if total
-
+    percentage = (score / total * 100 if total
         else 0
-
     )
-
-
-
-    log_event(
-
-        request.user,
-
-        "game",
-
-        game_type.title(),
-
-        percentage
-
-    )
-
-
-
-    return JsonResponse(
-
-        {
-
-            "success": True
-
-        }
-
-    )
-
-
-
-
+    log_event(request.user,"game",game_type.title(),percentage)
+    return JsonResponse({"success": True})
 
 @login_required
-
 def leaderboard(request):
-
-
-
     users = UserProfile.objects.select_related(
-
         "user"
-
     ).order_by(
-
         "-points"
-
     )[:20]
 
-
-
-    return render(
-
-        request,
-
-        "leaderboard.html",
-
+    return render(request,"leaderboard.html",
         {
-
             "users": users
-
         }
-
     )
-
-
-
-
-
 
 @login_required
 def assessment(request):
     """Show the two independent assessment options."""
     return render(request, "assessment.html")
-
-
-
 
 @login_required
 def assessment_mcq(request):
@@ -2387,7 +936,6 @@ def assessment_mcq(request):
 
     from collections import Counter
     import pandas as pd
-
     categories = {
         "Grammar": 7,
         "Vocabulary": 7,
@@ -2397,12 +945,10 @@ def assessment_mcq(request):
     # GET: select and store 20 random questions.
     if request.method == "GET":
         selected_questions = []
-
         for category, count in categories.items():
             bank = list(
                 AssessmentQuestion.objects.filter(category=category)
             )
-
             if len(bank) < count:
                 messages.error(
                     request,
@@ -2410,11 +956,8 @@ def assessment_mcq(request):
                     "to your question bank.",
                 )
                 return redirect("assessment")
-
             selected_questions.extend(random.sample(bank, count))
-
         random.shuffle(selected_questions)
-
         request.session["mcq_question_ids"] = [
             q.id for q in selected_questions
         ]
@@ -2536,7 +1079,7 @@ def assessment_mcq(request):
             f"Unable to predict your MCQ level: {exc}",
         )
         return redirect("assessment")
-
+    
     allowed_labels = {
         "Needs Improvement",
         "Developing",
@@ -2571,8 +1114,6 @@ def assessment_mcq(request):
         attempt_id=attempt.id,
     )
 
-
-
 @login_required
 def assessment_writing(request):
     """Run the independent writing proficiency model."""
@@ -2601,7 +1142,6 @@ def assessment_writing(request):
 
         saved = joblib.load(model_path)
         model = saved["model"]
-
         predicted = str(model.predict([writing])[0])
 
         allowed_labels = {
@@ -2700,170 +1240,80 @@ def assessment_result(request, attempt_id):
     )
 
 
-
-
-
-
 def generate_tutor_response(
-
     user,
-
     message
-
 ):
-
-
-
+    
     message_lower = message.lower()
-
-
-
     words = set(
-
         re.findall(
-
             r"\b[a-zA-Z]+\b",
-
             message_lower
-
         )
-
     )
-
-
 
     lessons = Lesson.objects.filter(
-
         is_active=True
-
     )
-
 
 
     best_lesson = None
-
     best_score = 0
 
-
-
     for lesson in lessons:
-
-
-
         searchable = (
-
             f"{lesson.title} "
-
             f"{lesson.description} "
-
             f"{lesson.content}"
-
         ).lower()
 
-
-
         lesson_words = set(
-
             re.findall(
-
                 r"\b[a-zA-Z]+\b",
-
                 searchable
-
             )
-
         )
-
-
 
         overlap = len(
-
             words.intersection(
-
                 lesson_words
-
             )
-
         )
-
-
 
         if overlap > best_score:
-
-
-
             best_score = overlap
-
             best_lesson = lesson
 
-
-
     if best_lesson:
-
-
-
         snippet = best_lesson.content[:700]
-
-
-
         return (
-
             f"I found a useful lesson: "
-
             f"{best_lesson.title}.\n\n"
-
             f"{snippet}\n\n"
-
             f"Try practicing this topic and "
-
             f"ask me another question if you need help."
-
         )
-
-
 
     if "grammar" in message_lower:
-
-
-
         return (
-
             "For grammar practice, start with "
-
             "subject + verb + object. Example: "
-
             "I read books every day. "
-
             "You can ask me about tenses, articles, "
-
             "prepositions or sentence structure."
-
         )
-
-
 
     if "vocabulary" in message_lower:
-
-
-
         return (
-
             "For vocabulary improvement, learn words "
-
             "in context instead of memorizing isolated words. "
-
             "Try creating three sentences with every new word."
-
         )
 
-
-
     if (
-
         "speak" in message_lower
-
         or "speaking" in message_lower
-
     ):
 
 
