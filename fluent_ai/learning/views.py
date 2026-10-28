@@ -25,7 +25,6 @@ from .models import (
     ChatMessage,
     LearningEvent,
     Lesson,
-    GameResult,
     LessonProgress,
     PracticeSession,
     PracticeQuestion,
@@ -143,7 +142,6 @@ def dashboard_payload(user):
             completed=True,
         ).count(),
         "practice": PracticeSession.objects.filter(user=user).count(),
-        "games": GameResult.objects.filter(user=user).count(),
         "assessments": AssessmentAttempt.objects.filter(user=user).count(),
         "labels": labels,
         "scores": scores,
@@ -870,100 +868,6 @@ def interview_activity(request, activity):
             "questions": questions,
             "submitted": False,
         },
-    )
-
-
-@login_required
-
-def games(request):
-    game_list = [
-        (
-            "jumble",
-            "Word Jumble",
-            "Unscramble English words."
-        ),
-        (
-            "vocabulary",
-            "Vocabulary Puzzle",
-            "Test your vocabulary."
-        ),
-        (
-            "grammar",
-            "Grammar Challenge",
-            "Choose the correct sentence."
-        ),
-        (
-            "memory",
-            "Memory Match",
-            "Match words with meanings."
-        ),
-    ]
-    return render(request,"games.html",{"games": game_list})
-
-@login_required
-def game_page(request,game_type):
-    game_names = {
-        "jumble": "Word Jumble",
-        "vocabulary": "Vocabulary Puzzle",
-        "grammar": "Grammar Challenge",
-        "memory": "Memory Match",
-    }
-    if game_type not in game_names:
-        return redirect("games")
-
-    return render(request,"game.html",
-        {
-            "game_type": game_type,
-            "game_name": game_names[game_type],
-        }
-    )
-
-@login_required
-@require_POST
-def save_game_result(request):
-    game_type = request.POST.get("game_type")
-
-    score = int(
-        request.POST.get("score",0))
-
-    total = int(
-        request.POST.get("total",10))
-    valid_games = {"jumble","vocabulary","grammar","memory",}
-
-    if game_type not in valid_games:
-        return JsonResponse(
-            {
-                "success": False,
-                "message": "Invalid game."
-            },
-            status=400
-        )
-
-    GameResult.objects.create(
-        user=request.user,
-        game_type=game_type,
-        score=score,
-        total=total
-    )
-
-    percentage = (score / total * 100 if total
-        else 0
-    )
-    log_event(request.user,"game",game_type.title(),percentage)
-    return JsonResponse({"success": True})
-
-@login_required
-def leaderboard(request):
-    users = UserProfile.objects.select_related(
-        "user"
-    ).order_by(
-        "-points"
-    )[:20]
-
-    return render(request,"leaderboard.html",
-        {
-            "users": users
-        }
     )
 
 @login_required

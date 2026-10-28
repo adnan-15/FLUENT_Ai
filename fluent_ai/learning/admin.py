@@ -8,7 +8,6 @@ from .models import (
     Question,
     QuizAttempt,
     PracticeSession,
-    GameResult,
     AssessmentQuestion,
     AssessmentAttempt,
     VideoNote,
@@ -130,19 +129,6 @@ class PracticeQuestionAdmin(admin.ModelAdmin):
     list_filter = ("category", "question_type", "is_active")
     search_fields = ("question_text",)
     list_editable = ("is_active",)
-
-
-@admin.register(GameResult)
-class GameResultAdmin(admin.ModelAdmin):
-
-    list_display = (
-        "user",
-        "game_type",
-        "score",
-        "total",
-        "created_at",
-    )
-
 
 @admin.register(AssessmentQuestion)
 class AssessmentQuestionAdmin(admin.ModelAdmin):

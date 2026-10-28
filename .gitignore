@@ -1,1 +1,7 @@
 fluent_ai/.venv/
+**pycache**/
+*.py[cod]
+*.sqlite3
+.env
+venv/
+.venv/
