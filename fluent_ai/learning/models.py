@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class UserProfile(models.Model):
-
     LEVEL_CHOICES = [
         ("BEGINNER", "Beginner"),
         ("ELEMENTARY", "Elementary"),
@@ -11,60 +9,24 @@ class UserProfile(models.Model):
         ("ADVANCED", "Advanced"),
     ]
 
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name="profile"
-    )
-
-    level = models.CharField(
-        max_length=20,
-        choices=LEVEL_CHOICES,
-        default="BEGINNER"
-    )
-
-    cefr_level = models.CharField(
-        max_length=5,
-        default="A1"
-    )
-
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile")
+    level = models.CharField(max_length=20,choices=LEVEL_CHOICES,default="BEGINNER")
+    cefr_level = models.CharField(max_length=5,default="A1")
     points = models.PositiveIntegerField(default=0)
-
     streak = models.PositiveIntegerField(default=0)
-
     progress_percent = models.FloatField(default=0)
-
     completed_lessons = models.PositiveIntegerField(default=0)
-
-    last_active = models.DateTimeField(
-        null=True,
-        blank=True
-    )
-
+    last_active = models.DateTimeField(null=True,blank=True)
     bio = models.TextField(blank=True)
-
-    notifications_enabled = models.BooleanField(
-        default=True
-    )
-
-    dark_mode = models.BooleanField(
-        default=False
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
-
+    notifications_enabled = models.BooleanField(default=True)
+    dark_mode = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"{self.user.username} Profile"
 
 
 class Lesson(models.Model):
-
     LEVEL_CHOICES = [
         ("BEGINNER", "Beginner"),
         ("ELEMENTARY", "Elementary"),

@@ -1,36 +1,25 @@
 {% extends "base.html" %}
-
 {% block title %}{{ lesson.title }} - Fluent AI{% endblock %}
-
 {% block content %}
-
 <div class="topbar">
     <div class="page-title">
-
         <span class="badge">
             {{ lesson.level }}
         </span>
-
         <h1 style="margin-top:9px;">
             {{ lesson.title }}
         </h1>
-
         <p>
             {{ lesson.description }}
         </p>
-
     </div>
 </div>
 
 
-<!-- =========================
-     LESSON CONTENT
-========================= -->
+<!--LESSON CONTENT-->
 
 <div class="card">
-
     <h2>📖 Lesson Content</h2>
-
     <div style="
         margin-top:20px;
         line-height:1.8;
@@ -38,40 +27,30 @@
     ">
         {{ lesson.content }}
     </div>
-
 </div>
 
 
-<!-- =========================
-     KEY VOCABULARY
-========================= -->
+<!--KEY VOCABULARY-->
 
 {% if lesson.vocabulary %}
-
 <div class="card" style="margin-top:24px;">
-
     <h2>🧠 Key Vocabulary</h2>
-
     <p class="muted" style="margin-top:6px;">
         Important words and phrases from this lesson.
     </p>
-
     <div style="
         margin-top:20px;
         display:flex;
         flex-direction:column;
         gap:12px;
     ">
-
         {% for word in lesson.vocabulary %}
-
         <div style="
             padding:16px 18px;
             border:1px solid #e5e7eb;
             border-radius:12px;
             background:#f8fafc;
         ">
-
             <div style="
                 font-size:17px;
                 font-weight:700;
@@ -79,7 +58,6 @@
             ">
                 {{ word.word }}
             </div>
-
             <div style="
                 margin-top:6px;
                 color:#64748b;
@@ -87,55 +65,33 @@
             ">
                 {{ word.meaning }}
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </div>
-
 {% endif %}
 
-
-<!-- =========================
-     GRAMMAR POINTS
-========================= -->
-
+<!--GRAMMAR POINTS-->
 {% if lesson.grammar_points %}
-
 <div class="card" style="margin-top:24px;">
-
     <h2>📝 Grammar Points</h2>
-
     <ul style="
         margin-top:15px;
         padding-left:22px;
         line-height:1.8;
     ">
-
         {% for point in lesson.grammar_points %}
-
         <li>
             {{ point }}
         </li>
-
         {% endfor %}
-
     </ul>
-
 </div>
-
 {% endif %}
 
-
-<!-- =========================
-     LESSON PROGRESS
-========================= -->
+<!--LESSON PROGRESS -->
 
 <div class="card" style="margin-top:24px;">
-
     <div style="
         display:flex;
         justify-content:space-between;
@@ -143,25 +99,18 @@
         gap:15px;
         flex-wrap:wrap;
     ">
-
         <div>
-
             <h3>
                 Lesson Progress
             </h3>
-
             <p class="muted">
                 Complete this lesson and test your understanding.
             </p>
-
         </div>
-
         <span class="badge">
             {{ lesson.estimated_minutes }} min
         </span>
-
     </div>
-
 
     <div style="
         display:flex;
@@ -169,23 +118,18 @@
         margin-top:20px;
         flex-wrap:wrap;
     ">
-
         <form
             method="post"
             action="{% url 'complete_lesson' lesson.id %}"
         >
-
             {% csrf_token %}
-
             <button
                 type="submit"
                 class="btn btn-success"
             >
                 Mark as Complete
             </button>
-
         </form>
-
 
         <a
             href="{% url 'lesson_test' lesson.id %}"
@@ -193,9 +137,6 @@
         >
             Start Test
         </a>
-
     </div>
-
 </div>
-
 {% endblock %}
