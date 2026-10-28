@@ -23,9 +23,9 @@ from .models import (
     AssessmentAttempt,
     AssessmentQuestion,
     ChatMessage,
-    GameResult,
     LearningEvent,
     Lesson,
+    GameResult,
     LessonProgress,
     PracticeSession,
     PracticeQuestion,
@@ -44,49 +44,62 @@ def get_profile(user):
     )
     return profile
 
+
 def refresh_profile_stats(user):
     profile = get_profile(user)
+
     total_lessons = Lesson.objects.filter(is_active=True).count()
-    completed_lessons = LessonProgress.objects.filter(user=user,completed=True).count()
+    completed_lessons = LessonProgress.objects.filter(
+        user=user,
+        completed=True
+    ).count()
 
-    if total_lessons:
-        progress = (completed_lessons / total_lessons) * 100
-    else:
-        progress = 0
-
-    events = LearningEvent.objects.filter(user=user)
-
-    dates = sorted(
-        {
-            event.created_at.date()
-            for event in events
-        },
-        reverse=True
+    progress = (
+        (completed_lessons / total_lessons) * 100
+        if total_lessons else 0
     )
 
-    streak = 0
-    if dates:
-        today = timezone.localdate()
-        if dates[0] == today:
-            current = today
-        elif dates[0] == today - timedelta(days=1):
-            current = today - timedelta(days=1)
-        else:
-            current = None
+    # Convert activity timestamps to the configured local timezone.
+    events = LearningEvent.objects.filter(user=user).only("created_at")
 
-        if current:
-            for date in dates:
-                if date == current:
-                    streak += 1
-                    current -= timedelta(days=1)
-                else:
-                    break
+    activity_dates = {
+        timezone.localtime(event.created_at).date()
+        for event in events
+        if event.created_at is not None
+    }
+
+    today = timezone.localdate()
+    yesterday = today - timedelta(days=1)
+
+    # If the user was active today, count backward from today.
+    # If their latest activity was yesterday, preserve the streak
+    # until they become active today.
+    if today in activity_dates:
+        current_date = today
+    elif yesterday in activity_dates:
+        current_date = yesterday
+    else:
+        current_date = None
+
+    streak = 0
+
+    while current_date and current_date in activity_dates:
+        streak += 1
+        current_date -= timedelta(days=1)
 
     profile.completed_lessons = completed_lessons
-    profile.progress_percent = round(progress,1)
+    profile.progress_percent = round(progress, 1)
     profile.streak = streak
-    profile.save()
+    profile.save(
+        update_fields=[
+            "completed_lessons",
+            "progress_percent",
+            "streak",
+        ]
+    )
+
     return profile
+
 
 def log_event(user,event_type,title,score=0):
     event = LearningEvent.objects.create(user=user,event_type=event_type,title=title,score=score)
@@ -100,33 +113,42 @@ def log_event(user,event_type,title,score=0):
         UserAchievement.objects.get_or_create(user=user,achievement=achievement)
     return event
 
+
 def dashboard_payload(user):
     profile = refresh_profile_stats(user)
-    events = LearningEvent.objects.filter(user=user).order_by("-created_at")
+
+    events = LearningEvent.objects.filter(user=user)
     avg_score = events.aggregate(value=Avg("score"))["value"] or 0
-    labels = []
-    scores = []
 
-    for event in events.order_by("created_at")[:12]:
-        labels.append(event.created_at.strftime("%d %b"))
-        scores.append(
-            round(event.score, 1)
-        )
+    chart_events = events.order_by("-created_at")[:12]
+    chart_events = list(reversed(chart_events))
 
-    payload = {
+    labels = [
+        event.created_at.strftime("%d %b")
+        for event in chart_events
+    ]
+    scores = [
+        round(event.score, 1)
+        for event in chart_events
+    ]
+
+    return {
         "progress": profile.progress_percent,
         "streak": profile.streak,
         "points": profile.points,
         "cefr": profile.cefr_level,
-        "average_score": round(avg_score,1),
-        "lessons": LessonProgress.objects.filter(user=user,completed=True).count(),
+        "average_score": round(avg_score, 1),
+        "completed_lessons": LessonProgress.objects.filter(
+            user=user,
+            completed=True,
+        ).count(),
         "practice": PracticeSession.objects.filter(user=user).count(),
         "games": GameResult.objects.filter(user=user).count(),
         "assessments": AssessmentAttempt.objects.filter(user=user).count(),
         "labels": labels,
         "scores": scores,
     }
-    return payload
+
 
 
 def landing(request):
@@ -219,11 +241,30 @@ def clear_chat_history(request):
     ChatMessage.objects.filter(user=request.user).delete()
     return JsonResponse({"success": True,"message": "Chat history cleared successfully."})
 
+
+
 @login_required
 def dashboard(request):
+    profile = refresh_profile_stats(request.user)
     payload = dashboard_payload(request.user)
-    recent = LearningEvent.objects.filter(user=request.user).order_by("-created_at")[:6]
-    return render(request,"dashboard.html",{"profile": get_profile(request.user),"payload": payload,"recent": recent,})
+
+    recent_events = (
+        LearningEvent.objects
+        .filter(user=request.user)
+        .order_by("-created_at")[:6]
+    )
+
+    return render(
+        request,
+        "dashboard.html",
+        {
+            "profile": profile,
+            "payload": payload,
+            "recent_events": recent_events,
+        },
+    )
+
+
 
 @login_required
 def dashboard_stats_api(request):
@@ -1607,56 +1648,28 @@ def vnotes(request):
 
 
 @login_required
-
 def profile(request):
-
-
-
-    profile = get_profile(
-
-        request.user
-
-    )
-
-
+    profile = get_profile(request.user)
 
     achievements = UserAchievement.objects.filter(
-
         user=request.user
-
-    ).select_related(
-
-        "achievement"
-
-    )
-
-
+    ).select_related("achievement")
 
     recent = LearningEvent.objects.filter(
-
         user=request.user
-
-    )[:10]
-
-
+    ).order_by("-created_at")[:10]
 
     return render(
-
         request,
-
         "profile.html",
-
         {
-
+            "user": request.user,
             "profile": profile,
-
             "achievements": achievements,
-
             "recent": recent,
-
         }
-
     )
+
 
 
 
@@ -1765,6 +1778,18 @@ def settings_view(request):
             return redirect("settings")
 
 
+        
+        if action == "preferences":
+            profile.notifications_enabled = (
+                request.POST.get("notifications_enabled") == "on"
+            )
+            profile.save(update_fields=["notifications_enabled"])
+
+            messages.success(
+                request,
+                "Learning notification preferences saved."
+            )
+            return redirect("settings")
 
         if action == "password":
 
