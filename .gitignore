@@ -5,3 +5,4 @@ fluent_ai/.venv/
 .env
 venv/
 .venv/
+staticfiles/
