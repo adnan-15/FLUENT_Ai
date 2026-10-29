@@ -209,20 +209,48 @@ def signup_view(request):
     return render(request,"signup.html")
 
 
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
-    if request.method == "POST":
-        username = request.POST.get("username","").strip()
-        password = request.POST.get("password","")
-        user = authenticate(request,username=username,password=password)
-        if user:
-            login(request,user)
 
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        user_record = User.objects.filter(username=username).first()
+
+        print("LOGIN USERNAME:", username)
+        print("LIVE USER FOUND:", user_record is not None)
+
+        if user_record:
+            print("LIVE USER ACTIVE:", user_record.is_active)
+            print(
+                "LIVE PASSWORD MATCH:",
+                user_record.check_password(password)
+            )
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        print("USER AUTHENTICATED:", user is not None)
+
+        if user:
+            login(request, user)
             get_profile(user)
+            print("AFTER LOGIN:", request.user.is_authenticated)
             return redirect("dashboard")
-        messages.error(request,"Invalid username or password.")
-    return render(request,"login.html")
+
+        messages.error(request, "Invalid username or password.")
+
+    return render(request, "login.html")
+
 
 @require_POST
 def logout_view(request):
