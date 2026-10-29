@@ -1,6 +1,4 @@
-
 from pathlib import Path
-
 import joblib
 import pandas as pd
 
@@ -10,17 +8,14 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
-
 BASE_DIR = Path(__file__).resolve().parent
 
 DATA_PATH = (
     BASE_DIR / "data" / "Fluent AI MCQ Dataset - Responses.csv"
 )
-
 MODEL_DIR = BASE_DIR / "ml_models"
 MODEL_PATH = MODEL_DIR / "mcq_level_model.pkl"
 
-# Use percentages, not raw counts that change with test length.
 FEATURES = [
     "TotalPercentage",
     "GrammarPercentage",
@@ -36,7 +31,6 @@ LABELS = [
     "Proficient",
     "Advanced",
 ]
-
 
 def build_model():
     return Pipeline([
@@ -55,8 +49,7 @@ def build_model():
             ),
         ),
     ])
-
-
+    
 def main():
     if not DATA_PATH.exists():
         raise FileNotFoundError(
@@ -70,14 +63,11 @@ def main():
         column for column in required
         if column not in df.columns
     ]
-
     if missing:
         raise ValueError(
             f"Missing required columns: {missing}"
         )
-
     df = df[required].copy()
-
     for column in FEATURES:
         df[column] = pd.to_numeric(
             df[column],
@@ -98,9 +88,7 @@ def main():
 
     if df.empty:
         raise ValueError("No valid labelled records found.")
-
     class_counts = df[TARGET].value_counts()
-
     print("\nDataset size:", len(df))
     print("\nClass distribution:")
     print(class_counts.to_string())
@@ -112,7 +100,6 @@ def main():
 
     X = df[FEATURES]
     y = df[TARGET]
-
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -120,16 +107,12 @@ def main():
         random_state=42,
         stratify=y,
     )
-
-    # First, evaluate on records excluded from training.
     evaluation_model = build_model()
     evaluation_model.fit(X_train, y_train)
-
     predictions = evaluation_model.predict(X_test)
 
     print("\nHeld-out test accuracy:",
           f"{accuracy_score(y_test, predictions):.2%}")
-
     print("\nClassification report:")
     print(
         classification_report(
@@ -139,13 +122,9 @@ def main():
             zero_division=0,
         )
     )
-
-    # Then train the deployed model on all available records.
     final_model = build_model()
     final_model.fit(X, y)
-
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
-
     joblib.dump(
         {
             "model": final_model,
@@ -155,7 +134,6 @@ def main():
         },
         MODEL_PATH,
     )
-
     print("\nFinal model trained on all records.")
     print("Saved to:", MODEL_PATH)
 
