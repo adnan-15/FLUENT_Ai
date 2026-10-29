@@ -5,7 +5,6 @@ Tutor{% endblock %} {% block content %}
   html,
   body {
     height: 100%;
-    color: black;
   }
 
   body.ai-tutor-page {
@@ -721,6 +720,48 @@ Tutor{% endblock %} {% block content %}
 
       font-size: 44px;
     }
+  }
+  /* ---------- Theme-aware colors ---------- */
+  #chat-page {
+    --chat-bg: #ffffff;
+    --chat-text: #0f172a;
+    --chat-border: rgba(128, 128, 128, 0.2);
+    color: var(--chat-text);
+  }
+
+  /* Dark mode: covers the common ways a toggle is applied */
+  [data-theme="dark"] #chat-page,
+  .dark #chat-page,
+  .dark-mode #chat-page,
+  .dark-theme #chat-page,
+  body.dark #chat-page {
+    --chat-bg: #1e293b;
+    --chat-text: #f1f5f9;
+    --chat-border: rgba(148, 163, 184, 0.25);
+  }
+
+  .chat-panel {
+    color: var(--chat-text);
+    background: var(--chat-bg);
+    border-color: var(--chat-border);
+  }
+
+  .chat-toolbar,
+  .chat-messages,
+  .chat-composer {
+    background-color: var(--chat-bg);
+    color: var(--chat-text);
+    border-color: var(--chat-border);
+  }
+
+  .message-input {
+    color: var(--chat-text);
+    background: transparent;
+  }
+
+  .message-input::placeholder {
+    color: var(--chat-text);
+    opacity: 0.5;
   }
 </style>
 

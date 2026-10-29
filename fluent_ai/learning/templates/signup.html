@@ -1,19 +1,29 @@
-
 {% extends "base.html" %}
 
 {% block title %}Create Account | Fluent AI{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Signup page styles are scoped to prevent affecting other pages. */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* Lock the page so it never scrolls; the card scrolls internally only on tiny screens */
+    html:has(.signup-page),
+    body:has(.signup-page) {
+        height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
     .signup-page {
         position: relative;
         isolation: isolate;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: calc(100vh - 48px);
-        padding: 36px 18px;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        padding: 16px;
         overflow: hidden;
     }
 
@@ -21,165 +31,191 @@
     .signup-page::after {
         position: absolute;
         z-index: -1;
-        width: 300px;
-        height: 300px;
+        width: 420px;
+        height: 420px;
         border-radius: 50%;
         content: "";
-        filter: blur(75px);
-        opacity: .22;
+        filter: blur(110px);
         pointer-events: none;
     }
+    .signup-page::before { top: -100px; left: -100px; background: #4a6bff; opacity: .20; }
+    .signup-page::after  { right: -100px; bottom: -100px; background: #9b78ff; opacity: .18; }
 
-    .signup-page::before {
-        top: 0;
-        left: 0;
-        background: #6385ff;
-    }
-
-    .signup-page::after {
-        right: 0;
-        bottom: 0;
-        background: #9b78ff;
-    }
-
-    .signup-page .signup-card {
-        width: min(460px, 100%);
-        padding: clamp(24px, 5vw, 38px);
+    /* ---------- Card ---------- */
+    .signup-card {
+        width: min(440px, 100%);
+        max-height: 100%;
+        overflow-y: auto;
+        padding: 22px 40px;
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 24px;
         background: var(--surface);
-        box-shadow: 0 24px 70px rgba(30, 50, 100, .10);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-    }
-
-    html[data-theme="dark"] .signup-page .signup-card {
-        background: rgba(26, 34, 48, .94);
         box-shadow: 0 24px 70px rgba(0, 0, 0, .22);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
     }
 
-    .signup-page .signup-brand {
+    .signup-top {
         display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .signup-page .signup-brand-mark {
-        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        width: 52px;
-        height: 52px;
-        border-radius: 15px;
-        color: #fff;
-        background: linear-gradient(135deg, #315bea, #7655ed);
-        box-shadow: 0 8px 22px rgba(49, 91, 234, .22);
-        font-size: 25px;
-        font-weight: 800;
-    }
-
-    .signup-page .signup-heading {
-        margin-bottom: 27px;
+        margin-bottom: 22px;
         text-align: center;
     }
 
-    .signup-page .signup-heading h1 {
+    .signup-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+    .signup-brand-mark {
+        display: flex; align-items: center; justify-content: center;
+        width: 38px; height: 38px;
+        border-radius: 11px;
+        color: #fff;
+        background: linear-gradient(135deg, #4f6cf5, #7b5cf0);
+        font-size: 19px; font-weight: 800;
+    }
+    .signup-brand-name { color: var(--text); font-size: 19px; font-weight: 750; }
+
+    .signup-top h1 {
+        margin: 0;
         color: var(--text);
-        font-size: clamp(25px, 5vw, 31px);
-        font-weight: 750;
-        letter-spacing: -1px;
+        font-size: 28   px;
+        font-weight: 800;
+        letter-spacing: -.8px;
+    }
+    .signup-top p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+
+    .signup-message { margin-bottom: 12px; padding: 10px 12px; font-size: 14px; }
+
+    /* ---------- Form ---------- */
+    .field-row {
+        display: grid;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: 0 16px;
     }
 
-    .signup-page .signup-heading p {
-        margin-top: 9px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.7;
-    }
+    .signup-form .form-group { margin-bottom: 14px; min-width: 0; }
 
-    .signup-page .signup-message {
-        margin-bottom: 16px;
-    }
-
-    .signup-page .signup-form .form-group {
-        margin-bottom: 17px;
-    }
-
-    .signup-page .signup-form label {
+    .signup-form label {
         display: block;
-        margin-bottom: 7px;
+        margin-bottom: 6px;
         color: var(--text);
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 650;
     }
 
-    .signup-page .signup-form .form-control {
+    .input-wrap { position: relative; }
+
+    .signup-form .form-control {
+        display: block;
         width: 100%;
-        min-height: 46px;
-        padding: 12px 14px;
+        min-width: 0;
+        height: 46px;
+        padding: 0 14px;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         color: var(--text);
         background: var(--surface-secondary);
-        font-size: 14px;
-        transition: border-color .2s ease, box-shadow .2s ease;
+        font-size: 16px;
+        transition: border-color .18s ease, box-shadow .18s ease;
     }
-
-    .signup-page .signup-form .form-control::placeholder {
-        color: var(--subtle);
-    }
-
-    .signup-page .signup-form .form-control:focus {
-        border-color: var(--primary);
+    .signup-form .form-control.has-toggle { padding-right: 44px; }
+    .signup-form .form-control::placeholder { color: var(--subtle); }
+    .signup-form .form-control:focus {
+        border-color: #5b78ff;
         outline: none;
-        box-shadow: 0 0 0 4px rgba(49, 91, 234, .12);
+        box-shadow: 0 0 0 3px rgba(91, 120, 255, .25);
     }
+    .signup-form .form-control.is-invalid { border-color: #ff5967; }
+    .signup-form .form-control.is-valid   { border-color: #22a06b; }
 
-    .signup-page .signup-submit {
-        width: 100%;
-        min-height: 47px;
+    .toggle-pw {
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        display: flex; align-items: center; justify-content: center;
+        width: 34px; height: 34px;
+        border: 0; border-radius: 8px;
+        color: var(--muted);
+        background: transparent;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+    .toggle-pw:hover { color: var(--text); }
+    .toggle-pw:focus-visible { outline: 2px solid #8fa2ff; }
+    .toggle-pw svg { width: 20px; height: 20px; }
+
+    .validation-message {
+        display: block;
         margin-top: 5px;
+        color: #ff626e;
+        font-size: 13px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+    .validation-message:empty { display: none; }
+
+    .password-rules {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 16px;
+        margin: -2px 0 16px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+    .password-rules .rule.valid { color: #22a06b; }
+
+    .signup-submit {
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        width: 100%;
+        height: 50px;
         border: 0;
-        border-radius: 10px;
-        color: #fff;
-        background: linear-gradient(110deg, #315bea, #7055ed);
-        font-size: 14px;
+        border-radius: 12px;
+        color: #0f1535;
+        background: linear-gradient(110deg, #7f95ff, #b08cff);
+        font-size: 16px;
         font-weight: 700;
-        box-shadow: 0 8px 20px rgba(49, 91, 234, .18);
-        transition: transform .2s ease, box-shadow .2s ease;
+        box-shadow: 0 10px 28px rgba(127, 149, 255, .28);
+        cursor: pointer;
+        transition: transform .18s ease, box-shadow .18s ease;
     }
+    .signup-submit svg { width: 18px; height: 18px; }
+    .signup-submit:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(127, 149, 255, .38); }
+    .signup-submit:focus-visible { outline: 3px solid #8fa2ff; outline-offset: 3px; }
 
-    .signup-page .signup-submit:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 11px 25px rgba(49, 91, 234, .25);
-    }
-
-    .signup-page .signup-footer {
-        margin-top: 24px;
+    .signup-footer {
+        margin-top: 18px;
         color: var(--muted);
         font-size: 13px;
         text-align: center;
     }
+    .signup-footer a { color: #8fa2ff; font-weight: 700; text-decoration: none; }
+    .signup-footer a:hover { text-decoration: underline; }
 
-    .signup-page .signup-footer a {
-        color: var(--primary);
-        font-weight: 700;
-        text-decoration: none;
+    /* ---------- Responsive ---------- */
+    @media (max-height: 720px) {
+        .signup-card { padding: 22px 32px; }
+        .signup-top { margin-bottom: 14px; }
+        .signup-brand { margin-bottom: 10px; }
+        .signup-top h1 { font-size: 26px; }
+        .signup-top p { display: none; }
+        .signup-form .form-group { margin-bottom: 10px; }
+        .signup-form .form-control { height: 42px; }
+        .signup-submit { height: 44px; }
+        .signup-footer { margin-top: 12px; }
     }
 
-    .signup-page .signup-footer a:hover {
-        text-decoration: underline;
+    @media (max-width: 560px) {
+        .signup-page { padding: 10px; }
+        .signup-card { padding: 24px 20px; border-radius: 20px; }
+        .field-row { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 480px) {
-        .signup-page {
-            min-height: calc(100vh - 24px);
-            padding: 20px 12px;
-        }
-
-        .signup-page .signup-card {
-            border-radius: 16px;
-        }
+    @media (prefers-reduced-motion: reduce) {
+        .signup-page *, .signup-page *::before, .signup-page *::after { transition: none !important; }
     }
 </style>
 {% endblock %}
@@ -188,88 +224,127 @@
 <section class="signup-page">
     <div class="signup-card">
 
-        <div class="signup-brand">
-            <div class="signup-brand-mark" aria-label="Fluent AI">F</div>
-        </div>
-
-        <header class="signup-heading">
+        <div class="signup-top">
+            <div class="signup-brand">
+                <div class="signup-brand-mark" aria-hidden="true">F</div>
+                <span class="signup-brand-name">Fluent AI</span>
+            </div>
             <h1>Create your account</h1>
-            <p>Start building your English skills with a learning experience designed around you.</p>
-        </header>
+            <p>Start building your English skills in minutes.</p>
+        </div>
 
         {% if messages %}
             {% for message in messages %}
-                <div class="alert signup-message {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                <div
+                    class="alert signup-message {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}"
+                    role="status"
+                >
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
 
         {% if error %}
-            <div class="alert alert-error signup-message">
+            <div class="alert alert-error signup-message" role="alert">
                 {{ error }}
             </div>
         {% endif %}
 
-        <form method="post" action="{% url 'signup' %}" class="signup-form">
+        <form
+            method="post"
+            action="{% url 'signup' %}"
+            class="signup-form"
+            id="signupForm"
+            novalidate
+        >
             {% csrf_token %}
 
-            <div class="form-group">
-                <label for="signup-username">Username</label>
-                <input
-                    type="text"
-                    id="signup-username"
-                    name="username"
-                    class="form-control"
-                    placeholder="Choose a username"
-                    value="{{ username|default:'' }}"
-                    autocomplete="username"
-                    required
-                >
+            <div class="field-row">
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input
+                        type="text"
+                        id="signup-username"
+                        name="username"
+                        class="form-control"
+                        placeholder="Choose a username"
+                        value="{{ username|default:'' }}"
+                        autocomplete="username"
+                        minlength="3"
+                        maxlength="20"
+                        pattern="[A-Za-z0-9_]+"
+                        aria-describedby="usernameError"
+                        required
+                    >
+                    <small class="validation-message" id="usernameError" aria-live="polite"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input
+                        type="email"
+                        id="signup-email"
+                        name="email"
+                        class="form-control"
+                        placeholder="you@example.com"
+                        value="{{ email|default:'' }}"
+                        autocomplete="email"
+                        maxlength="254"
+                        aria-describedby="emailError"
+                        required
+                    >
+                    <small class="validation-message" id="emailError" aria-live="polite"></small>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <div class="input-wrap">
+                        <input
+                            type="password"
+                            id="signup-password"
+                            name="password"
+                            class="form-control has-toggle"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            aria-describedby="passwordRules passwordError"
+                            required
+                        >
+                        <button type="button" class="toggle-pw" data-target="signup-password" aria-label="Show password">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <small class="validation-message" id="passwordError" aria-live="polite"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm password</label>
+                    <div class="input-wrap">
+                        <input
+                            type="password"
+                            id="signup-confirm-password"
+                            name="confirm_password"
+                            class="form-control has-toggle"
+                            placeholder="Repeat your password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            aria-describedby="confirmPasswordError"
+                            required
+                        >
+                        <button type="button" class="toggle-pw" data-target="signup-confirm-password" aria-label="Show password">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <small class="validation-message" id="confirmPasswordError" aria-live="polite"></small>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="signup-email">Email address</label>
-                <input
-                    type="email"
-                    id="signup-email"
-                    name="email"
-                    class="form-control"
-                    placeholder="you@example.com"
-                    value="{{ email|default:'' }}"
-                    autocomplete="email"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="signup-password">Password</label>
-                <input
-                    type="password"
-                    id="signup-password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Create a password"
-                    autocomplete="new-password"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="signup-confirm-password">Confirm password</label>
-                <input
-                    type="password"
-                    id="signup-confirm-password"
-                    name="confirm_password"
-                    class="form-control"
-                    placeholder="Enter your password again"
-                    autocomplete="new-password"
-                    required
-                >
-            </div>
+            
 
             <button type="submit" class="signup-submit">
                 Create account
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </button>
         </form>
 
@@ -280,4 +355,211 @@
 
     </div>
 </section>
+
+<script>
+(() => {
+    "use strict";
+
+    const form = document.getElementById("signupForm");
+
+    if (!form) return;
+
+    const username = document.getElementById("signup-username");
+    const email = document.getElementById("signup-email");
+    const password = document.getElementById("signup-password");
+    const confirmPassword = document.getElementById("signup-confirm-password");
+
+    const errors = {
+        username: document.getElementById("usernameError"),
+        email: document.getElementById("emailError"),
+        password: document.getElementById("passwordError"),
+        confirmPassword: document.getElementById("confirmPasswordError")
+    };
+
+    const passwordRules = document.querySelectorAll("#passwordRules .rule");
+
+    // Show / hide password buttons.
+    document.querySelectorAll(".toggle-pw").forEach(button => {
+        button.addEventListener("click", () => {
+            const input = document.getElementById(button.dataset.target);
+            const show = input.type === "password";
+
+            input.type = show ? "text" : "password";
+            button.setAttribute(
+                "aria-label",
+                show ? "Hide password" : "Show password"
+            );
+        });
+    });
+
+    function showResult(field, errorElement, message) {
+        if (errorElement) errorElement.textContent = message;
+
+        field.classList.toggle("is-invalid", Boolean(message));
+        field.classList.toggle("is-valid", !message && field.value.length > 0);
+        field.setAttribute("aria-invalid", String(Boolean(message)));
+
+        return !message;
+    }
+
+    // Username: letters, numbers and underscores only.
+    function validateUsername() {
+        const value = username.value;
+        let message = "";
+
+        if (!value) {
+            message = "Username is required.";
+        } else if (value.length < 3 || value.length > 20) {
+            message = "Username must contain 3–20 characters.";
+        } else if (!/^[A-Za-z0-9_]+$/.test(value)) {
+            message = "Only letters, numbers and underscores are allowed.";
+        }
+
+        return showResult(username, errors.username, message);
+    }
+
+    // Remove invalid characters from typed or pasted usernames.
+    username.addEventListener("input", () => {
+        const originalValue = username.value;
+        const cursorPosition = username.selectionStart;
+        const cleanedValue = originalValue.replace(/[^A-Za-z0-9_]/g, "");
+
+        if (originalValue !== cleanedValue) {
+            const newPosition = cursorPosition === null
+                ? cleanedValue.length
+                : originalValue
+                    .slice(0, cursorPosition)
+                    .replace(/[^A-Za-z0-9_]/g, "").length;
+
+            username.value = cleanedValue;
+
+            if (cursorPosition !== null) {
+                username.setSelectionRange(newPosition, newPosition);
+            }
+
+            showResult(
+                username,
+                errors.username,
+                "Only letters, numbers and underscores are allowed."
+            );
+
+            return;
+        }
+
+        validateUsername();
+    });
+
+    username.addEventListener("blur", validateUsername);
+
+    // Email validation.
+    function validateEmail() {
+        const value = email.value.trim();
+        let message = "";
+
+        if (!value) {
+            message = "Email address is required.";
+        } else if (
+            value.length > 254 ||
+            !email.validity.valid ||
+            !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)
+        ) {
+            message = "Enter a valid email address.";
+        }
+
+        return showResult(email, errors.email, message);
+    }
+
+    email.addEventListener("input", validateEmail);
+
+    email.addEventListener("blur", () => {
+        email.value = email.value.trim();
+        validateEmail();
+    });
+
+    // Live password requirements.
+    function getPasswordRules(value) {
+        return {
+            length: value.length >= 8 && value.length <= 128,
+            upper: /[A-Z]/.test(value),
+            lower: /[a-z]/.test(value),
+            number: /[0-9]/.test(value),
+            special: /[^A-Za-z0-9\s]/.test(value)
+        };
+    }
+
+    function validatePassword() {
+        const value = password.value;
+        const rules = getPasswordRules(value);
+
+        passwordRules.forEach(ruleElement => {
+            const passed = rules[ruleElement.dataset.rule];
+
+            const originalLabel = ruleElement.dataset.label ||
+                ruleElement.textContent.replace(/^[✓✗]\s*/, "");
+
+            ruleElement.dataset.label = originalLabel;
+            ruleElement.classList.toggle("valid", passed);
+            ruleElement.classList.toggle("invalid", !passed);
+            ruleElement.textContent = (passed ? "✓ " : "✗ ") + originalLabel;
+        });
+
+        let message = "";
+
+        if (!value) {
+            message = "Password is required.";
+        } else if (value.length > 128) {
+            message = "Password cannot exceed 128 characters.";
+        } else if (
+            !rules.length || !rules.upper || !rules.lower ||
+            !rules.number || !rules.special
+        ) {
+            message = "Password does not meet all requirements.";
+        }
+
+        const valid = showResult(password, errors.password, message);
+
+        if (confirmPassword.value) {
+            validateConfirmPassword();
+        }
+
+        return valid;
+    }
+
+    password.addEventListener("input", validatePassword);
+    password.addEventListener("blur", validatePassword);
+
+    // Confirm password must match.
+    function validateConfirmPassword() {
+        let message = "";
+
+        if (!confirmPassword.value) {
+            message = "Please confirm your password.";
+        } else if (confirmPassword.value !== password.value) {
+            message = "Passwords do not match.";
+        }
+
+        return showResult(confirmPassword, errors.confirmPassword, message);
+    }
+
+    confirmPassword.addEventListener("input", validateConfirmPassword);
+    confirmPassword.addEventListener("blur", validateConfirmPassword);
+
+    // Validate everything before submission.
+    form.addEventListener("submit", event => {
+        const checks = [
+            validateUsername(),
+            validateEmail(),
+            validatePassword(),
+            validateConfirmPassword()
+        ];
+
+        if (checks.some(valid => !valid)) {
+            event.preventDefault();
+
+            const firstInvalid = form.querySelector(".is-invalid");
+            if (firstInvalid) firstInvalid.focus({ preventScroll: true });
+        }
+    });
+})();
+</script>
 {% endblock %}
