@@ -9,7 +9,6 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import LabelEncoder
 
 #FILE PATHs
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(
     BASE_DIR, "data", "writing_assessment_dataset.csv"
