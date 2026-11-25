@@ -1,82 +1,980 @@
+
 {% extends "base.html" %}
-{% block title %}Learning Path - Fluent AI{% endblock %}
+
+{% block title %}Learning Path | Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+/* =====================================================
+   FLUENT AI — LEARNING PATH EXPERIENCE
+===================================================== */
+
+#learningPathPage {
+    --lp-primary: #5968e9;
+    --lp-secondary: #9460ed;
+    --lp-teal: #20b99b;
+    --lp-text: var(--text, #192440);
+    --lp-muted: var(--muted, #77829a);
+    --lp-surface: var(--surface, #ffffff);
+    --lp-border: var(--border, rgba(110,125,180,.15));
+
+    width: 100%;
+    padding-bottom: 35px;
+    color: var(--lp-text);
+}
+
+#learningPathPage *,
+#learningPathPage *::before,
+#learningPathPage *::after {
+    box-sizing: border-box;
+}
+
+/* PAGE HEADER */
+
+#learningPathPage .lp-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 30px;
+    padding: 32px;
+    overflow: hidden;
+    border: 1px solid var(--lp-border);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 90% 15%,
+            rgba(153,127,255,.20), transparent 32%),
+        radial-gradient(circle at 5% 100%,
+            rgba(43,200,176,.13), transparent 35%),
+        var(--lp-surface);
+    box-shadow: 0 12px 38px rgba(60,75,150,.06);
+}
+
+#learningPathPage .lp-header::before {
+    position: absolute;
+    top: -90px;
+    right: -50px;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(117,126,239,.15);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 25px rgba(117,126,239,.035),
+        0 0 0 55px rgba(117,126,239,.025);
+    content: "";
+    animation: lpHeaderOrbit 18s linear infinite;
+}
+
+@keyframes lpHeaderOrbit {
+    to { transform: rotate(360deg); }
+}
+
+#learningPathPage .lp-header-content {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+}
+
+#learningPathPage .lp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+    padding: 7px 12px;
+    border: 1px solid rgba(89,104,233,.16);
+    border-radius: 30px;
+    color: var(--lp-primary);
+    background: rgba(89,104,233,.08);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+#learningPathPage .lp-eyebrow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #28c49f;
+    box-shadow: 0 0 10px rgba(40,196,159,.65);
+}
+
+#learningPathPage .lp-header h1 {
+    margin: 0 0 12px;
+    color: var(--lp-text);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 950;
+    letter-spacing: -1.6px;
+    line-height: 1.15;
+}
+
+#learningPathPage .lp-header h1 span {
+    color: var(--lp-primary);
+}
+
+#learningPathPage .lp-header p {
+    max-width: 570px;
+    margin: 0;
+    color: var(--lp-muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+#learningPathPage .lp-header-art {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 145px;
+    min-width: 145px;
+    height: 145px;
+    margin-right: 35px;
+    border: 1px solid rgba(105,117,230,.20);
+    border-radius: 35px;
+    background: linear-gradient(
+        140deg,
+        rgba(100,118,241,.14),
+        rgba(159,111,241,.16)
+    );
+    box-shadow: 0 15px 40px rgba(90,100,220,.13);
+    transform: rotate(-7deg);
+    animation: lpArtFloat 5s ease-in-out infinite;
+}
+
+#learningPathPage .lp-header-art span {
+    font-size: 65px;
+    filter: drop-shadow(0 10px 15px rgba(82,92,190,.2));
+}
+
+@keyframes lpArtFloat {
+    0%, 100% { transform: rotate(-7deg) translateY(0); }
+    50% { transform: rotate(3deg) translateY(-10px); }
+}
+
+/* MOTIVATION STRIP */
+
+#learningPathPage .lp-motivation {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 17px 20px;
+    border: 1px solid rgba(36,185,154,.20);
+    border-radius: 16px;
+    background: linear-gradient(
+        110deg,
+        rgba(36,185,154,.09),
+        rgba(92,111,235,.07)
+    );
+}
+
+#learningPathPage .lp-motivation-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    color: #159b80;
+    background: rgba(36,185,154,.13);
+    font-size: 21px;
+}
+
+#learningPathPage .lp-motivation strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--lp-text);
+    font-size: 13px;
+    font-weight: 900;
+}
+
+#learningPathPage .lp-motivation p {
+    margin: 0;
+    color: var(--lp-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* SECTION HEADING */
+
+#learningPathPage .lp-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#learningPathPage .lp-section-heading h2 {
+    margin: 0 0 5px;
+    color: var(--lp-text);
+    font-size: 22px;
+    font-weight: 950;
+    letter-spacing: -.7px;
+}
+
+#learningPathPage .lp-section-heading p {
+    margin: 0;
+    color: var(--lp-muted);
+    font-size: 12px;
+}
+
+#learningPathPage .lp-module-count {
+    padding: 8px 13px;
+    border: 1px solid var(--lp-border);
+    border-radius: 30px;
+    color: var(--lp-primary);
+    background: var(--lp-surface);
+    font-size: 11px;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+/* MODULE GRID */
+
+#learningPathPage .lp-module-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+/* MODULE CARD */
+
+#learningPathPage .lp-module-card {
+    --module-color: #5968e9;
+    --module-soft: rgba(89,104,233,.10);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 25px;
+    overflow: hidden;
+    border: 1px solid var(--lp-border);
+    border-radius: 23px;
+    background: var(--lp-surface);
+    box-shadow: 0 9px 28px rgba(55,68,130,.055);
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+}
+
+#learningPathPage .lp-module-card:nth-child(4n+2) {
+    --module-color: #9460e9;
+    --module-soft: rgba(148,96,233,.11);
+}
+
+#learningPathPage .lp-module-card:nth-child(4n+3) {
+    --module-color: #16a991;
+    --module-soft: rgba(22,169,145,.11);
+}
+
+#learningPathPage .lp-module-card:nth-child(4n+4) {
+    --module-color: #e49a43;
+    --module-soft: rgba(228,154,67,.12);
+}
+
+#learningPathPage .lp-module-card::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--module-color),
+        transparent
+    );
+    content: "";
+}
+
+#learningPathPage .lp-module-card::after {
+    position: absolute;
+    top: -75px;
+    right: -75px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: var(--module-soft);
+    content: "";
+    transition: transform .4s ease;
+}
+
+#learningPathPage .lp-module-card:hover {
+    transform: translateY(-7px);
+    border-color: color-mix(in srgb, var(--module-color) 35%, transparent);
+    box-shadow: 0 22px 48px rgba(65,77,150,.12);
+}
+
+#learningPathPage .lp-module-card:hover::after {
+    transform: scale(1.35);
+}
+
+/* CARD TOP */
+
+#learningPathPage .lp-card-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+#learningPathPage .lp-module-identity {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+#learningPathPage .lp-module-icon {
+    display: grid;
+    place-items: center;
+    width: 62px;
+    min-width: 62px;
+    height: 62px;
+    border: 1px solid var(--lp-border);
+    border-radius: 19px;
+    background: var(--module-soft);
+    font-size: 31px;
+    transition: transform .3s ease;
+}
+
+#learningPathPage .lp-module-card:hover .lp-module-icon {
+    transform: rotate(-8deg) scale(1.08);
+}
+
+#learningPathPage .lp-module-label {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: var(--module-color);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+#learningPathPage .lp-module-identity h3 {
+    margin: 0;
+    color: var(--lp-text);
+    font-size: 19px;
+    font-weight: 950;
+    letter-spacing: -.5px;
+    overflow-wrap: anywhere;
+}
+
+#learningPathPage .lp-stage-tag {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid var(--lp-border);
+    border-radius: 30px;
+    color: var(--lp-muted);
+    background: var(--lp-surface);
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* DESCRIPTION */
+
+#learningPathPage .lp-description {
+    position: relative;
+    z-index: 1;
+    min-height: 48px;
+    margin: 22px 0 20px;
+    color: var(--lp-muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+/* LEARNING ROADMAP */
+
+#learningPathPage .lp-roadmap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    padding: 13px 14px;
+    border: 1px solid var(--lp-border);
+    border-radius: 14px;
+    background: var(--module-soft);
+}
+
+#learningPathPage .lp-roadmap-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+#learningPathPage .lp-roadmap-number {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    color: var(--module-color);
+    background: var(--lp-surface);
+    font-size: 10px;
+    font-weight: 950;
+}
+
+#learningPathPage .lp-roadmap-step span:last-child {
+    color: var(--lp-muted);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+#learningPathPage .lp-roadmap-line {
+    width: 13px;
+    min-width: 13px;
+    height: 2px;
+    border-radius: 5px;
+    background: var(--module-color);
+    opacity: .35;
+}
+
+/* PROGRESS */
+
+#learningPathPage .lp-progress-section {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-top: 3px;
+}
+
+#learningPathPage .lp-progress-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#learningPathPage .lp-progress-heading strong {
+    color: var(--lp-text);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+#learningPathPage .lp-progress-value {
+    color: var(--module-color);
+    font-size: 13px;
+    font-weight: 950;
+}
+
+#learningPathPage .lp-progress-track {
+    width: 100%;
+    height: 9px;
+    overflow: hidden;
+    border-radius: 30px;
+    background: var(--module-soft);
+}
+
+#learningPathPage .lp-progress-fill {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(
+        90deg,
+        var(--module-color),
+        color-mix(in srgb, var(--module-color) 65%, white)
+    );
+    box-shadow: 0 0 12px var(--module-soft);
+    transition: width 1.3s cubic-bezier(.2,.8,.2,1);
+}
+
+#learningPathPage .lp-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 9px;
+    color: var(--lp-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* CARD FOOTER */
+
+#learningPathPage .lp-card-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 23px;
+    padding-top: 18px;
+    border-top: 1px solid var(--lp-border);
+}
+
+#learningPathPage .lp-level-info {
+    color: var(--lp-muted);
+    font-size: 11px;
+    font-weight: 750;
+}
+
+#learningPathPage .lp-level-info strong {
+    color: var(--lp-text);
+}
+
+#learningPathPage .lp-view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 43px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 12px;
+    color: #fff;
+    background: linear-gradient(
+        115deg,
+        var(--module-color),
+        color-mix(in srgb, var(--module-color) 70%, #b18bff)
+    );
+    box-shadow: 0 7px 18px var(--module-soft);
+    font-size: 11px;
+    font-weight: 900;
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#learningPathPage .lp-view-btn:hover {
+    transform: translateY(-3px);
+    color: #fff;
+    box-shadow: 0 11px 24px var(--module-soft);
+}
+
+#learningPathPage .lp-view-btn span {
+    font-size: 17px;
+    transition: transform .2s ease;
+}
+
+#learningPathPage .lp-view-btn:hover span {
+    transform: translateX(4px);
+}
+
+/* EMPTY STATE */
+
+#learningPathPage .lp-empty {
+    grid-column: 1 / -1;
+    padding: 55px 20px;
+    border: 1px dashed var(--lp-border);
+    border-radius: 22px;
+    background: var(--lp-surface);
+    text-align: center;
+}
+
+#learningPathPage .lp-empty-icon {
+    margin-bottom: 15px;
+    font-size: 45px;
+}
+
+#learningPathPage .lp-empty h3 {
+    margin-bottom: 8px;
+    color: var(--lp-text);
+    font-size: 19px;
+    font-weight: 900;
+}
+
+#learningPathPage .lp-empty p {
+    margin: 0;
+    color: var(--lp-muted);
+    font-size: 12px;
+}
+
+/* BOTTOM MOTIVATION */
+
+#learningPathPage .lp-bottom-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+    padding: 17px;
+    color: var(--lp-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+#learningPathPage .lp-bottom-note span {
+    color: var(--lp-primary);
+    font-size: 18px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 950px) {
+    #learningPathPage .lp-module-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    #learningPathPage .lp-module-card {
+        padding: 20px;
+    }
+
+    #learningPathPage .lp-header-art {
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 650px) {
+    #learningPathPage .lp-header {
+        padding: 24px 20px;
+    }
+
+    #learningPathPage .lp-header-art {
+        width: 85px;
+        min-width: 85px;
+        height: 85px;
+        margin-right: 0;
+        border-radius: 23px;
+    }
+
+    #learningPathPage .lp-header-art span {
+        font-size: 39px;
+    }
+
+    #learningPathPage .lp-header h1 {
+        font-size: 29px;
+    }
+
+    #learningPathPage .lp-module-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #learningPathPage .lp-description {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 420px) {
+    #learningPathPage .lp-header-art {
+        display: none;
+    }
+
+    #learningPathPage .lp-header {
+        padding: 23px 18px;
+    }
+
+    #learningPathPage .lp-section-heading h2 {
+        font-size: 19px;
+    }
+
+    #learningPathPage .lp-module-card {
+        padding: 19px;
+    }
+
+    #learningPathPage .lp-module-identity h3 {
+        font-size: 17px;
+    }
+
+    #learningPathPage .lp-stage-tag {
+        font-size: 9px;
+        padding: 6px 8px;
+    }
+
+    #learningPathPage .lp-roadmap {
+        gap: 5px;
+        padding: 11px 8px;
+    }
+
+    #learningPathPage .lp-roadmap-step {
+        gap: 4px;
+    }
+
+    #learningPathPage .lp-roadmap-step span:last-child {
+        font-size: 9px;
+    }
+
+    #learningPathPage .lp-roadmap-line {
+        width: 7px;
+        min-width: 7px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #learningPathPage *,
+    #learningPathPage *::before,
+    #learningPathPage *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
+{% endblock %}
+
+
 {% block content %}
-<div class="topbar">
-    <div class="page-title">
-        <h1>Learning Path</h1>
-        <p>
-            Follow your personalized English learning journey.
-        </p>
+
+<div id="learningPathPage">
+
+    <!-- PAGE INTRO -->
+    <section class="lp-header">
+
+        <div class="lp-header-content">
+
+            <div class="lp-eyebrow">
+                <span class="lp-eyebrow-dot"></span>
+                YOUR PERSONAL LEARNING JOURNEY
+            </div>
+
+            <h1>
+                Your path to
+                <span>English fluency.</span>
+            </h1>
+
+            <p>
+                Every great communicator starts somewhere.
+                Explore your learning modules, strengthen your skills,
+                and take one meaningful step towards confident English.
+            </p>
+
+        </div>
+
+        <div class="lp-header-art" aria-hidden="true">
+            <span>🚀</span>
+        </div>
+
+    </section>
+
+
+    <!-- MOTIVATIONAL MESSAGE -->
+    <div class="lp-motivation">
+
+        <div class="lp-motivation-icon">✦</div>
+
+        <div>
+            <strong>Small steps lead to big improvements!</strong>
+            <p>
+                You don't have to learn everything today.
+                Just keep learning a little better every day.
+            </p>
+        </div>
+
     </div>
-</div>
-<div class="grid grid-2">
-    {% for module in modules %}
-    <div class="card">
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:flex-start;
-            gap:15px;
-        ">
-            <div>
-                <div style="
-                    font-size:42px;
-                    margin-bottom:10px;
-                ">
-                    {{ module.icon }}
+
+
+    <!-- MODULES -->
+    <div class="lp-section-heading">
+
+        <div>
+            <h2>Explore your learning modules</h2>
+            <p>Choose a module and continue building your English skills.</p>
+        </div>
+
+        <span class="lp-module-count">
+            {{ modules|length }} Modules
+        </span>
+
+    </div>
+
+
+    <div class="lp-module-grid">
+
+        {% for module in modules %}
+
+        <article class="lp-module-card">
+
+            <!-- CARD HEADER -->
+            <div class="lp-card-top">
+
+                <div class="lp-module-identity">
+
+                    <div class="lp-module-icon">
+                        {{ module.icon }}
+                    </div>
+
+                    <div>
+                        <span class="lp-module-label">
+                            LEARNING MODULE {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+
+                        <h3>{{ module.name }}</h3>
+                    </div>
+
                 </div>
-                <span class="badge">
-                    {{ module.name }}
+
+                <span class="lp-stage-tag">
+                    Stages {{ module.stage_start }}–{{ module.stage_end }}
                 </span>
-                <h2 style="margin-top:10px;">
-                    {{ module.name }}
-                </h2>
+
             </div>
-            <span class="muted">
-                Stages {{ module.stage_start }}–{{ module.stage_end }}
-            </span>
-        </div>
-        <p class="muted" style="
-            margin-top:12px;
-            line-height:1.6;
-        ">
-            {{ module.description }}
-        </p>
-        <div style="margin-top:20px;">
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                font-size:12px;
-                margin-bottom:6px;
-            ">
-                <span>Progress</span>
-                <span>
-                    {{ module.completed_levels }}/{{ module.total_levels }} levels
-                </span>
+
+
+            <!-- DESCRIPTION -->
+            <p class="lp-description">
+                {{ module.description }}
+            </p>
+
+
+            <!-- LEARNING ROADMAP -->
+            <div class="lp-roadmap">
+
+                <div class="lp-roadmap-step">
+                    <span class="lp-roadmap-number">01</span>
+                    <span>Learn</span>
+                </div>
+
+                <div class="lp-roadmap-line"></div>
+
+                <div class="lp-roadmap-step">
+                    <span class="lp-roadmap-number">02</span>
+                    <span>Practice</span>
+                </div>
+
+                <div class="lp-roadmap-line"></div>
+
+                <div class="lp-roadmap-step">
+                    <span class="lp-roadmap-number">03</span>
+                    <span>Improve</span>
+                </div>
+
             </div>
-            <div class="progress">
-                <div
-                    class="progress-bar"
-                    data-width="{{ module.progress_percent }}"
-                ></div>
+
+
+            <!-- PROGRESS -->
+            <div class="lp-progress-section">
+
+                <div class="lp-progress-heading">
+
+                    <strong>Your learning progress</strong>
+
+                    <span class="lp-progress-value">
+                        {{ module.progress_percent }}%
+                    </span>
+
+                </div>
+
+                <div class="lp-progress-track">
+
+                    <div
+                        class="lp-progress-fill"
+                        data-width="{{ module.progress_percent }}"
+                    ></div>
+
+                </div>
+
+                <div class="lp-progress-meta">
+
+                    <span>
+                        {{ module.completed_levels }}/{{ module.total_levels }} levels completed
+                    </span>
+
+                    <span>Keep going!</span>
+
+                </div>
+
             </div>
+
+
+            <!-- CARD FOOTER -->
+            <div class="lp-card-footer">
+
+                <div class="lp-level-info">
+                    <strong>3 Stages</strong> · 15 Levels
+                </div>
+
+                <a
+                    href="{% url 'module_detail' module.name|lower %}"
+                    class="lp-view-btn"
+                >
+                    Explore Module
+                    <span>→</span>
+                </a>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="lp-empty">
+
+            <div class="lp-empty-icon">📚</div>
+
+            <h3>Your learning journey is getting ready!</h3>
+
+            <p>
+                Your learning modules will appear here soon.
+                Come back and start exploring.
+            </p>
+
         </div>
-        <div style="
-            margin-top:18px;
-            font-size:13px;
-        ">
-            <span class="muted">
-                3 Stages • 15 Levels
-            </span>
-        </div>
-        <a 
-            href="{% url 'module_detail' module.name|lower %}"
-            class="btn btn-primary" 
-            style="width:100%; margin-top:17px;"
-        >
-            View Module
-        </a>
+
+        {% endfor %}
+
     </div>
-    {% endfor %}
+
+
+    <!-- BOTTOM MOTIVATION -->
+    <div class="lp-bottom-note">
+        <span>✦</span>
+        Every lesson you complete brings you one step closer to confidence.
+    </div>
+
 </div>
+
+
+<!-- ANIMATED PROGRESS BARS -->
+<script>
+(function () {
+    "use strict";
+
+    const page = document.getElementById("learningPathPage");
+
+    if (!page) return;
+
+    const progressBars = page.querySelectorAll(".lp-progress-fill");
+
+    function animateProgress() {
+        progressBars.forEach(function (bar) {
+
+            const rawValue = parseFloat(bar.dataset.width || "0");
+
+            const percentage = Math.min(
+                100,
+                Math.max(0, Number.isFinite(rawValue) ? rawValue : 0)
+            );
+
+            requestAnimationFrame(function () {
+                bar.style.width = percentage + "%";
+            });
+
+        });
+    }
+
+    if ("IntersectionObserver" in window) {
+
+        const observer = new IntersectionObserver(function (entries) {
+
+            entries.forEach(function (entry) {
+
+                if (entry.isIntersecting) {
+                    animateProgress();
+                    observer.disconnect();
+                }
+
+            });
+
+        }, { threshold: 0.1 });
+
+        observer.observe(page);
+
+    } else {
+        animateProgress();
+    }
+
+})();
+</script>
+
 {% endblock %}
