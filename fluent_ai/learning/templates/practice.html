@@ -5,319 +5,991 @@
 
 {% block extra_css %}
 <style>
+/* =========================================================
+   FLUENT AI — ELITE PRACTICE HUB
+   Premium UI | Responsive | Light & Dark Mode
+========================================================= */
+
+.practice-page {
+    --practice-purple: #7967ed;
+    --practice-blue: #4e91df;
+    --practice-teal: #31a995;
+
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 12px 0 55px;
+    color: var(--text);
+}
+
+/* =========================
+   HERO
+========================= */
+
+.practice-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 310px;
+    padding: 45px 46px;
+    margin-bottom: 43px;
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    background:
+        radial-gradient(
+            ellipse at 90% 12%,
+            rgba(129, 106, 255, .23),
+            transparent 38%
+        ),
+        radial-gradient(
+            ellipse at 55% 110%,
+            rgba(66, 143, 228, .14),
+            transparent 42%
+        ),
+        linear-gradient(
+            130deg,
+            var(--surface),
+            var(--surface-secondary)
+        );
+    box-shadow: var(--shadow);
+}
+
+.practice-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 340px;
+    height: 340px;
+    right: 4%;
+    top: -205px;
+    border: 1px solid rgba(142, 126, 255, .23);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 30px rgba(142, 126, 255, .045),
+        0 0 0 65px rgba(142, 126, 255, .035),
+        0 0 0 100px rgba(142, 126, 255, .025);
+}
+
+.practice-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 210px;
+    height: 210px;
+    right: 25%;
+    bottom: -165px;
+    border-radius: 50%;
+    background: rgba(121, 103, 237, .12);
+    filter: blur(5px);
+}
+
+.practice-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 730px;
+}
+
+.practice-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 13px;
+    margin-bottom: 21px;
+    border: 1px solid rgba(139, 124, 255, .27);
+    border-radius: 30px;
+    background: rgba(139, 124, 255, .11);
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.practice-eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 11px var(--primary);
+}
+
+.practice-hero h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(34px, 4.8vw, 50px);
+    font-weight: 900;
+    line-height: 1.13;
+    letter-spacing: -2px;
+}
+
+.practice-hero h1 span {
+    display: inline-block;
+    color: var(--primary);
+}
+
+.practice-hero p {
+    max-width: 620px;
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.95;
+}
+
+.practice-hero-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.practice-hero-feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.practice-hero-feature span {
+    color: var(--primary);
+    font-weight: 900;
+}
+
+/* HERO DECORATION */
+
+.practice-hero-decoration {
+    position: absolute;
+    right: 8%;
+    top: 50%;
+    display: grid;
+    width: 170px;
+    height: 170px;
+    place-items: center;
+    border: 1px solid rgba(139, 124, 255, .25);
+    border-radius: 43px;
+    background: linear-gradient(
+        145deg,
+        rgba(139, 124, 255, .18),
+        rgba(80, 135, 230, .07)
+    );
+    box-shadow:
+        0 22px 55px rgba(80, 70, 180, .13),
+        inset 0 1px 0 rgba(255,255,255,.16);
+    transform: translateY(-50%) rotate(9deg);
+}
+
+.practice-hero-decoration-inner {
+    display: grid;
+    width: 112px;
+    height: 112px;
+    place-items: center;
+    border: 1px solid rgba(139, 124, 255, .28);
+    border-radius: 30px;
+    background: var(--surface);
+    color: var(--primary);
+    transform: rotate(-9deg);
+}
+
+.practice-hero-decoration svg {
+    width: 58px;
+    height: 58px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* =========================
+   SECTION HEADINGS
+========================= */
+
+.practice-section {
+    margin-top: 42px;
+}
+
+.practice-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.practice-heading-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.practice-heading-mark {
+    width: 5px;
+    height: 43px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: linear-gradient(
+        180deg,
+        #927af4,
+        #5796e6
+    );
+    box-shadow: 0 0 13px rgba(121, 103, 237, .2);
+}
+
+.practice-section-heading h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 850;
+    letter-spacing: -.6px;
+}
+
+.practice-section-heading p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.practice-section-tag {
+    flex-shrink: 0;
+    padding: 8px 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.practice-card {
+    --card-accent: #8877ef;
+    --card-glow: rgba(136, 119, 239, .12);
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 290px;
+    padding: 25px;
+    border: 1px solid var(--border);
+    border-radius: 21px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    text-decoration: none !important;
+    transition:
+        transform .28s ease,
+        border-color .28s ease,
+        box-shadow .28s ease;
+}
+
+.practice-card::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 185px;
+    height: 185px;
+    top: -105px;
+    right: -95px;
+    border-radius: 50%;
+    background: var(--card-glow);
+    transition: transform .4s ease;
+}
+
+.practice-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    border-radius: 0 0 6px 6px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--card-accent),
+        transparent
+    );
+    opacity: 0;
+    transition: opacity .25s ease;
+}
+
+.practice-card:hover {
+    color: var(--text);
+    transform: translateY(-7px);
+    border-color: var(--card-accent);
+    box-shadow: 0 19px 40px var(--card-glow);
+}
+
+.practice-card:hover::before {
+    transform: scale(1.5);
+}
+
+.practice-card:hover::after {
+    opacity: 1;
+}
+
+.practice-card:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 4px;
+}
+
+.practice-card:nth-child(3n+1) {
+    --card-accent: #8975ed;
+    --card-glow: rgba(137, 117, 237, .14);
+}
+
+.practice-card:nth-child(3n+2) {
+    --card-accent: #4f96df;
+    --card-glow: rgba(79, 150, 223, .14);
+}
+
+.practice-card:nth-child(3n+3) {
+    --card-accent: #32a995;
+    --card-glow: rgba(50, 169, 149, .13);
+}
+
+.practice-career-card {
+    --card-accent: #5596df;
+    --card-glow: rgba(85, 150, 223, .15);
+}
+
+
+/* =========================
+   CARD IMAGE BANNERS
+========================= */
+
+.practice-card {
+    padding: 25px;
+}
+
+.practice-card-image {
+    position: relative;
+    height: 158px;
+    margin: -25px -25px 22px;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(135deg, var(--card-accent), #8b7cf6);
+}
+
+.practice-card-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .55s cubic-bezier(.2,.7,.2,1);
+}
+
+.practice-card:hover .practice-card-image img {
+    transform: scale(1.07);
+}
+
+.practice-card-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(15, 20, 45, .02) 15%,
+        rgba(15, 20, 45, .48) 100%
+    );
+    pointer-events: none;
+}
+
+.practice-image-label {
+    position: absolute;
+    z-index: 1;
+    left: 15px;
+    bottom: 13px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,255,255,.32);
+    border-radius: 30px;
+    background: rgba(20, 25, 48, .48);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+}
+
+.practice-card-top {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+    .practice-card-image {
+        height: 170px;
+        margin: -22px -22px 20px;
+    }
+}
+
+@media (max-width: 420px) {
+    .practice-card-image {
+        height: 150px;
+        margin: -20px -20px 18px;
+    }
+}
+
+/* =========================
+   CARD TOP
+========================= */
+
+.practice-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.practice-icon {
+    position: relative;
+    display: grid;
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    place-items: center;
+    border: 1px solid color-mix(
+        in srgb,
+        var(--card-accent) 28%,
+        transparent
+    );
+    border-radius: 17px;
+    background: color-mix(
+        in srgb,
+        var(--card-accent) 12%,
+        transparent
+    );
+    color: var(--card-accent);
+    box-shadow: 0 7px 18px rgba(50, 60, 120, .06);
+    transition: transform .28s ease;
+}
+
+.practice-card:hover .practice-icon {
+    transform: translateY(-4px) rotate(-5deg);
+}
+
+.practice-icon svg {
+    width: 27px;
+    height: 27px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.practice-card-number {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    opacity: .8;
+}
+
+/* =========================
+   CARD CONTENT
+========================= */
+
+.practice-card h3 {
+    margin: 0 0 10px;
+    color: var(--text);
+    font-size: 19px;
+    font-weight: 850;
+    letter-spacing: -.4px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.practice-card p {
+    flex: 1;
+    margin: 0 0 23px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.practice-card-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--card-accent);
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.practice-card-link span {
+    display: grid;
+    width: 33px;
+    height: 33px;
+    flex-shrink: 0;
+    place-items: center;
+    border: 1px solid color-mix(
+        in srgb,
+        var(--card-accent) 25%,
+        transparent
+    );
+    border-radius: 10px;
+    background: var(--card-glow);
+    font-size: 18px;
+    transition: transform .25s ease;
+}
+
+.practice-card:hover .practice-card-link span {
+    transform: translateX(5px);
+}
+
+/* =========================
+   CAREER SECTION
+========================= */
+
+.practice-career-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.practice-career-card {
+    grid-column: span 1;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.practice-empty {
+    grid-column: 1 / -1;
+    padding: 42px 25px;
+    border: 1px dashed var(--border);
+    border-radius: 19px;
+    background: var(--surface);
+    text-align: center;
+}
+
+.practice-empty p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+html[data-theme="dark"] .practice-page {
+    color: var(--text);
+}
+
+html[data-theme="dark"] .practice-hero {
+    background:
+        radial-gradient(
+            ellipse at 90% 12%,
+            rgba(129, 106, 255, .20),
+            transparent 38%
+        ),
+        radial-gradient(
+            ellipse at 55% 110%,
+            rgba(66, 143, 228, .12),
+            transparent 42%
+        ),
+        linear-gradient(
+            130deg,
+            var(--surface),
+            var(--surface-secondary)
+        );
+}
+
+html[data-theme="dark"] .practice-card {
+    background: var(--surface);
+}
+
+html[data-theme="dark"] .practice-section-tag,
+html[data-theme="dark"] .practice-hero-feature {
+    background: var(--surface-secondary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1050px) {
+    .practice-hero-decoration {
+        right: 5%;
+        width: 140px;
+        height: 140px;
+    }
+
+    .practice-hero-decoration-inner {
+        width: 95px;
+        height: 95px;
+    }
+
+    .practice-hero-decoration svg {
+        width: 47px;
+        height: 47px;
+    }
+
+    .practice-grid,
+    .practice-career-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
     .practice-page {
-        width: 100%;
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 8px 0 40px;
-        color: var(--text);
+        padding-top: 3px;
     }
 
     .practice-hero {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        padding: clamp(24px, 4vw, 38px);
-        margin-bottom: 28px;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        background:
-            radial-gradient(circle at 90% 10%, rgba(111, 91, 245, .13), transparent 38%),
-            linear-gradient(135deg, var(--surface), var(--surface-secondary));
+        min-height: auto;
+        padding: 30px 23px;
+        margin-bottom: 32px;
+        border-radius: 20px;
     }
 
-    .practice-eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 13px;
-        color: var(--primary);
-        font-size: 11px;
-        font-weight: 750;
-        letter-spacing: 1.3px;
-        text-transform: uppercase;
-    }
-
-    .practice-eyebrow::before {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--primary);
-        content: "";
+    .practice-hero-decoration {
+        display: none;
     }
 
     .practice-hero h1 {
-        max-width: 700px;
-        margin: 0;
-        color: var(--text);
-        font-size: clamp(28px, 4vw, 40px);
-        font-weight: 780;
-        line-height: 1.15;
-        letter-spacing: -1.3px;
-    }
-
-    .practice-hero h1 span {
-        color: var(--primary);
+        font-size: clamp(30px, 8vw, 39px);
+        letter-spacing: -1.2px;
     }
 
     .practice-hero p {
-        max-width: 650px;
-        margin: 13px 0 0;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.8;
+        font-size: 13px;
+    }
+
+    .practice-hero-features {
+        gap: 8px;
+    }
+
+    .practice-hero-feature {
+        font-size: 10px;
     }
 
     .practice-section {
-        margin-top: 30px;
+        margin-top: 32px;
     }
 
     .practice-section-heading {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 16px;
+        align-items: flex-start;
     }
 
     .practice-section-heading h2 {
-        margin: 0;
-        color: var(--text);
         font-size: 19px;
-        font-weight: 750;
-        letter-spacing: -.35px;
     }
 
-    .practice-section-heading p {
-        margin: 5px 0 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
-    .practice-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
+    .practice-grid,
+    .practice-career-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 
     .practice-card {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        min-height: 245px;
-        padding: 23px;
-        border: 1px solid var(--border);
-        border-radius: 15px;
-        color: var(--text);
-        background: var(--surface);
-        box-shadow: var(--shadow);
-        text-decoration: none;
-        transition: transform .2s ease, border-color .2s ease,
-                    box-shadow .2s ease;
+        min-height: 0;
+        padding: 22px;
+        border-radius: 17px;
     }
 
-    .practice-card:hover {
-        transform: translateY(-3px);
-        border-color: var(--primary);
-        box-shadow: 0 12px 28px rgba(49, 91, 234, .09);
-    }
-
-    .practice-card:focus-visible {
-        outline: 3px solid var(--primary);
-        outline-offset: 3px;
-    }
-
-    .practice-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 48px;
-        height: 48px;
-        flex: 0 0 48px;
-        margin-bottom: 20px;
-        border: 1px solid var(--border);
-        border-radius: 13px;
-        color: var(--primary);
-        background: var(--primary-soft);
-    }
-
-    .practice-icon svg {
-        width: 23px;
-        height: 23px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-    .practice-card h3 {
-        margin: 0 0 9px;
-        color: var(--text);
-        font-size: 18px;
-        font-weight: 720;
+    .practice-card-top {
+        margin-bottom: 19px;
     }
 
     .practice-card p {
-        flex: 1;
-        margin: 0 0 20px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.75;
-        overflow-wrap: anywhere;
+        margin-bottom: 18px;
+    }
+}
+
+@media (max-width: 420px) {
+    .practice-hero {
+        padding: 25px 19px;
     }
 
-    .practice-card-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--primary);
-        font-size: 13px;
-        font-weight: 700;
+    .practice-hero h1 {
+        font-size: 30px;
     }
 
+    .practice-section-tag {
+        font-size: 10px;
+        padding: 7px 9px;
+    }
+
+    .practice-heading-left {
+        gap: 10px;
+    }
+
+    .practice-card {
+        padding: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .practice-card,
+    .practice-card::before,
+    .practice-card::after,
+    .practice-icon,
     .practice-card-link span {
-        transition: transform .2s ease;
+        transition: none !important;
     }
 
-    .practice-card:hover .practice-card-link span {
-        transform: translateX(4px);
+    .practice-card:hover {
+        transform: none;
     }
-
-    .practice-empty {
-        grid-column: 1 / -1;
-        padding: 28px;
-        border: 1px dashed var(--border);
-        border-radius: 14px;
-        color: var(--muted);
-        background: var(--surface);
-        text-align: center;
-    }
-
-    @media (max-width: 1000px) {
-        .practice-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 600px) {
-        .practice-page {
-            padding-top: 0;
-        }
-
-        .practice-hero {
-            padding: 23px 19px;
-            margin-bottom: 24px;
-            border-radius: 14px;
-        }
-
-        .practice-hero h1 {
-            letter-spacing: -.8px;
-        }
-
-        .practice-grid {
-            grid-template-columns: minmax(0, 1fr);
-            gap: 13px;
-        }
-
-        .practice-card {
-            min-height: 0;
-            padding: 20px;
-        }
-
-        .practice-section-heading {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .practice-card,
-        .practice-card-link span {
-            transition: none;
-        }
-    }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="practice-page">
 
+    <!-- HERO SECTION -->
+
     <section class="practice-hero">
-        <div class="practice-eyebrow">Your learning workspace</div>
 
-        <h1>Practice with purpose.<br><span>Progress with confidence.</span></h1>
+        <div class="practice-hero-content">
 
-        <p>
-            Strengthen your English through focused exercises, build a richer
-            vocabulary, improve grammar, and prepare for professional conversations
-            at your own pace.
-        </p>
-    </section>
+            <div class="practice-eyebrow">
+                Your learning workspace
+            </div>
 
-    <section class="practice-section" aria-labelledby="practice-categories-title">
-        <div class="practice-section-heading">
-            <div>
-                <h2 id="practice-categories-title">English practice</h2>
-                <p>Choose a skill and start improving today.</p>
+            <h1>
+                Practice with purpose.<br>
+                <span>Progress with confidence.</span>
+            </h1>
+
+            <p>
+                Strengthen your English through focused exercises, build a
+                richer vocabulary, improve grammar, and prepare for professional
+                conversations at your own pace.
+            </p>
+
+            <div class="practice-hero-features">
+                <div class="practice-hero-feature">
+                    <span>01</span> Learn
+                </div>
+
+                <div class="practice-hero-feature">
+                    <span>02</span> Practice
+                </div>
+
+                <div class="practice-hero-feature">
+                    <span>03</span> Improve
+                </div>
+            </div>
+
+        </div>
+
+        <div class="practice-hero-decoration" aria-hidden="true">
+            <div class="practice-hero-decoration-inner">
+                <svg viewBox="0 0 64 64">
+                    <path d="M13 12h38v40H13z"/>
+                    <path d="M21 22h22M21 31h22M21 40h14"/>
+                    <path d="m39 45 5 5 9-11"/>
+                </svg>
             </div>
         </div>
 
-        <div class="practice-grid">
-            {% for slug, title, description in categories %}
-                <a class="practice-card" href="{% url 'practice_category' slug %}">
+    </section>
 
-                    <div class="practice-icon" aria-hidden="true">
+
+    <!-- ENGLISH PRACTICE -->
+
+    <section class="practice-section"
+             aria-labelledby="practice-categories-title">
+
+        <div class="practice-section-heading">
+
+            <div class="practice-heading-left">
+                <div class="practice-heading-mark"></div>
+
+                <div>
+                    <h2 id="practice-categories-title">
+                        English Practice
+                    </h2>
+
+                    <p>
+                        Choose a skill and start improving today.
+                    </p>
+                </div>
+            </div>
+
+            <span class="practice-section-tag">
+                Build your skills
+            </span>
+
+        </div>
+
+        <div class="practice-grid">
+
+            {% for slug, title, description in categories %}
+
+                <a class="practice-card"
+                   href="{% url 'practice_category' slug %}">
+
+                    <div class="practice-card-image">
                         {% if slug == "grammar" %}
-                            <svg viewBox="0 0 24 24">
-                                <path d="M5 4h14v16H5z"/>
-                                <path d="M8 8h8M8 12h8M8 16h5"/>
-                            </svg>
+                            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1000&q=85"
+                                 alt="Notebook and pen for English grammar practice"
+                                 loading="lazy">
+                            <span class="practice-image-label">Grammar mastery</span>
                         {% elif slug == "vocabulary" %}
-                            <svg viewBox="0 0 24 24">
-                                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/>
-                                <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h7M8 10h5"/>
-                            </svg>
+                            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=1000&q=85"
+                                 alt="Books representing vocabulary and word learning"
+                                 loading="lazy">
+                            <span class="practice-image-label">Build your vocabulary</span>
                         {% else %}
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 3 3 8l9 5 9-5-9-5Z"/>
-                                <path d="m6 10 0 6 6 3 6-3v-6M21 8v7"/>
-                            </svg>
+                            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85"
+                                 alt="People practising communication together"
+                                 loading="lazy">
+                            <span class="practice-image-label">Communication skills</span>
                         {% endif %}
                     </div>
 
+                    <div class="practice-card-top">
+
+                        <div class="practice-icon" aria-hidden="true">
+
+                            {% if slug == "grammar" %}
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M5 4h14v16H5z"/>
+                                    <path d="M8 8h8M8 12h8M8 16h5"/>
+                                </svg>
+
+                            {% elif slug == "vocabulary" %}
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/>
+                                    <path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h7M8 10h5"/>
+                                </svg>
+
+                            {% else %}
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 3 3 8l9 5 9-5-9-5Z"/>
+                                    <path d="m6 10 0 6 6 3 6-3v-6M21 8v7"/>
+                                </svg>
+
+                            {% endif %}
+
+                        </div>
+
+                        <span class="practice-card-number">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </span>
+
+                    </div>
+
                     <h3>{{ title }}</h3>
+
                     <p>{{ description }}</p>
 
                     <span class="practice-card-link">
-                        Explore practice <span aria-hidden="true">&rarr;</span>
+                        Explore practice
+                        <span aria-hidden="true">&rarr;</span>
                     </span>
+
                 </a>
+
             {% empty %}
+
                 <div class="practice-empty">
-                    <p>No practice categories are available right now. Please check back soon.</p>
+                    <p>
+                        No practice categories are available right now.
+                        Please check back soon.
+                    </p>
                 </div>
+
             {% endfor %}
+
         </div>
+
     </section>
 
-    <section class="practice-section" aria-labelledby="interview-title">
+
+    <!-- CAREER PREPARATION -->
+
+    <section class="practice-section"
+             aria-labelledby="interview-title">
+
         <div class="practice-section-heading">
-            <div>
-                <h2 id="interview-title">Career preparation</h2>
-                <p>Build confidence for interviews and workplace conversations.</p>
+
+            <div class="practice-heading-left">
+                <div class="practice-heading-mark"></div>
+
+                <div>
+                    <h2 id="interview-title">
+                        Career Preparation
+                    </h2>
+
+                    <p>
+                        Build confidence for interviews and workplace conversations.
+                    </p>
+                </div>
             </div>
+
+            <span class="practice-section-tag">
+                Professional growth
+            </span>
+
         </div>
 
-        <div class="practice-grid">
-            <a class="practice-card" href="{% url 'interview_hub' %}">
-                <div class="practice-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                        <rect x="3" y="7" width="18" height="13" rx="2"/>
-                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        <path d="M3 12h18M10 12v2h4v-2"/>
-                    </svg>
+        <div class="practice-career-grid">
+
+            <a class="practice-card practice-career-card"
+               href="{% url 'interview_hub' %}">
+
+                <div class="practice-card-image">
+                    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1000&q=85"
+                         alt="Professional team having an interview or workplace discussion"
+                         loading="lazy">
+                    <span class="practice-image-label">Career readiness</span>
+                </div>
+
+                <div class="practice-card-top">
+
+                    <div class="practice-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="7" width="18" height="13" rx="2"/>
+                            <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            <path d="M3 12h18M10 12v2h4v-2"/>
+                        </svg>
+                    </div>
+
+                    <span class="practice-card-number">01</span>
+
                 </div>
 
                 <h3>Interview Questions</h3>
@@ -329,10 +1001,14 @@
                 </p>
 
                 <span class="practice-card-link">
-                    Explore interview practice <span aria-hidden="true">&rarr;</span>
+                    Explore interview practice
+                    <span aria-hidden="true">&rarr;</span>
                 </span>
+
             </a>
+
         </div>
+
     </section>
 
 </div>
