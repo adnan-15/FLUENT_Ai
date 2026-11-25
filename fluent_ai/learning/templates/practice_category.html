@@ -5,289 +5,702 @@
 
 {% block extra_css %}
 <style>
+/* =========================================================
+   FLUENT AI — PREMIUM CATEGORY PRACTICE PAGE
+   Image Cards | Responsive | Light & Dark Mode
+========================================================= */
+
+.category-practice-page {
+    --category-accent: var(--primary);
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 12px 0 55px;
+    color: var(--text);
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.category-practice-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(27px, 5vw, 48px);
+    margin-bottom: 36px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 88% 10%, rgba(139,124,255,.22), transparent 35%),
+        radial-gradient(circle at 65% 110%, rgba(73,144,221,.12), transparent 40%),
+        linear-gradient(130deg, var(--surface), var(--surface-secondary));
+    box-shadow: var(--shadow);
+}
+
+.category-practice-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 260px;
+    height: 260px;
+    top: -140px;
+    right: 8%;
+    border: 1px solid rgba(139,124,255,.19);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 28px rgba(139,124,255,.035),
+        0 0 0 58px rgba(139,124,255,.025);
+}
+
+.category-practice-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 180px;
+    height: 180px;
+    right: 23%;
+    bottom: -130px;
+    border-radius: 50%;
+    background: rgba(115,99,230,.09);
+}
+
+.category-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+}
+
+/* Back link */
+
+.category-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 27px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none !important;
+    transition: gap .2s ease;
+}
+
+.category-back:hover {
+    gap: 13px;
+}
+
+.category-back span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 29px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    font-size: 17px;
+}
+
+/* Hero text */
+
+.category-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 13px;
+    margin-bottom: 17px;
+    border: 1px solid rgba(139,124,255,.25);
+    border-radius: 30px;
+    background: rgba(139,124,255,.10);
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.category-eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.category-practice-hero h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(30px, 4.5vw, 46px);
+    font-weight: 850;
+    line-height: 1.17;
+    letter-spacing: -1.6px;
+    overflow-wrap: anywhere;
+}
+
+.category-practice-hero h1 span {
+    color: var(--primary);
+}
+
+.category-practice-hero p {
+    max-width: 650px;
+    margin: 15px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+/* =========================
+   SECTION HEADING
+========================= */
+
+.exercise-section {
+    margin-top: 34px;
+}
+
+.exercise-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 21px;
+}
+
+.exercise-heading-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.exercise-heading-mark {
+    width: 4px;
+    height: 41px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #8878f3, #5895e5);
+}
+
+.exercise-heading-text h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 21px;
+    font-weight: 830;
+    letter-spacing: -.5px;
+}
+
+.exercise-heading-text p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.exercise-section-tag {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+/* =========================
+   EXERCISE GRID
+========================= */
+
+.exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+/* =========================
+   EXERCISE CARD
+========================= */
+
+.exercise-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 385px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    text-decoration: none !important;
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+}
+
+.exercise-card:hover {
+    transform: translateY(-7px);
+    border-color: var(--exercise-accent, var(--primary));
+    box-shadow: 0 20px 42px rgba(70,75,150,.15);
+}
+
+.exercise-card:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 4px;
+}
+
+/* Card accent colors */
+
+.exercise-card:nth-child(4n+1) {
+    --exercise-accent: #8977ed;
+}
+
+.exercise-card:nth-child(4n+2) {
+    --exercise-accent: #5598df;
+}
+
+.exercise-card:nth-child(4n+3) {
+    --exercise-accent: #39aa9b;
+}
+
+.exercise-card:nth-child(4n+4) {
+    --exercise-accent: #d18b55;
+}
+
+/* =========================
+   CARD IMAGE
+========================= */
+
+.exercise-image {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 175px;
+    flex-shrink: 0;
+    background-color: var(--surface-secondary);
+}
+
+.exercise-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(15,20,40,.02) 35%,
+        rgba(15,20,40,.55) 100%
+    );
+    pointer-events: none;
+}
+
+.exercise-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s cubic-bezier(.2,.7,.2,1);
+}
+
+.exercise-card:hover .exercise-image img {
+    transform: scale(1.09);
+}
+
+.exercise-image-label {
+    position: absolute;
+    z-index: 2;
+    left: 17px;
+    bottom: 15px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 30px;
+    background: rgba(20,25,45,.48);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+}
+
+/* Different images for different cards */
+
+.exercise-card:nth-child(4n+1) .exercise-image img {
+    content: url("https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=900&q=85");
+}
+
+.exercise-card:nth-child(4n+2) .exercise-image img {
+    content: url("https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=85");
+}
+
+.exercise-card:nth-child(4n+3) .exercise-image img {
+    content: url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=85");
+}
+
+.exercise-card:nth-child(4n+4) .exercise-image img {
+    content: url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85");
+}
+
+/* =========================
+   CARD CONTENT
+========================= */
+
+.exercise-card-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 21px 22px 20px;
+}
+
+.exercise-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.exercise-number {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1.3px;
+}
+
+.exercise-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 1px solid color-mix(
+        in srgb,
+        var(--exercise-accent, var(--primary)) 28%,
+        transparent
+    );
+    border-radius: 12px;
+    color: var(--exercise-accent, var(--primary));
+    background: color-mix(
+        in srgb,
+        var(--exercise-accent, var(--primary)) 12%,
+        transparent
+    );
+    font-size: 12px;
+    font-weight: 850;
+    transition: transform .25s ease;
+}
+
+.exercise-card:hover .exercise-mark {
+    transform: translateY(-3px) rotate(-5deg);
+}
+
+.exercise-card h3 {
+    margin: 0 0 9px;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 820;
+    line-height: 1.45;
+    letter-spacing: -.35px;
+    overflow-wrap: anywhere;
+}
+
+.exercise-card p {
+    flex: 1;
+    margin: 0 0 19px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+/* =========================
+   CARD ACTION
+========================= */
+
+.exercise-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--exercise-accent, var(--primary));
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.exercise-link span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface-secondary);
+    font-size: 17px;
+    transition: transform .25s ease, background .25s ease;
+}
+
+.exercise-card:hover .exercise-link span {
+    transform: translateX(4px);
+    background: var(--primary-soft);
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.exercise-empty {
+    grid-column: 1 / -1;
+    padding: 38px 24px;
+    border: 1px dashed var(--border);
+    border-radius: 18px;
+    color: var(--muted);
+    background: var(--surface);
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1050px) {
+    .exercise-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
     .category-practice-page {
-        width: 100%;
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 8px 0 42px;
-        color: var(--text);
+        padding-top: 0;
     }
 
     .category-practice-hero {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        padding: clamp(24px, 4vw, 38px);
+        padding: 26px 21px;
         margin-bottom: 28px;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        background:
-            radial-gradient(circle at 92% 5%, rgba(111, 91, 245, .14), transparent 38%),
-            linear-gradient(135deg, var(--surface), var(--surface-secondary));
+        border-radius: 19px;
     }
 
     .category-back {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 23px;
-        color: var(--primary);
-        font-size: 13px;
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .category-back:hover {
-        text-decoration: underline;
-    }
-
-    .category-eyebrow {
-        margin-bottom: 12px;
-        color: var(--primary);
-        font-size: 11px;
-        font-weight: 750;
-        letter-spacing: 1.3px;
-        text-transform: uppercase;
+        margin-bottom: 22px;
     }
 
     .category-practice-hero h1 {
-        margin: 0;
-        color: var(--text);
-        font-size: clamp(28px, 4vw, 40px);
-        font-weight: 780;
-        line-height: 1.2;
-        letter-spacing: -1.2px;
-        overflow-wrap: anywhere;
+        font-size: clamp(28px, 8vw, 37px);
+        letter-spacing: -1px;
     }
 
     .category-practice-hero p {
-        max-width: 660px;
-        margin: 12px 0 0;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.8;
+        font-size: 13px;
+    }
+
+    .exercise-section {
+        margin-top: 28px;
     }
 
     .exercise-section-heading {
-        margin-bottom: 17px;
+        align-items: flex-start;
     }
 
-    .exercise-section-heading h2 {
-        margin: 0;
-        color: var(--text);
+    .exercise-heading-text h2 {
         font-size: 19px;
-        font-weight: 750;
-        letter-spacing: -.35px;
-    }
-
-    .exercise-section-heading p {
-        margin-top: 5px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.7;
     }
 
     .exercise-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
     }
 
     .exercise-card {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        min-height: 245px;
-        padding: 23px;
-        border: 1px solid var(--border);
-        border-radius: 15px;
-        color: var(--text);
-        background: var(--surface);
-        box-shadow: var(--shadow);
-        text-decoration: none;
-        transition: transform .2s ease, border-color .2s ease,
-                    box-shadow .2s ease;
+        min-height: 0;
+        border-radius: 17px;
     }
 
-    .exercise-card:hover {
-        transform: translateY(-3px);
-        border-color: var(--primary);
-        box-shadow: 0 12px 28px rgba(49, 91, 234, .09);
+    .exercise-image {
+        height: 190px;
     }
 
-    .exercise-card:focus-visible {
-        outline: 3px solid var(--primary);
-        outline-offset: 3px;
+    .exercise-card-content {
+        padding: 19px;
     }
 
     .exercise-card-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 23px;
-    }
-
-    .exercise-number {
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 750;
-        letter-spacing: 1.1px;
-    }
-
-    .exercise-mark {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
-        flex: 0 0 42px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        color: var(--primary);
-        background: var(--primary-soft);
-        font-size: 15px;
-        font-weight: 750;
-    }
-
-    .exercise-card h3 {
-        margin: 0 0 10px;
-        color: var(--text);
-        font-size: 18px;
-        font-weight: 720;
-        line-height: 1.4;
-        overflow-wrap: anywhere;
+        margin-bottom: 14px;
     }
 
     .exercise-card p {
-        flex: 1;
-        margin: 0 0 22px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.8;
-        overflow-wrap: anywhere;
+        margin-bottom: 16px;
+    }
+}
+
+@media (max-width: 390px) {
+    .exercise-section-tag {
+        display: none;
     }
 
-    .exercise-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--primary);
-        font-size: 13px;
-        font-weight: 700;
+    .exercise-image {
+        height: 165px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exercise-card,
+    .exercise-image img,
+    .exercise-mark,
+    .exercise-link span,
+    .category-back {
+        transition: none !important;
     }
 
-    .exercise-link span {
-        transition: transform .2s ease;
+    .exercise-card:hover {
+        transform: none;
     }
 
-    .exercise-card:hover .exercise-link span {
-        transform: translateX(4px);
+    .exercise-card:hover .exercise-image img {
+        transform: none;
     }
-
-    .exercise-empty {
-        grid-column: 1 / -1;
-        padding: 30px 20px;
-        border: 1px dashed var(--border);
-        border-radius: 14px;
-        color: var(--muted);
-        background: var(--surface);
-        text-align: center;
-    }
-
-    @media (max-width: 1000px) {
-        .exercise-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    @media (max-width: 600px) {
-        .category-practice-hero {
-            padding: 23px 19px;
-            border-radius: 14px;
-        }
-
-        .category-practice-hero h1 {
-            letter-spacing: -.7px;
-        }
-
-        .exercise-grid {
-            grid-template-columns: minmax(0, 1fr);
-            gap: 13px;
-        }
-
-        .exercise-card {
-            min-height: 0;
-            padding: 20px;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .exercise-card,
-        .exercise-link span {
-            transition: none;
-        }
-    }
+}
 </style>
 {% endblock %}
+
 
 {% block content %}
 <div class="category-practice-page">
 
+    <!-- CATEGORY HERO -->
+
     <section class="category-practice-hero">
-        <a class="category-back" href="{% url 'practice' %}">
-            <span aria-hidden="true">&larr;</span>
-            Back to Practice Hub
-        </a>
 
-        <div class="category-eyebrow">Focused learning</div>
+        <div class="category-hero-content">
 
-        <h1>{{ category_title }} Practice</h1>
+            <a class="category-back" href="{% url 'practice' %}">
+                <span aria-hidden="true">&larr;</span>
+                Back to Practice Hub
+            </a>
 
-        <p>
-            Choose an exercise that matches your learning goals.
-            Work through each activity at your own pace and build
-            stronger, more confident English skills.
-        </p>
-    </section>
+            <div class="category-eyebrow">
+                Focused learning
+            </div>
 
-    <section aria-labelledby="exercise-list-heading">
-        <div class="exercise-section-heading">
-            <h2 id="exercise-list-heading">Choose an exercise</h2>
-            <p>Select an activity below to get started.</p>
+            <h1>
+                {{ category_title }} <span>Practice</span>
+            </h1>
+
+            <p>
+                Choose an exercise that matches your learning goals.
+                Work through each activity at your own pace and build
+                stronger, more confident English skills.
+            </p>
+
         </div>
 
+    </section>
+
+
+    <!-- EXERCISE SECTION -->
+
+    <section class="exercise-section"
+             aria-labelledby="exercise-list-heading">
+
+        <div class="exercise-section-heading">
+
+            <div class="exercise-heading-left">
+
+                <div class="exercise-heading-mark"></div>
+
+                <div class="exercise-heading-text">
+
+                    <h2 id="exercise-list-heading">
+                        Choose an Exercise
+                    </h2>
+
+                    <p>
+                        Select an activity below to get started.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <span class="exercise-section-tag">
+                Improve your skills
+            </span>
+
+        </div>
+
+
+        <!-- DYNAMIC EXERCISES -->
+
         <div class="exercise-grid">
+
             {% for slug, title, description in practice_types %}
+
                 <a
                     class="exercise-card"
                     href="{% url 'practice_type_page' category slug %}"
                 >
-                    <div class="exercise-card-top">
-                        <span class="exercise-number">
-                            EXERCISE {{ forloop.counter|stringformat:"02d" }}
+
+                    <!-- EXERCISE IMAGE -->
+
+                    <div class="exercise-image" aria-hidden="true">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=900&q=85"
+                            alt=""
+                            loading="lazy"
+                        >
+
+                        <span class="exercise-image-label">
+                            Practice & Learn
                         </span>
 
-                        <span class="exercise-mark" aria-hidden="true">
-                            {{ forloop.counter|stringformat:"02d" }}
-                        </span>
                     </div>
 
-                    <h3>{{ title }}</h3>
 
-                    <p>{{ description }}</p>
+                    <!-- CARD CONTENT -->
 
-                    <span class="exercise-link">
-                        Start exercise <span aria-hidden="true">&rarr;</span>
-                    </span>
+                    <div class="exercise-card-content">
+
+                        <div class="exercise-card-top">
+
+                            <span class="exercise-number">
+                                EXERCISE {{ forloop.counter|stringformat:"02d" }}
+                            </span>
+
+                            <span class="exercise-mark" aria-hidden="true">
+                                {{ forloop.counter|stringformat:"02d" }}
+                            </span>
+
+                        </div>
+
+                        <h3>{{ title }}</h3>
+
+                        <p>{{ description }}</p>
+
+                        <span class="exercise-link">
+                            Start exercise
+                            <span aria-hidden="true">&rarr;</span>
+                        </span>
+
+                    </div>
+
                 </a>
+
             {% empty %}
+
                 <div class="exercise-empty">
                     No exercises are available in this category yet.
                     Please check back soon.
                 </div>
+
             {% endfor %}
+
         </div>
+
     </section>
 
 </div>
