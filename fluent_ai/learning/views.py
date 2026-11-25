@@ -14,6 +14,7 @@ from django.contrib.auth import (authenticate,login,logout,)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from .writing_topics import get_random_topic
 from django.db.models import Avg, Count, Sum
 from django.shortcuts import (get_object_or_404,redirect,render,)
 from django.utils import timezone
@@ -1087,18 +1088,55 @@ def assessment_mcq(request):
         attempt_id=attempt.id,
     )
 
+
 @login_required
 def assessment_writing(request):
-    """Run the independent writing proficiency model."""
+    """Run the writing proficiency assessment with random topics."""
+
+    profile = get_profile(request.user)
+    level = profile.level.upper()
+
     if request.method == "POST":
+
+        # Allow the student to generate another topic.
+        if request.POST.get("action") == "new_topic":
+            previous_topic = request.session.get(
+                "writing_topic"
+            )
+
+            topic = get_random_topic(
+                level,
+                previous_topic
+            )
+
+            request.session["writing_topic"] = topic
+
+            return render(
+                request,
+                "assessment_writing.html",
+                {
+                    "topic": topic,
+                    "level": level,
+                },
+            )
+
         writing = request.POST.get(
             "writing_response", ""
         ).strip()
 
+        topic = request.session.get("writing_topic", "")
+
+        if not topic:
+            messages.error(
+                request,
+                "Please select a writing topic first."
+            )
+            return redirect("assessment_writing")
+
         if len(writing) < 50:
             messages.error(
                 request,
-                "Please write at least 50 characters in English.",
+                "Please write at least 50 characters in English."
             )
             return redirect("assessment_writing")
 
@@ -1109,13 +1147,31 @@ def assessment_writing(request):
         if not model_path.exists():
             messages.error(
                 request,
-                "Writing model not found. Run trainmodel1.py first.",
+                "Writing model not found. Run trainmodel1.py first."
             )
             return redirect("assessment_writing")
 
-        saved = joblib.load(model_path)
-        model = saved["model"]
-        predicted = str(model.predict([writing])[0])
+        try:
+            saved = joblib.load(model_path)
+            model = saved["model"]
+
+            predicted = str(model.predict([writing])[0])
+
+            probabilities = model.predict_proba([writing])[0]
+            confidence = float(max(probabilities) * 100)
+
+        except Exception:
+            import logging
+
+            logging.getLogger(__name__).exception(
+                "Writing assessment prediction failed"
+            )
+
+            messages.error(
+                request,
+                "Unable to evaluate your writing. Please try again."
+            )
+            return redirect("assessment_writing")
 
         allowed_labels = {
             "Needs Improvement",
@@ -1128,23 +1184,25 @@ def assessment_writing(request):
             messages.error(
                 request,
                 "The writing model returned an unsupported label. "
-                "Retrain trainmodel1.py.",
+                "Retrain trainmodel1.py."
             )
             return redirect("assessment_writing")
 
-        probabilities = model.predict_proba([writing])[0]
-        confidence = float(max(probabilities) * 100)
-
         words = writing.split()
+
         sentences = [
             sentence.strip()
             for sentence in re.split(r"[.!?]+", writing)
             if sentence.strip()
         ]
 
-        unique_words = len(set(word.lower() for word in words))
+        unique_words = len(
+            set(word.lower() for word in words)
+        )
+
         avg_sentence_length = (
-            len(words) / len(sentences) if sentences else 0
+            len(words) / len(sentences)
+            if sentences else 0
         )
 
         writing_score = min(
@@ -1180,7 +1238,10 @@ def assessment_writing(request):
             final_score=round(writing_score, 2),
             predicted_level=predicted,
             writing_response=writing,
-            recommendations=recommendations[predicted],
+            recommendations=(
+                f"Writing Topic: {topic}\n\n"
+                f"{recommendations[predicted]}"
+            ),
         )
 
         log_event(
@@ -1190,12 +1251,30 @@ def assessment_writing(request):
             writing_score,
         )
 
+        # Clear the completed topic.
+        request.session.pop("writing_topic", None)
+
         return redirect(
             "assessment_result",
             attempt_id=attempt.id,
         )
 
-    return render(request, "assessment_writing.html")
+    # GET: generate a topic if one is not already selected.
+    topic = request.session.get("writing_topic")
+
+    if not topic:
+        topic = get_random_topic(level)
+        request.session["writing_topic"] = topic
+
+    return render(
+        request,
+        "assessment_writing.html",
+        {
+            "topic": topic,
+            "level": level,
+        },
+    )
+
 
 
 @login_required
