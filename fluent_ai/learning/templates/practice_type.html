@@ -5,335 +5,657 @@
 
 {% block extra_css %}
 <style>
+/* =========================================================
+   FLUENT AI — PREMIUM PRACTICE QUESTION PAGE
+   Visual Upgrade | Existing Django Functionality Preserved
+========================================================= */
+
+.question-page {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 12px 0 50px;
+    color: var(--text);
+}
+
+/* ================= HERO ================= */
+
+.question-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    align-items: center;
+    gap: 25px;
+    padding: clamp(25px, 4vw, 38px);
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+    border-radius: 23px;
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(111,91,245,.17), transparent 42%),
+        radial-gradient(ellipse at 0% 100%, var(--primary-soft), transparent 45%),
+        var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.question-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 230px;
+    height: 230px;
+    top: -130px;
+    right: 20%;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 25px rgba(125,125,255,.025),
+        0 0 0 50px rgba(125,125,255,.02);
+}
+
+.question-hero-content {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+}
+
+.question-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 27px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 750;
+    text-decoration: none !important;
+    transition: gap .2s ease;
+}
+
+.question-back:hover {
+    gap: 13px;
+    color: var(--primary);
+}
+
+.question-back span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 29px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    font-size: 17px;
+}
+
+.question-header {
+    position: relative;
+}
+
+.question-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+    padding: 8px 13px;
+    color: var(--primary);
+    background: var(--primary-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.question-eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 9px var(--primary);
+}
+
+.question-header h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(28px, 4vw, 39px);
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: -.045em;
+    overflow-wrap: anywhere;
+}
+
+.question-header p {
+    max-width: 600px;
+    margin: 13px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.85;
+}
+
+/* Hero image */
+
+.question-hero-image {
+    position: relative;
+    overflow: hidden;
+    height: 190px;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 18px;
+    background: var(--surface-secondary);
+    box-shadow: 0 12px 30px rgba(40,45,90,.13);
+}
+
+.question-hero-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+}
+
+.question-hero:hover .question-hero-image img {
+    transform: scale(1.06);
+}
+
+.question-hero-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        transparent 40%,
+        rgba(15,20,40,.55)
+    );
+    pointer-events: none;
+}
+
+.question-image-caption {
+    position: absolute;
+    z-index: 2;
+    left: 13px;
+    bottom: 13px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 30px;
+    color: #fff;
+    background: rgba(20,25,45,.48);
+    font-size: 10px;
+    font-weight: 800;
+    backdrop-filter: blur(8px);
+}
+
+/* ================= INSTRUCTIONS ================= */
+
+.question-instructions {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    color: var(--muted);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+.instruction-mark {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    color: var(--primary);
+    background: var(--primary-soft);
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.question-instructions strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 850;
+}
+
+/* ================= FORM ================= */
+
+.question-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ================= QUESTION CARD ================= */
+
+.question-card {
+    position: relative;
+    min-width: 0;
+    padding: clamp(21px, 3vw, 29px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition:
+        border-color .22s ease,
+        transform .22s ease,
+        box-shadow .22s ease;
+}
+
+.question-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 25px;
+    right: 25px;
+    height: 3px;
+    border-radius: 0 0 5px 5px;
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        #65a5e8
+    );
+    opacity: .65;
+}
+
+.question-card:hover {
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(65,75,145,.09);
+}
+
+.question-card:focus-within {
+    border-color: var(--primary);
+}
+
+/* Question number */
+
+.question-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 19px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.question-number span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    color: var(--primary);
+    background: var(--primary-soft);
+    font-size: 13px;
+    letter-spacing: 0;
+}
+
+.question-text {
+    margin: 0 0 23px;
+    color: var(--text);
+    font-size: clamp(16px, 2vw, 19px);
+    font-weight: 750;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+/* ================= MCQ OPTIONS ================= */
+
+.answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.answer-option {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    min-width: 0;
+    padding: 15px 17px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    color: var(--text);
+    background: var(--surface);
+    cursor: pointer;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.answer-option:hover {
+    border-color: var(--primary);
+    background: var(--surface-secondary);
+    transform: translateX(3px);
+}
+
+.answer-option:has(input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+    box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.answer-option:has(input:focus-visible) {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.answer-option input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin: 3px 0 0;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.answer-option span {
+    min-width: 0;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+/* ================= TEXT ANSWER ================= */
+
+.answer-label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.answer-input {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    outline: none;
+    color: var(--text);
+    background: var(--surface-secondary);
+    font: inherit;
+    font-size: 14px;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.answer-input::placeholder {
+    color: var(--muted);
+    opacity: .75;
+}
+
+.answer-input:focus {
+    border-color: var(--primary);
+    background: var(--surface);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+}
+
+/* ================= SUBMIT AREA ================= */
+
+.question-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 22px;
+    margin-top: 3px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.question-count {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.question-count strong {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.submit-practice {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 49px;
+    padding: 12px 24px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: #fff;
+    background: var(--primary);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 850;
+    cursor: pointer;
+    box-shadow: 0 7px 18px rgba(80,90,190,.18);
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+}
+
+.submit-practice:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 11px 25px rgba(80,90,190,.25);
+}
+
+.submit-practice:active {
+    transform: translateY(-1px);
+}
+
+.submit-practice:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 4px;
+}
+
+.submit-arrow {
+    font-size: 18px;
+    line-height: 1;
+    transition: transform .2s ease;
+}
+
+.submit-practice:hover .submit-arrow {
+    transform: translateX(4px);
+}
+
+/* ================= EMPTY STATE ================= */
+
+.empty-questions {
+    padding: 42px 25px;
+    border: 1px dashed var(--border);
+    border-radius: 18px;
+    color: var(--muted);
+    background: var(--surface);
+    text-align: center;
+}
+
+.empty-questions h2 {
+    margin: 0 0 10px;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.empty-questions p {
+    max-width: 470px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 760px) {
+    .question-hero {
+        grid-template-columns: minmax(0, 1fr) 190px;
+        gap: 17px;
+    }
+
+    .question-hero-image {
+        height: 160px;
+    }
+}
+
+@media (max-width: 650px) {
     .question-page {
-        width: 100%;
-        max-width: 850px;
-        margin: 0 auto;
-        padding: 8px 0 45px;
-        color: var(--text);
+        padding: 5px 0 32px;
     }
 
     .question-hero {
-        position: relative;
-        overflow: hidden;
-        padding: clamp(22px, 4vw, 34px);
-        margin-bottom: 26px;
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        background:
-            radial-gradient(circle at 95% 5%, rgba(111, 91, 245, .13), transparent 36%),
-            linear-gradient(135deg, var(--surface), var(--surface-secondary));
+        grid-template-columns: minmax(0, 1fr);
+        padding: 24px 19px;
+        border-radius: 18px;
+    }
+
+    .question-hero-image {
+        height: 175px;
+        max-width: 100%;
     }
 
     .question-back {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 23px;
-        color: var(--primary);
-        font-size: 13px;
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .question-back:hover {
-        text-decoration: underline;
-    }
-
-    .question-eyebrow {
-        margin-bottom: 10px;
-        color: var(--primary);
-        font-size: 11px;
-        font-weight: 750;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
+        margin-bottom: 22px;
     }
 
     .question-header h1 {
-        margin: 0;
-        color: var(--text);
-        font-size: clamp(27px, 4vw, 36px);
-        line-height: 1.25;
-        letter-spacing: -.8px;
-        overflow-wrap: anywhere;
-    }
-
-    .question-header p {
-        margin-top: 10px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.8;
+        font-size: 28px;
     }
 
     .question-instructions {
-        display: flex;
-        align-items: flex-start;
-        gap: 11px;
-        padding: 14px 16px;
-        margin-bottom: 22px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        color: var(--muted);
-        background: var(--surface);
-        font-size: 13px;
-        line-height: 1.7;
-    }
-
-    .question-instructions strong {
-        color: var(--text);
-    }
-
-    .question-form {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+        padding: 14px;
     }
 
     .question-card {
-        min-width: 0;
-        padding: clamp(18px, 3vw, 24px);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        background: var(--surface);
-        box-shadow: var(--shadow);
-    }
-
-    .question-card:focus-within {
-        border-color: var(--primary);
-    }
-
-    .question-number {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 15px;
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 750;
-        letter-spacing: .8px;
-        text-transform: uppercase;
-    }
-
-    .question-number span {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 27px;
-        height: 27px;
-        border-radius: 8px;
-        color: var(--primary);
-        background: var(--primary-soft);
-        font-size: 12px;
-        letter-spacing: 0;
+        padding: 21px 16px;
+        border-radius: 15px;
     }
 
     .question-text {
-        margin: 0 0 20px;
-        color: var(--text);
-        font-size: clamp(16px, 2vw, 18px);
-        font-weight: 650;
-        line-height: 1.75;
-        overflow-wrap: anywhere;
-    }
-
-    .answer-options {
-        display: flex;
-        flex-direction: column;
-        gap: 9px;
+        font-size: 16px;
     }
 
     .answer-option {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        min-width: 0;
-        padding: 13px 14px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        color: var(--text);
-        background: var(--surface);
-        cursor: pointer;
-        transition: border-color .15s ease, background .15s ease;
-    }
-
-    .answer-option:hover {
-        border-color: var(--primary);
-        background: var(--surface-secondary);
-    }
-
-    .answer-option:has(input:checked) {
-        border-color: var(--primary);
-        background: var(--primary-soft);
-    }
-
-    .answer-option input {
-        flex: 0 0 auto;
-        width: 16px;
-        height: 16px;
-        margin: 3px 0 0;
-        accent-color: var(--primary);
-        cursor: pointer;
-    }
-
-    .answer-option span {
-        min-width: 0;
-        font-size: 14px;
-        line-height: 1.65;
-        overflow-wrap: anywhere;
-    }
-
-    .answer-label {
-        display: block;
-        margin-bottom: 8px;
-        color: var(--text);
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .answer-input {
-        display: block;
-        width: 100%;
-        min-height: 46px;
-        padding: 12px 14px;
-        border: 1px solid var(--border);
-        border-radius: 9px;
-        outline: none;
-        color: var(--text);
-        background: var(--surface);
-        font: inherit;
-        font-size: 14px;
-        transition: border-color .15s ease, box-shadow .15s ease;
-    }
-
-    .answer-input::placeholder {
-        color: var(--subtle);
-    }
-
-    .answer-input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(49, 91, 234, .12);
+        padding: 13px;
     }
 
     .question-actions {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        padding-top: 5px;
+        align-items: stretch;
+        flex-direction: column;
+        padding: 17px;
     }
 
     .question-count {
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.6;
-    }
-
-    .submit-practice {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        min-height: 44px;
-        padding: 12px 20px;
-        border: 1px solid transparent;
-        border-radius: 9px;
-        color: #ffffff;
-        background: #315bea;
-        font: inherit;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform .15s ease, opacity .15s ease;
-    }
-
-    .submit-practice:hover {
-        transform: translateY(-1px);
-        opacity: .93;
-    }
-
-    .submit-practice:focus-visible {
-        outline: 3px solid var(--primary);
-        outline-offset: 3px;
-    }
-
-    .empty-questions {
-        padding: 32px 24px;
-        border: 1px dashed var(--border);
-        border-radius: 14px;
-        color: var(--muted);
-        background: var(--surface);
         text-align: center;
     }
 
-    .empty-questions h2 {
-        margin-bottom: 9px;
-        color: var(--text);
-        font-size: 19px;
+    .submit-practice {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .answer-option,
+    .answer-input,
+    .submit-practice,
+    .question-card,
+    .question-back,
+    .question-hero-image img {
+        transition: none !important;
     }
 
-    .empty-questions p {
-        font-size: 13px;
-        line-height: 1.8;
+    .question-card:hover,
+    .answer-option:hover {
+        transform: none;
     }
-
-    html[data-theme="dark"] .submit-practice {
-        color: #111827;
-        background: #91aaff;
-    }
-
-    @media (max-width: 600px) {
-        .question-hero {
-            padding: 22px 18px;
-        }
-
-        .question-card {
-            padding: 18px;
-        }
-
-        .question-actions {
-            align-items: stretch;
-            flex-direction: column;
-        }
-
-        .submit-practice {
-            width: 100%;
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .answer-option,
-        .answer-input,
-        .submit-practice {
-            transition: none;
-        }
-    }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="question-page">
 
-    <section class="question-hero">
-        <a
-            class="question-back"
-            href="{% url 'practice_category' category %}"
-        >
-            <span aria-hidden="true">&larr;</span>
-            Back to {{ category_title }}
-        </a>
+    <!-- PREMIUM PRACTICE HERO -->
 
-        <div class="question-header">
-            <div class="question-eyebrow">Practice session</div>
-            <h1>{{ practice_type_title }}</h1>
-            <p>
-                {{ category_title }} practice. Read each question carefully
-                and select or enter your answer before submitting.
-            </p>
+    <section class="question-hero">
+
+        <div class="question-hero-content">
+
+            <a
+                class="question-back"
+                href="{% url 'practice_category' category %}"
+            >
+                <span aria-hidden="true">&larr;</span>
+                Back to {{ category_title }}
+            </a>
+
+            <div class="question-header">
+
+                <div class="question-eyebrow">
+                    Practice session
+                </div>
+
+                <h1>{{ practice_type_title }}</h1>
+
+                <p>
+                    {{ category_title }} practice. Read each question carefully
+                    and select or enter your answer before submitting.
+                </p>
+
+            </div>
+
         </div>
+
+        <div class="question-hero-image">
+            <img
+                src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=85"
+                alt="Books and study materials on a desk"
+                loading="lazy"
+            >
+            <span class="question-image-caption">
+                Learn • Practice • Improve
+            </span>
+        </div>
+
     </section>
 
+
     {% if questions %}
+
+        <!-- INSTRUCTIONS -->
+
         <div class="question-instructions">
+
+            <div class="instruction-mark" aria-hidden="true">i</div>
+
             <div>
                 <strong>Before you begin</strong>
                 <div>
@@ -341,16 +663,22 @@
                     together when you select the submit button.
                 </div>
             </div>
+
         </div>
+
+
+        <!-- QUESTION FORM -->
 
         <form
             class="question-form"
             method="post"
             action="{% url 'practice_question_submit' category practice_type %}"
         >
+
             {% csrf_token %}
 
             {% for question in questions %}
+
                 <section class="question-card">
 
                     <div class="question-number">
@@ -363,6 +691,7 @@
                     </h2>
 
                     {% if practice_type == "mcq" %}
+
                         <div class="answer-options">
 
                             {% if question.option_a %}
@@ -411,7 +740,9 @@
                             {% endif %}
 
                         </div>
+
                     {% else %}
+
                         <label
                             class="answer-label"
                             for="answer_{{ question.id }}"
@@ -424,36 +755,51 @@
                             id="answer_{{ question.id }}"
                             type="text"
                             name="answer_{{ question.id }}"
-                            placeholder="Type your answer here"
+                            placeholder="Type your answer here..."
                             autocomplete="off"
                             required
                         >
+
                     {% endif %}
 
                 </section>
+
             {% endfor %}
 
+
+            <!-- SUBMIT AREA -->
+
             <div class="question-actions">
+
                 <p class="question-count">
-                    {{ questions|length }} question{{ questions|length|pluralize }}
-                    in this session
+                    <strong>{{ questions|length }}</strong>
+                    question{{ questions|length|pluralize }} in this session
                 </p>
 
                 <button class="submit-practice" type="submit">
                     Submit Answers
-                    <span aria-hidden="true">&rarr;</span>
+                    <span class="submit-arrow" aria-hidden="true">&rarr;</span>
                 </button>
+
             </div>
+
         </form>
 
     {% else %}
+
+        <!-- EMPTY STATE -->
+
         <div class="empty-questions">
+
             <h2>No questions available yet</h2>
+
             <p>
                 Questions for this category and exercise type have not been
                 added yet. Please check back later.
             </p>
+
         </div>
+
     {% endif %}
 
 </div>
