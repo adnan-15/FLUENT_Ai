@@ -1,88 +1,729 @@
+
 {% extends "base.html" %}
 {% block title %}{{ module.name }} - Fluent AI{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ==========================================
+   FLUENT AI — MODULE LEARNING JOURNEY
+========================================== */
+
+.module-page {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding-bottom: 45px;
+    color: #242943;
+}
+
+/* HERO */
+
+.module-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 38px;
+    border-radius: 25px;
+    background: linear-gradient(120deg, #5146d8, #7864ec 58%, #9874ec);
+    color: white;
+    margin-bottom: 28px;
+    box-shadow: 0 14px 35px rgba(91, 77, 205, .16);
+}
+
+.module-hero::before,
+.module-hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,.09);
+    pointer-events: none;
+}
+
+.module-hero::before {
+    width: 260px;
+    height: 260px;
+    right: -75px;
+    top: -130px;
+}
+
+.module-hero::after {
+    width: 150px;
+    height: 150px;
+    right: 180px;
+    bottom: -115px;
+}
+
+.module-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 750px;
+}
+
+.module-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 13px;
+    border: 1px solid rgba(255,255,255,.3);
+    background: rgba(255,255,255,.13);
+    border-radius: 30px;
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 17px;
+}
+
+.module-hero h1 {
+    color: white;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: -.8px;
+    margin: 0 0 12px;
+}
+
+.module-hero p {
+    color: rgba(255,255,255,.86);
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.module-hero-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 23px;
+}
+
+.module-hero-stat {
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.13);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* SECTION INTRO */
+
+.module-section-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.module-section-intro h2 {
+    font-size: 21px;
+    font-weight: 850;
+    color: #303653;
+    margin: 0 0 5px;
+}
+
+.module-section-intro p {
+    color: #81879a;
+    font-size: 13px;
+    margin: 0;
+}
+
+.module-stage-count {
+    padding: 8px 13px;
+    border-radius: 10px;
+    background: #f0eeff;
+    color: #6558d8;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* STAGE CARD */
+
+.module-stage-card {
+    position: relative;
+    padding: 25px;
+    margin-bottom: 22px;
+    border-radius: 21px;
+    border: 1px solid #e9e9f3;
+    background: #fff;
+    box-shadow: 0 6px 22px rgba(35,40,80,.035);
+    transition: .25s ease;
+}
+
+.module-stage-card:hover {
+    border-color: #d8d2ff;
+    box-shadow: 0 12px 30px rgba(90,76,200,.08);
+}
+
+.module-stage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0eff6;
+}
+
+.module-stage-title-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.module-stage-number {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    color: white;
+    font-size: 17px;
+    font-weight: 850;
+    background: linear-gradient(135deg, #6558e8, #9877ed);
+    box-shadow: 0 6px 14px rgba(101,88,232,.18);
+}
+
+.module-stage-label {
+    display: block;
+    color: #858ba0;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.module-stage-name {
+    color: #343a58;
+    font-size: 20px;
+    font-weight: 850;
+    margin: 0;
+}
+
+.module-stage-total {
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #f6f5ff;
+    color: #6659d5;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* LESSON LIST */
+
+.module-lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.module-lesson-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 17px 18px;
+    border: 1px solid #ededf4;
+    border-radius: 15px;
+    background: #fafaff;
+    transition: .22s ease;
+}
+
+.module-lesson-card:hover {
+    background: #f6f4ff;
+    border-color: #d9d3ff;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 17px rgba(90,76,200,.06);
+}
+
+.module-lesson-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.module-lesson-number {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #eeecff;
+    color: #6859dc;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.module-lesson-details {
+    min-width: 0;
+}
+
+.module-lesson-label {
+    display: block;
+    color: #8a90a2;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.module-lesson-title {
+    color: #343a59;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.5;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.module-lesson-description {
+    color: #858b9d;
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 5px 0 0;
+}
+
+.module-open-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 10px 17px;
+    border-radius: 10px;
+    color: white !important;
+    background: linear-gradient(120deg, #6558e8, #8970ed);
+    text-decoration: none !important;
+    font-size: 12px;
+    font-weight: 800;
+    transition: .2s ease;
+    box-shadow: 0 5px 12px rgba(101,88,232,.13);
+}
+
+.module-open-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 17px rgba(101,88,232,.22);
+}
+
+/* EMPTY STATE */
+
+.module-empty {
+    padding: 25px;
+    text-align: center;
+    color: #858ba0;
+    font-size: 13px;
+    border: 1px dashed #dcdbea;
+    background: #fafaff;
+    border-radius: 14px;
+}
+
+/* FOOTER */
+
+.module-footer-note {
+    padding: 19px 22px;
+    margin-top: 25px;
+    border-radius: 15px;
+    background: linear-gradient(120deg, #f2f0ff, #f1f7ff);
+    border: 1px solid #e8e5ff;
+    color: #656b85;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.module-footer-note strong {
+    color: #5d50ce;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 650px) {
+    .module-hero {
+        padding: 27px 21px;
+        border-radius: 20px;
+    }
+
+    .module-stage-card {
+        padding: 18px;
+    }
+
+    .module-stage-name {
+        font-size: 17px;
+    }
+
+    .module-lesson-card {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .module-lesson-info {
+        width: 100%;
+    }
+
+    .module-open-btn {
+        width: 100%;
+    }
+
+    .module-stage-total {
+        font-size: 11px;
+    }
+}
+
+/* =========================================================
+   FLUENT AI — MODULE PAGE COMPLETE DARK MODE
+   Works with existing base.html theme toggle
+========================================================= */
+
+html[data-theme="dark"] .module-page {
+    color: #edf0ff;
+}
+
+/* Hero */
+
+html[data-theme="dark"] .module-hero {
+    background: linear-gradient(
+        120deg,
+        #34318e,
+        #5145a9 58%,
+        #7055b5
+    );
+    box-shadow: 0 14px 35px rgba(0, 0, 0, .25);
+}
+
+html[data-theme="dark"] .module-eyebrow {
+    color: #f1efff;
+    background: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.22);
+}
+
+html[data-theme="dark"] .module-hero h1 {
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .module-hero p {
+    color: rgba(240,243,255,.85);
+}
+
+html[data-theme="dark"] .module-hero-stat {
+    background: rgba(255,255,255,.12);
+    color: #f3f2ff;
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+/* Section introduction */
+
+html[data-theme="dark"] .module-section-intro h2 {
+    color: #edf0ff;
+}
+
+html[data-theme="dark"] .module-section-intro p {
+    color: #a6b1cc;
+}
+
+html[data-theme="dark"] .module-stage-count {
+    background: rgba(139, 124, 255, .15);
+    color: #c3baff;
+    border: 1px solid rgba(165, 151, 255, .18);
+}
+
+/* Stage cards */
+
+html[data-theme="dark"] .module-stage-card {
+    background: #182037;
+    border-color: rgba(165, 181, 235, .16);
+    box-shadow: 0 7px 24px rgba(0,0,0,.17);
+}
+
+html[data-theme="dark"] .module-stage-card:hover {
+    background: #1c2742;
+    border-color: rgba(155, 143, 255, .4);
+    box-shadow: 0 12px 30px rgba(0,0,0,.24);
+}
+
+html[data-theme="dark"] .module-stage-header {
+    border-bottom-color: rgba(165, 181, 235, .15);
+}
+
+html[data-theme="dark"] .module-stage-number {
+    background: linear-gradient(135deg, #7669ed, #a184f2);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(101,88,232,.22);
+}
+
+html[data-theme="dark"] .module-stage-label {
+    color: #a6b1cc;
+}
+
+html[data-theme="dark"] .module-stage-name {
+    color: #e9ecff;
+}
+
+html[data-theme="dark"] .module-stage-total {
+    background: rgba(139, 124, 255, .14);
+    color: #c3baff;
+    border: 1px solid rgba(165, 151, 255, .16);
+}
+
+/* Lesson cards */
+
+html[data-theme="dark"] .module-lesson-card {
+    background: #202b49;
+    border-color: rgba(165, 181, 235, .13);
+}
+
+html[data-theme="dark"] .module-lesson-card:hover {
+    background: #293453;
+    border-color: rgba(155, 143, 255, .4);
+    box-shadow: 0 7px 20px rgba(0,0,0,.2);
+}
+
+html[data-theme="dark"] .module-lesson-number {
+    background: rgba(139, 124, 255, .17);
+    color: #c5bdff;
+    border: 1px solid rgba(165, 151, 255, .16);
+}
+
+html[data-theme="dark"] .module-lesson-label {
+    color: #a6b1cc;
+}
+
+html[data-theme="dark"] .module-lesson-title {
+    color: #e9edff;
+}
+
+html[data-theme="dark"] .module-lesson-description {
+    color: #aebad3;
+}
+
+/* Open lesson button */
+
+html[data-theme="dark"] .module-open-btn {
+    background: linear-gradient(120deg, #7165e5, #9275ed);
+    color: #ffffff !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,.2);
+}
+
+html[data-theme="dark"] .module-open-btn:hover {
+    background: linear-gradient(120deg, #8175f1, #a083f5);
+    box-shadow: 0 8px 20px rgba(0,0,0,.28);
+}
+
+/* Empty state */
+
+html[data-theme="dark"] .module-empty {
+    background: #202b49;
+    border-color: rgba(165, 181, 235, .22);
+    color: #aebad3;
+}
+
+/* Footer note */
+
+html[data-theme="dark"] .module-footer-note {
+    background: linear-gradient(
+        120deg,
+        rgba(105, 91, 207, .17),
+        rgba(65, 112, 180, .14)
+    );
+    border-color: rgba(165, 181, 235, .17);
+    color: #c0cbe0;
+}
+
+html[data-theme="dark"] .module-footer-note strong {
+    color: #c2b8ff;
+}
+
+/* Smooth transitions */
+
+.module-page .module-stage-card,
+.module-page .module-lesson-card,
+.module-page .module-lesson-number,
+.module-page .module-stage-total,
+.module-page .module-stage-count,
+.module-page .module-footer-note,
+.module-page .module-empty,
+.module-page .module-open-btn {
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        color .25s ease,
+        box-shadow .25s ease,
+        transform .25s ease;
+}
+
+</style>
+{% endblock %}
+
+
 {% block content %}
-<div class="topbar">
-    <div class="page-title">
-        <h1>{{ module.name }}</h1>
-        <p>
-            Explore the stages and levels in your {{ module.name }} learning journey.
-        </p>
-    </div>
-</div>
-{% for stage in stages %}
-<div class="card" style="margin-bottom:24px;">
-    <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:15px;
-        flex-wrap:wrap;
-    ">
-        <div>
-            <span class="badge">
-                Stage {{ stage.number }}
+
+<div class="module-page">
+
+    <!-- MODULE HERO -->
+
+    <section class="module-hero">
+        <div class="module-hero-content">
+
+            <span class="module-eyebrow">
+                Your Learning Journey
             </span>
-            <h2 style="margin-top:10px;">
-                {{ stage.name }}
-            </h2>
-        </div>
-        <span class="muted">
-            {{ stage.lessons|length }} Levels
-        </span>
-    </div>
-    <div style="
-        margin-top:20px;
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-    ">
-        {% for lesson in stage.lessons %}
-        <div style="
-            padding:16px 18px;
-            border:1px solid #e5e7eb;
-            border-radius:12px;
-            background:#f8fafc;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:15px;
-        ">
-            <div>
-                <div style="
-                    font-size:13px;
-                    color:#64748b;
-                    margin-bottom:4px;
-                ">
-                    Level {{ lesson.topic_number }}
-                </div>
-                <div style="
-                    font-size:17px;
-                    font-weight:700;
-                    color:#172554;
-                ">
-                    {{ lesson.title }}
-                </div>
-                <div style="
-                    margin-top:5px;
-                    color:#64748b;
-                    font-size:14px;
-                ">
-                    {{ lesson.description }}
-                </div>
+
+            <h1>{{ module.name }}</h1>
+
+            <p>
+                Explore the stages and levels in your {{ module.name }}
+                learning journey. Learn step by step, strengthen your
+                understanding, and improve your skills.
+            </p>
+
+            <div class="module-hero-bottom">
+                <span class="module-hero-stat">
+                    Structured Learning
+                </span>
+
+                <span class="module-hero-stat">
+                    Learn at Your Own Pace
+                </span>
+
+                <span class="module-hero-stat">
+                    Step-by-Step Progress
+                </span>
             </div>
-            <a
-                href="{% url 'lesson_detail' lesson.id %}"
-                class="btn btn-primary"
-            >
-                Open
-            </a>
+
         </div>
-        {% empty %}
-        <p class="muted">
-            No levels have been added to this stage yet.
-        </p>
-        {% endfor %}
+    </section>
+
+
+    <!-- STAGE INTRO -->
+
+    <div class="module-section-intro">
+
+        <div>
+            <h2>Explore Your Learning Stages</h2>
+            <p>Choose a level and continue building your knowledge.</p>
+        </div>
+
+        <span class="module-stage-count">
+            {{ stages|length }} Stages
+        </span>
+
     </div>
+
+
+    <!-- STAGES -->
+
+    {% for stage in stages %}
+
+    <section class="module-stage-card">
+
+        <div class="module-stage-header">
+
+            <div class="module-stage-title-group">
+
+                <div class="module-stage-number">
+                    {{ stage.number }}
+                </div>
+
+                <div>
+                    <span class="module-stage-label">
+                        Stage {{ stage.number }}
+                    </span>
+
+                    <h2 class="module-stage-name">
+                        {{ stage.name }}
+                    </h2>
+                </div>
+
+            </div>
+
+            <span class="module-stage-total">
+                {{ stage.lessons|length }} Levels
+            </span>
+
+        </div>
+
+
+        <!-- LESSONS -->
+
+        <div class="module-lesson-list">
+
+            {% for lesson in stage.lessons %}
+
+            <article class="module-lesson-card">
+
+                <div class="module-lesson-info">
+
+                    <div class="module-lesson-number">
+                        {{ lesson.topic_number }}
+                    </div>
+
+                    <div class="module-lesson-details">
+
+                        <span class="module-lesson-label">
+                            Level {{ lesson.topic_number }}
+                        </span>
+
+                        <h3 class="module-lesson-title">
+                            {{ lesson.title }}
+                        </h3>
+
+                        {% if lesson.description %}
+                        <p class="module-lesson-description">
+                            {{ lesson.description }}
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="{% url 'lesson_detail' lesson.id %}"
+                    class="module-open-btn"
+                >
+                    Open Lesson
+                    <span>→</span>
+                </a>
+
+            </article>
+
+            {% empty %}
+
+            <div class="module-empty">
+                No levels have been added to this stage yet.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% empty %}
+
+    <div class="module-empty">
+        No learning stages are available yet.
+    </div>
+
+    {% endfor %}
+
+
+    <!-- BOTTOM NOTE -->
+
+    <div class="module-footer-note">
+        <strong>Keep going!</strong>
+        Every stage you complete brings you closer to your learning goals.
+        Stay consistent, practise regularly, and enjoy your learning journey.
+    </div>
+
 </div>
-{% endfor %}
+
 {% endblock %}
