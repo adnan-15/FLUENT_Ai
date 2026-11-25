@@ -326,14 +326,36 @@
             </div>
         </div>
 
-        <div class="writing-prompt">
-            <p class="writing-prompt-title">Suggested topics</p>
-            <p>
-                Your daily routine, education, future goals, a memorable
-                experience, your interests, or a topic you know well.
-                Explain your ideas in your own words.
-            </p>
-        </div>
+        
+<div class="writing-prompt">
+    <p class="writing-prompt-title">Your Random Writing Topic</p>
+
+    <h3 style="margin: 8px 0; color: var(--primary);">
+        {{ topic }}
+    </h3>
+
+    <p>
+        Write about the given topic in your own words.
+        Organise your ideas into clear sentences and paragraphs.
+    </p>
+
+    <form method="post" style="margin-top: 14px;">
+        {% csrf_token %}
+        <button
+            type="submit"
+            name="action"
+            value="new_topic"
+            class="writing-btn secondary"
+        >
+            ↻ Generate Another Topic
+        </button>
+    </form>
+
+    <p style="margin-top: 10px; font-size: 12px;">
+        Your learning level: {{ level|title }}
+    </p>
+</div>
+
 
         <form method="post" id="writing-assessment-form">
             {% csrf_token %}
