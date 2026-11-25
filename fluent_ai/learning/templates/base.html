@@ -1073,9 +1073,222 @@
                 animation-iteration-count: 1 !important;
             }
         }
+    
+        /* =====================================================
+           FLUENT AI PREMIUM GLASSMORPHISM LAYER
+           Presentation-only overrides. Django and page logic untouched.
+        ===================================================== */
+        :root,
+        html[data-theme="light"] {
+            --primary: #536dfe;
+            --primary-hover: #4056df;
+            --primary-soft: rgba(83,109,254,.10);
+            --bg: #f3f5ff;
+            --surface: rgba(255,255,255,.72);
+            --surface-secondary: rgba(246,248,255,.82);
+            --border: rgba(126,143,190,.22);
+            --text: #19233d;
+            --muted: #687590;
+            --subtle: #98a3ba;
+            --shadow: 0 12px 38px rgba(46,62,130,.075);
+            --radius: 18px;
+        }
+        html[data-theme="dark"] {
+            --primary: #9aabff;
+            --primary-hover: #bac5ff;
+            --primary-soft: rgba(154,171,255,.13);
+            --bg: #0b1020;
+            --surface: rgba(24,32,55,.76);
+            --surface-secondary: rgba(31,41,68,.82);
+            --border: rgba(165,181,235,.16);
+            --text: #f1f4ff;
+            --muted: #a6b1cc;
+            --subtle: #8491ad;
+            --shadow: 0 16px 42px rgba(0,0,0,.22);
+        }
+        body {
+            background:
+                radial-gradient(ellipse at 12% 5%, rgba(103,130,255,.13), transparent 34%),
+                radial-gradient(ellipse at 92% 88%, rgba(164,116,255,.12), transparent 36%),
+                var(--bg);
+            background-attachment: fixed;
+        }
+        html[data-theme="dark"] body {
+            background:
+                radial-gradient(ellipse at 12% 5%, rgba(83,109,254,.16), transparent 34%),
+                radial-gradient(ellipse at 92% 88%, rgba(133,93,221,.14), transparent 36%),
+                var(--bg);
+            background-attachment: fixed;
+        }
+        .sidebar {
+            background: rgba(255,255,255,.68);
+            border-right: 1px solid var(--border);
+            box-shadow: 12px 0 38px rgba(50,65,125,.045);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        html[data-theme="dark"] .sidebar {
+            background: rgba(15,22,41,.78);
+            box-shadow: 12px 0 38px rgba(0,0,0,.16);
+        }
+        .main-content { padding-top: 32px; }
+        .brand-icon, .avatar {
+            background: linear-gradient(135deg,#536dfe 0%,#8a5cf6 100%);
+            box-shadow: 0 8px 22px rgba(83,109,254,.24);
+        }
+        .nav-link { border-radius: 12px; transition: .22s ease; }
+        .nav-link:hover { transform: translateX(2px); background: var(--primary-soft); }
+        .nav-link.active {
+            color: var(--primary);
+            background: linear-gradient(110deg,rgba(83,109,254,.15),rgba(142,92,246,.09));
+            box-shadow: inset 3px 0 0 var(--primary);
+        }
+        .glass-card, .card, .user-pill, .login-card,
+        .panel, .stat-card, .assessment-card, .practice-card {
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .glass-card, .card { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+        .glass-card:hover, .card:hover {
+            border-color: rgba(112,132,235,.34);
+            box-shadow: 0 18px 44px rgba(53,70,145,.10);
+        }
+        .btn, button.btn, .btn-primary, .lp-btn-primary {
+            border-radius: 12px;
+            background-image: linear-gradient(115deg,#536dfe,#8559e9);
+            box-shadow: 0 8px 20px rgba(83,109,254,.20);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+        .btn:hover, button.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(83,109,254,.25); }
+        .btn-secondary { background: var(--primary-soft); box-shadow: none; }
+        .form-control, input, textarea, select {
+            border-radius: 12px;
+        }
+        .form-control, .login-card input, .login-card select, .login-card textarea {
+            background: rgba(255,255,255,.62);
+            border-color: var(--border);
+        }
+        html[data-theme="dark"] .form-control,
+        html[data-theme="dark"] input,
+        html[data-theme="dark"] textarea,
+        html[data-theme="dark"] select {
+            background: rgba(13,20,38,.58);
+        }
+        .form-control:focus, input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(83,109,254,.12);
+        }
+        .topbar { align-items: center; }
+        .page-title h1 { letter-spacing: -1px; }
+        .progress { height: 9px; border-radius: 999px; }
+        .progress-bar { background: linear-gradient(90deg,#536dfe,#a16af5); }
+        .badge { border-radius: 999px; padding: 5px 10px; }
+        table { border-collapse: separate; border-spacing: 0; overflow: hidden; border-radius: 14px; }
+        th { background: var(--primary-soft); }
+        tr:hover td { background: rgba(83,109,254,.035); }
+        ::selection { color: #fff; background: #6478f4; }
+        * { scrollbar-width: thin; scrollbar-color: rgba(115,132,205,.45) transparent; }
+        *::-webkit-scrollbar { width: 8px; height: 8px; }
+        *::-webkit-scrollbar-thumb { border-radius: 20px; background: rgba(115,132,205,.42); }
+        .language-switcher {
+            position: fixed; right: 22px; bottom: 22px; z-index: 9998;
+            display: flex; align-items: center; gap: 9px;
+            padding: 8px 10px 8px 13px; border: 1px solid var(--border);
+            border-radius: 999px; color: var(--text);
+            background: rgba(255,255,255,.78);
+            box-shadow: 0 12px 35px rgba(35,48,105,.16);
+            backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+            font-size: 12px; font-weight: 750;
+        }
+        html[data-theme="dark"] .language-switcher { background: rgba(24,32,55,.88); }
+        .language-switcher select {
+            min-width: 82px; padding: 7px 25px 7px 10px;
+            border: 1px solid var(--border); border-radius: 999px;
+            color: var(--text); background: var(--surface);
+            font: inherit; cursor: pointer;
+        }
+        #google_translate_element { position: fixed; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
+        .goog-te-banner-frame, .skiptranslate, #goog-gt-tt, .goog-tooltip { display: none !important; }
+        body { top: 0 !important; }
+        @media (max-width: 800px) {
+            .main-content { padding: 18px 16px 84px; }
+            .language-switcher { right: 14px; bottom: 14px; }
+            .glass-card, .card { border-radius: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        }
+
     </style>
 
     {% block extra_css %}{% endblock %}
+
+    <style id="fluent-ai-glass-components">
+        .main-content .stat-card,
+        .main-content .panel,
+        .main-content .result-card,
+        .main-content .action-card,
+        .main-content .feature-card,
+        .main-content .team-card,
+        .main-content .vn-card,
+        .main-content .answer-detail,
+        .main-content .interview-empty,
+        .main-content .profile-stat,
+        .main-content .assessment-card,
+        .main-content .practice-card {
+            border: 1px solid var(--border) !important;
+            border-radius: 19px !important;
+            background: var(--surface) !important;
+            box-shadow: var(--shadow) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .main-content .stat-card,
+        .main-content .action-card,
+        .main-content .feature-card,
+        .main-content .team-card,
+        .main-content .result-card {
+            transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+        }
+        .main-content .stat-card:hover,
+        .main-content .action-card:hover,
+        .main-content .feature-card:hover,
+        .main-content .team-card:hover,
+        .main-content .result-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(112,132,235,.38) !important;
+            box-shadow: 0 18px 42px rgba(53,70,145,.11) !important;
+        }
+        .main-content .mcq-option,
+        .main-content .answer-option,
+        .main-content .suggestion-chip {
+            border-radius: 13px;
+            transition: border-color .18s ease, background .18s ease, transform .18s ease;
+        }
+        .main-content .mcq-option:hover,
+        .main-content .answer-option:hover,
+        .main-content .suggestion-chip:hover { transform: translateY(-1px); }
+        .landing .feature-card {
+            border: 1px solid var(--lp-border);
+            background: var(--lp-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--lp-shadow);
+        }
+        @media (max-width: 800px) {
+            .main-content .stat-card,
+            .main-content .panel,
+            .main-content .result-card,
+            .main-content .action-card,
+            .main-content .feature-card,
+            .main-content .team-card { border-radius: 16px !important; }
+        }
+    </style>
+
 </head>
 
 <body>
@@ -1249,6 +1462,17 @@
 {% block public_content %}{% endblock %}
 
 {% endif %}
+
+
+<div class="language-switcher" aria-label="Choose language">
+    <span aria-hidden="true">文</span>
+    <label for="fluentLanguageSelect">Language</label>
+    <select id="fluentLanguageSelect" aria-label="Select website language">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+    </select>
+</div>
+<div id="google_translate_element" aria-hidden="true"></div>
 
 <script>
 (function () {
@@ -1472,6 +1696,50 @@
     });
 })();
 </script>
+
+
+<script>
+(function () {
+    "use strict";
+    var languageSelect = document.getElementById("fluentLanguageSelect");
+    if (!languageSelect) return;
+
+    function readLanguageCookie() {
+        var match = document.cookie.match(/(?:^|; )googtrans=([^;]+)/);
+        if (!match) return "en";
+        try {
+            var value = decodeURIComponent(match[1]);
+            return value.indexOf("/hi") !== -1 ? "hi" : "en";
+        } catch (error) { return "en"; }
+    }
+
+    languageSelect.value = readLanguageCookie();
+
+    languageSelect.addEventListener("change", function () {
+        var language = languageSelect.value;
+        if (language === "en") {
+            document.cookie = "googtrans=/en/en;path=/";
+            document.cookie = "googtrans=/en/en;path=/;domain=" + location.hostname;
+        } else {
+            document.cookie = "googtrans=/en/hi;path=/";
+            document.cookie = "googtrans=/en/hi;path=/;domain=" + location.hostname;
+        }
+        window.location.reload();
+    });
+
+    window.googleTranslateElementInit = function () {
+        if (window.google && window.google.translate) {
+            new window.google.translate.TranslateElement({
+                pageLanguage: "en",
+                includedLanguages: "en,hi",
+                autoDisplay: false,
+                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, "google_translate_element");
+        }
+    };
+})();
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
 
 {% block extra_js %}{% endblock %}
 
